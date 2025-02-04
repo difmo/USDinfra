@@ -42,7 +42,8 @@ class AppRouts {
       case propertyform1:
         return MaterialPageRoute(builder: (_) => PropertyForm1());
       case propertyform2:
-        return MaterialPageRoute(builder: (_) => PropertyForm2());
+        Map<String, String?>?  formData;
+        return MaterialPageRoute(builder: (_) => PropertyForm2(formData: formData,));
       case profile:
         return MaterialPageRoute(builder: (_) => ProfilePage());
       default:

@@ -148,12 +148,12 @@ class _LoginPageState extends State<LoginPage> {
                           color: AppColors.primary,
                         ),
                         controller: controllers.emailController,
-                        validator: (value){
-                          if (value == null || value.isEmpty){
-                            return 'Please enter your email address';
-                          }
-                          return null; // No error
-                        },
+                        // validator: (value){
+                        //   if (value == null || value.isEmpty){
+                        //     return 'Please enter your email address';
+                        //   }
+                        //   return null; // No error
+                        // },
                       ),
                     ],
                   ),

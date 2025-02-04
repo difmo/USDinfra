@@ -1,26 +1,82 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:usdinfra/Components/Choice_Chip.dart';
+// import 'package:usdinfra/Property_Pages/Property_Form/form_page_1.dart';
+
+import '../../Controllers/authentication_controller.dart';
+import '../../Customs/custom_textfield.dart';
+import '../../conigs/app_colors.dart';
 
 class PropertyForm2 extends StatefulWidget {
+  Map<String, String?>?  formData;
+   PropertyForm2({super.key, required this.formData});
+
   @override
-  _AddPropertyDetailsState createState() => _AddPropertyDetailsState();
+  State<PropertyForm2> createState() => _PropertyForm2State();
 }
 
-class _AddPropertyDetailsState extends State<PropertyForm2> {
-  final TextEditingController cityController = TextEditingController();
-  final TextEditingController localityController = TextEditingController();
-  final TextEditingController subLocalityController = TextEditingController();
-  final TextEditingController apartmentController = TextEditingController();
-  final TextEditingController plotAreaController = TextEditingController();
-  final TextEditingController totalFloorsController = TextEditingController();
-  final TextEditingController expectedPriceController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-
-  String areaUnit = 'cents';
+class _PropertyForm2State extends State<PropertyForm2> {
+  Map<String, String?> get formData => widget.formData!;
+  final controllers = ControllersManager();
   String? availabilityStatus;
   String? ownershipType;
   bool allInclusivePrice = false;
-  bool taxExcluded = true;
+  bool taxExcluded = false;
+  bool isLoading = false;
 
+
+
+
+  Future<void> saveToFirestore() async {
+    setState(() {
+      isLoading = true; // Show loader
+    });
+    try {
+      await FirebaseFirestore.instance.collection('properties').add({
+        'city': controllers.cityController.text,
+        'lookingTo':formData['lookingTo'],
+        'propertyType':formData['propertyType'],
+        'propertyCategory':formData[' propertyCategory'],
+        'contactDetails': formData['contactDetails'],
+        'locality': controllers.localityController.text,
+        'subLocality': controllers.subLocalityController.text,
+        'apartment': controllers.apartmentController.text,
+        'plotArea': controllers.plotAreaController.text,
+        'totalFloors': controllers.totalFloorsController.text,
+        'availabilityStatus': availabilityStatus,
+        'ownershipType': ownershipType,
+        'expectedPrice': controllers.nameController.text,
+        'allInclusivePrice': allInclusivePrice,
+        'taxExcluded': taxExcluded,
+        'description': controllers.descriptionController.text,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Property saved successfully!')),
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }finally{
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("Arguments received in PropertyForm2: ${formData['lookingTo']}");
+  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,58 +113,158 @@ class _AddPropertyDetailsState extends State<PropertyForm2> {
               style: TextStyle(color: Colors.grey, fontSize: 14),
             ),
             const SizedBox(height: 20),
-            buildSectionTitle('Where is your property located?'),
-            buildTextField('City', cityController),
-            buildTextField('Locality', localityController),
-            buildTextField('Sub Locality (Optional)', subLocalityController),
-            buildTextField('Apartment / Society (Optional)', apartmentController),
+            Text('Where is your property located?',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.primary)),
+            SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('City',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      )),
+                  SizedBox(height: 8),
+                  CustomInputField(
+                      controller: controllers.cityController,
+                      hintText: 'Enter City Name'),
+                ],
+              ),
+            ),
+            SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Locality ',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      )),
+                  SizedBox(height: 8),
+                  CustomInputField(
+                      controller: controllers.localityController,
+                      hintText: 'Locality'),
+                ],
+              ),
+            ),
+            SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Sub Locality',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      )),
+                  SizedBox(height: 8),
+                  CustomInputField(
+                      controller: controllers.subLocalityController,
+                      hintText: 'Sub Locality'),
+                ],
+              ),
+            ),
+            SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Apartment / Society',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      )),
+                  SizedBox(height: 8),
+                  CustomInputField(
+                      controller: controllers.apartmentController,
+                      hintText: 'Apartment / Society'),
+                ],
+              ),
+            ),
             const SizedBox(height: 20),
-            buildSectionTitle('Add Area Details'),
+            Text('Add Area Details',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.primary)),
             Row(
               children: [
                 Expanded(
-                  child: buildTextField('Plot Area', plotAreaController),
-                ),
-                const SizedBox(width: 10),
-                DropdownButton<String>(
-                  value: areaUnit,
-                  onChanged: (value) {
-                    setState(() {
-                      areaUnit = value!;
-                    });
-                  },
-                  items: ['cents', 'sq.ft', 'acres']
-                      .map((unit) => DropdownMenuItem(
-                    value: unit,
-                    child: Text(unit),
-                  ))
-                      .toList(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 8),
+                        Text('Plot Area',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            )),
+                        SizedBox(height: 8),
+                        CustomInputField(
+                            controller: controllers.plotAreaController,
+                            hintText: 'Plot Area'),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            buildSectionTitle('Floor Details'),
-            buildTextField('Total Floors', totalFloorsController),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Floor Details',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      )),
+                  SizedBox(height: 8),
+                  CustomInputField(
+                      controller: controllers.totalFloorsController,
+                      hintText: 'Total Floors'),
+                ],
+              ),
+            ),
             const SizedBox(height: 20),
-            buildSectionTitle('Availability Status'),
+            Text('Availability Status',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.primary)),
             Wrap(
               spacing: 10,
               children: ['Ready to move', 'Under construction']
-                  .map((status) => ChoiceChip(
-                label: Text(status),
-                selected: availabilityStatus == status,
-                onSelected: (selected) {
-                  setState(() {
-                    availabilityStatus =
-                    selected ? status : availabilityStatus;
-                  });
-                },
-                backgroundColor: Colors.white,
-              ))
+                  .map((option) => ChoiceChipOption(
+                        label: option,
+                        isSelected: availabilityStatus == option,
+                        onSelected: (selected) {
+                          setState(() {
+                            availabilityStatus =
+                                selected ? option : availabilityStatus;
+                          });
+                        },
+                      ))
                   .toList(),
             ),
             const SizedBox(height: 20),
-            buildSectionTitle('Ownership'),
+            Text('Ownership',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.primary)),
             Wrap(
               spacing: 10,
               children: [
@@ -117,20 +273,35 @@ class _AddPropertyDetailsState extends State<PropertyForm2> {
                 'Co-operative society',
                 'Power of Attorney'
               ]
-                  .map((type) => ChoiceChip(
-                label: Text(type),
-                selected: ownershipType == type,
-                onSelected: (selected) {
-                  setState(() {
-                    ownershipType = selected ? type : ownershipType;
-                  });
-                },
-              ))
+                  .map((option) => ChoiceChipOption(
+                        label: option,
+                        isSelected: ownershipType == option,
+                        onSelected: (selected) {
+                          setState(() {
+                            ownershipType = selected ? option : ownershipType;
+                          });
+                        },
+                      ))
                   .toList(),
             ),
             const SizedBox(height: 20),
-            buildSectionTitle('Price Details'),
-            buildTextField('Expected Price', expectedPriceController),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Price Details',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.primary)),
+                  SizedBox(height: 8),
+                  CustomInputField(
+                      controller: controllers.nameController,
+                      hintText: 'Expected Price'),
+                ],
+              ),
+            ),
             Row(
               children: [
                 Checkbox(
@@ -158,59 +329,54 @@ class _AddPropertyDetailsState extends State<PropertyForm2> {
               ],
             ),
             const SizedBox(height: 20),
-            buildSectionTitle('What makes your property unique'),
-            buildTextField(
-              'Share some details about your property...',
-              descriptionController,
-              maxLines: 3,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('What makes your property unique',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.primary)),
+                  SizedBox(height: 8),
+                  CustomInputField(
+                    controller: controllers.descriptionController,
+                    hintText: 'Share some details about your property...',
+                    // maxlines: 3,
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 30),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
+                onPressed: isLoading ? null : () => saveToFirestore(),  // Make sure to call the saveToFirestore function
+                child: isLoading
+                    ? CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                )
+                    : Text(
                   'Post and Continue',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold),
                 ),
+                style: ElevatedButton.styleFrom(
+                  elevation: 3,
+                  shadowColor: Colors.grey,
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  backgroundColor: AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
               ),
-            ),
+            )
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-    );
-  }
-
-  Widget buildTextField(String hintText, TextEditingController controller,
-      {int maxLines = 1}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: TextField(
-        controller: controller,
-        maxLines: maxLines,
-        decoration: InputDecoration(
-          hintText: hintText,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
         ),
       ),
     );

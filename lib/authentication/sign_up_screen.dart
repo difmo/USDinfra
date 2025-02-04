@@ -17,7 +17,6 @@ class _SignupPageState extends State<SignupPage> {
   bool _isLoading = false;
   bool _isPVisible = false;
   bool _isCPVisible = false;
-  // Firebase Authentication instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

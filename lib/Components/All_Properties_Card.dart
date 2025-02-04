@@ -64,7 +64,7 @@ class AllPropertyCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        title,
+                        propertyType,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -72,9 +72,17 @@ class AllPropertyCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        address,
+                        title,
                         style: const TextStyle(
                           fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        address,
+                        style: const TextStyle(
+                          fontSize: 12,
                           color: Colors.grey,
                         ),
                       ),

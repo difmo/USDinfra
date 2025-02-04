@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class PropertyCard extends StatelessWidget {
+import '../conigs/app_colors.dart';
+
+class PropertyCard extends StatefulWidget {
   final String imageUrl;
-  final String price;
-  final String size;
+  final String expectedPrice;
+  final String plotArea;
   final String propertyType;
   final String address;
   final String updateTime;
@@ -16,8 +18,8 @@ class PropertyCard extends StatelessWidget {
   const PropertyCard({
     Key? key,
     required this.imageUrl,
-    required this.price,
-    required this.size,
+    required this.expectedPrice,
+    required this.plotArea,
     required this.propertyType,
     required this.address,
     required this.updateTime,
@@ -25,6 +27,42 @@ class PropertyCard extends StatelessWidget {
     required this.features,
     required this.propertyStatus,
   }) : super(key: key);
+
+  @override
+  _PropertyCardState createState() => _PropertyCardState();
+}
+
+class _PropertyCardState extends State<PropertyCard> {
+  bool isFavorited = false;
+
+  // Function to toggle the heart icon
+  void _toggleFavorite() {
+    setState(() {
+      isFavorited = !isFavorited;
+    });
+  }
+
+  // Function to share the property details on WhatsApp
+  void _shareOnWhatsApp() async {
+    final String shareMessage = '''
+Property: ${widget.title}
+Price: ${widget.expectedPrice}
+Size: ${widget.plotArea}
+Type: ${widget.propertyType}
+Address: ${widget.address}
+Status: ${widget.propertyStatus}
+Features: ${widget.features.join(', ')}
+''';
+
+    final String url =
+        'https://wa.me/?text=${Uri.encodeComponent(shareMessage)}';
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not open WhatsApp';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +91,7 @@ class PropertyCard extends StatelessWidget {
                             vertical: 4, horizontal: 8),
                         decoration: BoxDecoration(
                           color: Colors.green,
-                          borderRadius:
-                              BorderRadius.circular(12), // Apply radius here
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Text(
                           'POPULAR PROJECT',
@@ -78,23 +115,23 @@ class PropertyCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        child: IconButton(
-                          icon: Image.asset(
-                            'assets/icons/share.png',
-                          ),
-                          onPressed: () {},
-                        ),
-                      ),
+                      // IconButton(
+                      //   icon: Image.asset(
+                      //     'assets/icons/share.png',
+                      //     width: 30,
+                      //     height: 30,
+                      //   ),
+                      //   onPressed: _shareOnWhatsApp,
+                      // ),
                       IconButton(
                         icon: Icon(
-                          CupertinoIcons.heart,
-                          color: Colors.black,
+                          isFavorited
+                              ? CupertinoIcons.heart_fill
+                              : CupertinoIcons.heart,
+                          color: isFavorited ? Colors.red : Colors.black,
                           size: 24,
                         ),
-                        onPressed: () {},
+                        onPressed: _toggleFavorite,
                       ),
                     ],
                   ),
@@ -109,7 +146,7 @@ class PropertyCard extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.network(
-                          imageUrl,
+                          widget.imageUrl,
                           height: screenWidth * 0.3,
                           width: screenWidth * 0.3,
                           fit: BoxFit.cover,
@@ -122,7 +159,7 @@ class PropertyCard extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 7, vertical: 4),
                           child: Text(
-                            'Updated $updateTime ago',
+                            'Updated ${widget.updateTime} ago',
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 11),
                             overflow: TextOverflow.ellipsis,
@@ -144,14 +181,14 @@ class PropertyCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          price,
+                          widget.expectedPrice,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          '$size - $propertyType',
+                          '${widget.plotArea} - ${widget.propertyType}',
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -159,14 +196,14 @@ class PropertyCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          title,
+                          widget.title,
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          address,
+                          widget.address,
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -178,7 +215,7 @@ class PropertyCard extends StatelessWidget {
                             Icon(Icons.check_circle,
                                 color: Colors.green, size: 16),
                             const SizedBox(width: 4),
-                            Text(propertyStatus),
+                            Text(widget.propertyStatus),
                           ],
                         ),
                         const SizedBox(height: 12),
@@ -190,7 +227,7 @@ class PropertyCard extends StatelessWidget {
               const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: features
+                children: widget.features
                     .map(
                       (feature) => Row(
                         children: [
@@ -210,12 +247,11 @@ class PropertyCard extends StatelessWidget {
                   OutlinedButton(
                     onPressed: () {},
                     style: ButtonStyle(
-                      side: MaterialStateProperty.all(
-                          BorderSide(color: AppColors.primary, width: 2)),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      )),
-                    ),
+                        side: MaterialStateProperty.all(
+                            BorderSide(color: AppColors.primary, width: 2)),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ))),
                     child: const Text('Get Phone No.',
                         style: TextStyle(color: AppColors.primary)),
                   ),
