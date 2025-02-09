@@ -20,12 +20,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.ac_unit, size: 100, color: Colors.white),
+            Image.asset("assets/logo.png"),
             SizedBox(height: 20),
             Text(
               'Welcome to USD',

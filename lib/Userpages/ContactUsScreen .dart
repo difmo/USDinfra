@@ -55,7 +55,7 @@ class ContactUsScreen extends StatelessWidget {
     final List<Map<String, dynamic>> contactItems = [
       {
         "icon": Icons.phone,
-        "title": "+91 98765 43210",
+        "title": "+91 800 427 5740",
         "subtitle": "Call us for inquiries",
         "color": Colors.blue,
       },

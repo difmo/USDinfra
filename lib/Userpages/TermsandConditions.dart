@@ -113,7 +113,7 @@ class TermsAndConditionsScreen extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.phone, color: Colors.blue),
-                  title: const Text("+91 98765 43210"),
+                  title: const Text("+91 800 427 5740"),
                   subtitle: const Text("Call us for further assistance"),
                 ),
               ],

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:usdinfra/Bottom/bottom_navigation.dart';
 import 'package:usdinfra/Customs/custom_app_bar.dart';
+import 'package:usdinfra/Property_Pages/Properties_detail_page.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../Components/cerosoule.dart';
@@ -159,20 +160,59 @@ class _HomeDashBoard extends State<HomeDashBoard> {
 
                       return Column(
                         children: properties.map((property) {
-                          return Container(
-                            height: screenHeight * 0.39,
-                            margin: const EdgeInsets.only(bottom: 6),
-                            child: PropertyCard(
-                              imageUrl: property['imageUrl'],
-                              expectedPrice: property['expectedPrice'],
-                              plotArea: property['plotArea'],
-                              propertyType: property['propertyType'],
-                              address: property['address'],
-                              updateTime: property['updateTime'],
-                              title: property['title'],
-                              features: property['features'],
-                              propertyStatus: property['propertyStatus'],
-                              contactDetails: property['contactDetails'],
+                          return GestureDetector(
+                            onTap: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PropertyDetailPage(
+                                    imageUrl: property['imageUrl'] ??
+                                        'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
+                                    title: property['title'] ?? '',
+                                    address: property['address'] ?? '',
+                                    price: property['price'] ?? '',
+                                    description: property['description'] ?? '',
+                                    amenities: property['amenities'] ?? [],
+                                    builtYear:
+                                        property['builtYear']?.toString() ?? '',
+                                    floorNumber:
+                                        property['floorNumber']?.toString() ??
+                                            '',
+                                    totalFloors:
+                                        property['totalFloors']?.toString() ??
+                                            '',
+                                    furnishingStatus:
+                                        property['furnishingStatus'] ?? '',
+                                    ownership: property['ownership'] ?? '',
+                                    monthlyMaintenance:
+                                        property['monthlyMaintenance'] ?? '',
+                                    nearbyLandmarks:
+                                        property['nearbyLandmarks'] ?? [],
+                                    contactName:
+                                        property['contactInfo']?['name'] ?? '',
+                                    contactPhone:
+                                        property['contactInfo']?['phone'] ?? '',
+                                    contactEmail:
+                                        property['contactInfo']?['email'] ?? '',
+                                  ),
+                                ),
+                              )
+                            },
+                            child: Container(
+                              height: screenHeight * 0.39,
+                              margin: const EdgeInsets.only(bottom: 6),
+                              child: PropertyCard(
+                                imageUrl: property['imageUrl'],
+                                expectedPrice: property['expectedPrice'],
+                                plotArea: property['plotArea'],
+                                propertyType: property['propertyType'],
+                                address: property['address'],
+                                updateTime: property['updateTime'],
+                                title: property['title'],
+                                features: property['features'],
+                                propertyStatus: property['propertyStatus'],
+                                contactDetails: property['contactDetails'],
+                              ),
                             ),
                           );
                         }).toList(),
