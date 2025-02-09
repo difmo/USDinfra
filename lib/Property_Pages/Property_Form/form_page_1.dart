@@ -83,15 +83,15 @@ class _PropertyFormState extends State<PropertyForm1> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              'Post Via WhatsApp',
-              style: TextStyle(color: Colors.green, fontSize: 14),
-            ),
-          ),
-        ],
+        // actions: [
+        //   TextButton(
+        //     onPressed: () {},
+        //     child: const Text(
+        //       'Post Via WhatsApp',
+        //       style: TextStyle(color: Colors.green, fontSize: 14),
+        //     ),
+        //   ),
+        // ],
       ),
       body: SingleChildScrollView(
         child: Padding(
