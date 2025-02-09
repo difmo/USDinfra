@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:usdinfra/Property_Pages/Property_Form/form_page_2.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import '../../Controllers/authentication_controller.dart';
 import '../../routes/app_routes.dart';
@@ -8,7 +7,7 @@ import 'Form_page_1_components/Looking_To_Property.dart';
 import 'Form_page_1_components/Property_Category.dart';
 import 'Form_page_1_components/Property_Comercial_Type.dart';
 import 'Form_page_1_components/Property_Type.dart';
-import 'package:usdinfra/Utils/validators.dart';
+
 
 class PropertyForm1 extends StatefulWidget {
   const PropertyForm1({super.key});
@@ -21,7 +20,6 @@ class _PropertyFormState extends State<PropertyForm1> {
   String? lookingTo;
   String? propertyType;
   String? propertyCategory;
-  // String? _contactDetailsError;
 
   final _formKey = GlobalKey<FormState>();
   String? _lookingToError;
@@ -43,54 +41,18 @@ class _PropertyFormState extends State<PropertyForm1> {
 
   List<String> getPropertyCategories() {
     if (lookingTo == 'Sell' && propertyType == 'Commercial') {
-      return [
-        'Office',
-        'Retail',
-        'Storage',
-        'Plot/Land',
-        'Industry',
-        'Hospitality',
-        'Other'
-      ];
+      return ['Office', 'Retail', 'Storage', 'Plot/Land', 'Industry', 'Hospitality', 'Other'];
     } else if (lookingTo == 'Sell' && propertyType == 'Residential') {
-      return [
-        'Apartment',
-        'Independent House/Villa',
-        'Independent/Builder Floor',
-        'Plot/Land',
-        '1RK/Studio Apartment',
-        'Serviced Apartment',
-        'Farmhouse',
-        'Other'
-      ];
+      return ['Apartment', 'Independent House/Villa', 'Independent/Builder Floor',
+        'Plot/Land', '1RK/Studio Apartment', 'Serviced Apartment', 'Farmhouse', 'Other'];
     } else if (lookingTo == 'Rent / Lease' && propertyType == 'Residential') {
-      return [
-        'Apartment',
-        'Independent House/Villa',
-        'Independent/Builder Floor',
-        '1RK/Studio Apartment',
-        'Serviced Apartment',
-        'Farmhouse',
-        'Other'
-      ];
+      return ['Apartment', 'Independent House/Villa', 'Independent/Builder Floor',
+        '1RK/Studio Apartment', 'Serviced Apartment', 'Farmhouse', 'Other'];
     } else if (lookingTo == 'Rent / Lease' && propertyType == 'Commercial') {
-      return [
-        'Office',
-        'Retail',
-        'Storage',
-        'Plot/Land',
-        'Industry',
-        'Hospitality',
-        'Other'
-      ];
+      return ['Office', 'Retail', 'Storage', 'Plot/Land', 'Industry', 'Hospitality', 'Other'];
     } else if (lookingTo == 'Paying Guest' && propertyType == 'Residential') {
-      return [
-        'Apartment',
-        'Independent House/Villa',
-        'Independent/Builder Floor',
-        '1RK/Studio Apartment',
-        'Serviced Apartment'
-      ];
+      return ['Apartment', 'Independent House/Villa', 'Independent/Builder Floor',
+        '1RK/Studio Apartment', 'Serviced Apartment'];
     } else {
       return [];
     }
@@ -98,52 +60,17 @@ class _PropertyFormState extends State<PropertyForm1> {
 
   void _validateAndSubmit() {
     setState(() {
-      _lookingToError =
-          lookingTo == null ? 'Please select what you\'re looking to do' : null;
-      _propertyTypeError =
-          propertyType == null ? 'Please select a property type' : null;
-      _propertyCategoryError =
-          propertyCategory == null ? 'Please select a property category' : null;
+      _lookingToError = lookingTo == null ? 'Please select what you\'re looking to do' : null;
+      _propertyTypeError = propertyType == null ? 'Please select a property type' : null;
+      _propertyCategoryError = propertyCategory == null ? 'Please select a property category' : null;
     });
-    String? contactDetailsError = controllers.contactController.text.isEmpty
-        ? 'Please enter your contact details'
-        : null;
-
-
-    String? Function(String?)? contactValidator;
-    if (contactDetailsError == null) {
-      if (controllers.contactController.text.contains('@')) {
-        // Email validation
-        contactValidator = Validators.validateEmail;
-      } else {
-        // Mobile number validation
-        contactValidator = Validators.validateMobileNumber;
-      }
-    }
 
     if (_formKey.currentState!.validate() &&
         lookingTo != null &&
         propertyType != null &&
         propertyCategory != null) {
-
-      final formData = {
-        'lookingTo': lookingTo,
-        'propertyType': propertyType,
-        'propertyCategory': propertyCategory,
-        'contactDetails': controllers.contactController.text,
-      };
-
-      print("Navigating to PropertyForm2 with data: $formData"); // Debugging
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PropertyForm2(formData: formData), // Passing the data to the next screen
-        ),
-      );
-
+      Navigator.pushNamed(context, AppRouts.propertyform2);
     }
-
   }
 
   @override
@@ -181,10 +108,7 @@ class _PropertyFormState extends State<PropertyForm1> {
                 const SizedBox(height: 4),
                 const Text(
                   'STEP 1 OF 3',
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
                 LookingToColumn(
@@ -224,7 +148,15 @@ class _PropertyFormState extends State<PropertyForm1> {
                 const SizedBox(height: 20),
                 ContactDetailsColumn(
                   controller: controllers.contactController,
-                  contactDetailsValidator: Validators.validateMobileNumber,
+                  validator1: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your contact details';
+                    }
+                    if (!RegExp(r'^[0-9]+$').hasMatch(value) && !value.contains('@')) {
+                      return 'Please enter a valid phone number or email';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 30),
                 SizedBox(
@@ -232,13 +164,14 @@ class _PropertyFormState extends State<PropertyForm1> {
                   child: ElevatedButton(
                     onPressed: _validateAndSubmit,
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        elevation: 2,
-                        shadowColor: AppColors.shadow),
+                      backgroundColor: AppColors.primary,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 2,
+                      shadowColor: AppColors.shadow
+                    ),
                     child: const Text(
                       'Next',
                       style: TextStyle(

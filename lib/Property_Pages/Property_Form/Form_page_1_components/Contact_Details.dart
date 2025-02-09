@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import '../../../Customs/custom_textfield.dart';
+// import '../../Controllers/authentication_controller.dart';
 
 class ContactDetailsColumn extends StatelessWidget {
   final TextEditingController controller;
-  final String? Function(String?)? contactDetailsValidator; // Added validator
+  final FormFieldValidator<String>? validator1;
 
   const ContactDetailsColumn({
     Key? key,
     required this.controller,
-    this.contactDetailsValidator,
+    this.validator1,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return
-      Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
@@ -25,7 +25,6 @@ class ContactDetailsColumn extends StatelessWidget {
         CustomInputField(
           hintText: 'Phone number / E-mail',
           controller: controller,
-          validator: contactDetailsValidator,
         ),
       ],
     );
