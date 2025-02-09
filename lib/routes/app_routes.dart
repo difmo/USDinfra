@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:usdinfra/Userpages/dash_board.dart';
 import 'package:usdinfra/authentication/welcome_screen.dart';
 import '../Bottom/bottom_navigation.dart';
+import '../Property_Pages/Properties_detail_page.dart';
 import '../Property_Pages/Property_Form/form_page_1.dart';
 import '../Property_Pages/Property_Form/form_page_2.dart';
 import '../Splash_screen.dart';
 import '../Property_Pages/All_properties_list.dart';
+import '../Userpages/notification.dart';
 import '../Userpages/profile_page.dart';
 import '../Userpages/profile_setup.dart';
 import '../authentication/login_screen.dart';
@@ -19,9 +21,11 @@ class AppRouts {
   static const profilesetup = '/profilesetup';
   static const dashBoard = '/dashboard';
   static const properties = '/AllProperties';
+  static const PROPERTDETAIL = '/PropertyDetailPage';
   static const propertyform1 = '/PropertyForm1';
   static const propertyform2 = '/PropertyForm2';
   static const profile = '/profilepage';
+  static const notification = '/NotificationPage';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -42,10 +46,17 @@ class AppRouts {
       case propertyform1:
         return MaterialPageRoute(builder: (_) => PropertyForm1());
       case propertyform2:
-        Map<String, String?>?  formData;
-        return MaterialPageRoute(builder: (_) => PropertyForm2(formData: formData,));
+        Map<String, String?>? formData;
+        return MaterialPageRoute(
+            builder: (_) => PropertyForm2(
+                  formData: formData,
+                ));
       case profile:
         return MaterialPageRoute(builder: (_) => ProfilePage());
+      case notification:
+        return MaterialPageRoute(builder: (_) => NotificationPage());
+      // case PROPERTDETAIL:
+      //   return MaterialPageRoute(builder: (_) => PropertyDetailPage(title: '',));
       default:
         return MaterialPageRoute(builder: (_) => SplashScreen());
     }

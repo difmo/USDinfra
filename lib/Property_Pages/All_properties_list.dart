@@ -227,7 +227,7 @@ class _AllPropertiesState extends State<AllProperties> {
         automaticallyImplyLeading: false,
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('properties').snapshots(),
+        stream: FirebaseFirestore.instance.collection('AppProperties').snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -252,7 +252,8 @@ class _AllPropertiesState extends State<AllProperties> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => PropertyDetailPage(
-                        imageUrl: property['imageUrl'] ?? 'https://cce.guru/wp-content/uploads/2022/12/Hydrangeas.jpg',
+                        imageUrl: property['imageUrl'] ?? 'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
+
                         title: property['title'] ?? '',
                         address: property['address'] ?? '',
                         price: property['price'] ?? '',
@@ -275,7 +276,7 @@ class _AllPropertiesState extends State<AllProperties> {
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 16),
                   child: AllPropertyCard(
-                    imageUrl: property['imageUrl']??'https://cce.guru/wp-content/uploads/2022/12/Hydrangeas.jpg',
+                    imageUrl: property['imageUrl'] ?? 'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
                     price: property['expectedPrice']??'',
                     propertyType: property['propertyType']??'',
                     address: property['city']??'',

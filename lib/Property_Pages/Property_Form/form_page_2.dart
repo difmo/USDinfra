@@ -1,6 +1,10 @@
+// import 'dart:nativewrappers/_internal/vm/lib/internal_patch.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:usdinfra/Components/Choice_Chip.dart';
+import 'package:usdinfra/routes/app_routes.dart';
 // import 'package:usdinfra/Property_Pages/Property_Form/form_page_1.dart';
 
 import '../../Controllers/authentication_controller.dart';
@@ -32,9 +36,25 @@ class _PropertyForm2State extends State<PropertyForm2> {
       isLoading = true; // Show loader
     });
     try {
-      await FirebaseFirestore.instance.collection('properties').add({
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null){
+        print("User not logged in .");
+        return;
+      }
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('AppUsers')
+          .doc(user.uid) // Assuming the document ID is the same as the Firebase Auth UID
+          .get();
+      if (!userDoc.exists) {
+        print("User document not found in AppUsers collection.");
+        return;
+      }
+      String userId = userDoc['userId']; // Make sure 'userId' exists in AppUsers
+
+      await FirebaseFirestore.instance.collection('AppProperties').add({
         'city': controllers.cityController.text,
         'lookingTo':formData['lookingTo'],
+        'userId': userId,
         'propertyType':formData['propertyType'],
         'propertyCategory':formData[' propertyCategory'],
         'contactDetails': formData['contactDetails'],
@@ -45,18 +65,20 @@ class _PropertyForm2State extends State<PropertyForm2> {
         'totalFloors': controllers.totalFloorsController.text,
         'availabilityStatus': availabilityStatus,
         'ownershipType': ownershipType,
-        'expectedPrice': controllers.nameController.text,
+        'expectedPrice': '₹${controllers.nameController.text}',
         'allInclusivePrice': allInclusivePrice,
         'taxExcluded': taxExcluded,
         'description': controllers.descriptionController.text,
         'createdAt': FieldValue.serverTimestamp(),
+        'imageUrl': 'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
+
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Property saved successfully!')),
       );
 
-      Navigator.pop(context);
+      Navigator.pushNamed(context ,AppRouts.dashBoard);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
@@ -89,13 +111,13 @@ class _PropertyForm2State extends State<PropertyForm2> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              'Post Via WhatsApp',
-              style: TextStyle(color: Colors.green, fontSize: 14),
-            ),
-          ),
+          // TextButton(
+          //   onPressed: () {},
+          //   child: const Text(
+          //     'Post Via WhatsApp',
+          //     style: TextStyle(color: Colors.green, fontSize: 14),
+          //   ),
+          // ),
         ],
       ),
       body: SingleChildScrollView(

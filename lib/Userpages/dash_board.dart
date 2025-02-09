@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:usdinfra/Customs/custom_app_bar.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../Components/cerosoule.dart';
@@ -23,31 +24,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.white),
-          onPressed: () {
-            _scaffoldKey.currentState?.openDrawer();
-          },
-        ),
-        title: const Text(
-          'USD',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(CupertinoIcons.person_circle_fill, color: Colors.white, size: 30),
-            onPressed: () {
-              Navigator.pushNamed(context, AppRouts.profile);
-            },
-          ),
-        ],
-      ),
+appBar: CustomAppBar(scaffoldKey: _scaffoldKey,),
       drawer: CustomDrawer(),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -55,31 +32,34 @@ class _HomeDashBoard extends State<HomeDashBoard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: screenHeight * 0.28, child: const Carousel()),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 9),
-                  child: Text(
-                    'Properties',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(left: 9),
+                    child: Text(
+                      'Properties',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, AppRouts.properties);
-                  },
-                  child: Text(
-                    'More...',
-                    style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRouts.properties);
+                    },
+                    child: Text(
+                      'View More',
+                      style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection("properties").snapshots(),
+                stream: FirebaseFirestore.instance.collection("AppProperties").snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -90,26 +70,19 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return const Center(child: Text('No properties available'));
                   }
-
-                  // Print number of properties fetched
                   print("Total properties fetched: ${snapshot.data!.docs.length}");
-
-                  // Fetch main properties data
                   final List<Future<Map<String, dynamic>>> futureProperties =
                   snapshot.data!.docs.map((doc) async {
                     final data = doc.data() as Map<String, dynamic>? ?? {};
-
-                    // Fetch data from the sub-collection "form1Data"
                     final subCollectionSnapshot =
-                    await FirebaseFirestore.instance.collection("properties").doc(doc.id).collection("form1Data").get();
-
+                    await FirebaseFirestore.instance.collection("AppProperties").doc(doc.id).collection("form1Data").get();
                     final List<Map<String, dynamic>> form1DataList = subCollectionSnapshot.docs.map((subDoc) {
                       return subDoc.data();
                     }).toList();
 
                     return {
                       'id': doc.id, // Unique ID
-                      'imageUrl': data['imageUrl'] ?? 'https://cce.guru/wp-content/uploads/2022/12/Hydrangeas.jpg',
+                      'imageUrl': data['imageUrl'] ?? 'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
                       'expectedPrice': data['expectedPrice'] ?? '₹ 80 Lac',
                       'plotArea': data['plotArea'] ?? '1850 Sqft',
                       'propertyType': data['propertyType'] ?? '2 BHK Flat',
@@ -118,6 +91,8 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                       'title': data['title'] ?? 'Godrej Aristocrat',
                       'features': (data['features'] is List) ? List<String>.from(data['features']) : ['Lift', 'Parking', 'East Facing'],
                       'propertyStatus': data['propertyStatus'] ?? 'Ready to move',
+                      'contactDetails': data['contactDetails'] ?? '8875673210',
+
                       'form1Data': form1DataList, // Sub-collection data
                     };
                   }).toList();
@@ -152,7 +127,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                               title: property['title'],
                               features: property['features'],
                               propertyStatus: property['propertyStatus'],
-                              // You can pass form1Data here if needed
+                              contactDetails:property['contactDetails'],
                             ),
                           );
                         }).toList(),

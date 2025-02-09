@@ -90,7 +90,7 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
 
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        await _firestore.collection('ProfileSetup').doc(user.uid).set({
+        await _firestore.collection('AppProfileSetup').doc(user.uid).set({
           'addressLine1': controllers.addressLine1Controller.text,
           'addressLine2': controllers.addressLine2Controller.text,
           'profileImageUrl': imageUrl, // Saving the image URL

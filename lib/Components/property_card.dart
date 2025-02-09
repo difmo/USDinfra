@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../conigs/app_colors.dart';
+import 'contact_details.dart';
 
 class PropertyCard extends StatefulWidget {
   final String imageUrl;
@@ -14,6 +17,7 @@ class PropertyCard extends StatefulWidget {
   final String title;
   final List<String> features;
   final String propertyStatus;
+  final contactDetails;
 
   const PropertyCard({
     Key? key,
@@ -26,6 +30,7 @@ class PropertyCard extends StatefulWidget {
     required this.title,
     required this.features,
     required this.propertyStatus,
+    required this.contactDetails,
   }) : super(key: key);
 
   @override
@@ -34,15 +39,12 @@ class PropertyCard extends StatefulWidget {
 
 class _PropertyCardState extends State<PropertyCard> {
   bool isFavorited = false;
-
-  // Function to toggle the heart icon
   void _toggleFavorite() {
     setState(() {
       isFavorited = !isFavorited;
     });
   }
 
-  // Function to share the property details on WhatsApp
   void _shareOnWhatsApp() async {
     final String shareMessage = '''
 Property: ${widget.title}
@@ -245,7 +247,16 @@ Features: ${widget.features.join(', ')}
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () => {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return ContactDetailDialog(
+                            phoneNumber: widget.contactDetails,
+                          );
+                        },
+                      )
+                    },
                     style: ButtonStyle(
                         side: MaterialStateProperty.all(
                             BorderSide(color: AppColors.primary, width: 2)),
@@ -262,7 +273,16 @@ Features: ${widget.features.join(', ')}
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () => {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return ContactDetailDialog(
+                            phoneNumber: widget.contactDetails,
+                          );
+                        },
+                      )
+                    },
                     child: const Text(
                       'Contact Owner',
                       style: TextStyle(color: Colors.white),

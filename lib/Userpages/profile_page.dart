@@ -45,12 +45,12 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _fetchUserData(User user) async {
     try {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
+          .collection('AppUsers')
           .doc(user.uid)
           .get();
 
       DocumentSnapshot profileDoc = await FirebaseFirestore.instance
-          .collection('ProfileSetup')
+          .collection('AppProfileSetup')
           .doc(user.uid)
           .get();
 
@@ -94,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null && userData != null) {
         await FirebaseFirestore.instance
-            .collection('users')
+            .collection('AppUsers')
             .doc(user.uid)
             .update({
           'name': nameController.text,
@@ -104,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
         // Before updating, check if the document exists
         DocumentReference profileDocRef = FirebaseFirestore.instance
-            .collection('ProfileSetup')
+            .collection('AppProfileSetup')
             .doc(user.uid);
 
         DocumentSnapshot profileDoc = await profileDocRef.get();

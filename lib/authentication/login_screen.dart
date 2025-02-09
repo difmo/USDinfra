@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       if (userCredential.user != null) {
         var userDoc = await FirebaseFirestore.instance
-            .collection('users')
+            .collection('AppUsers')
             .doc(userCredential.user!.uid)
             .get();
         if (userDoc.exists) {
