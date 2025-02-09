@@ -11,10 +11,11 @@ class _CarouselExampleState extends State<Carousel> {
   final CarouselController controller = CarouselController(initialItem: 1);
 
   final List<String> imageUrls = [
+    'https://www.indiafilings.com/learn/wp-content/uploads/2015/10/Real-Estate-Agent-Business-India.jpg',
+    'https://media.istockphoto.com/id/619238852/photo/precast-building.jpg?s=612x612&w=0&k=20&c=L-ukMc08qf1zOtL3w9NMZzSZG6BEgsYhCsoLXN1PTJI=',
+    'https://media.istockphoto.com/id/940251778/photo/construction-site-view-with-tower-crane.jpg?s=612x612&w=0&k=20&c=h78zklXIGAKjIQi3AI7hkp4FNEOFhXXL1Mz9KNogdiI=',
     'https://img.freepik.com/free-photo/construction-concept-with-engineering-tools_1150-17809.jpg?t=st=1737095907~exp=1737099507~hmac=be78b1487ea944f09d602ce250908264df9e49a4d5a3a896d0c3a30c90a908c3&w=900',
-    'https://img.freepik.com/free-photo/construction-concept-with-engineering-tools_1150-17809.jpg?t=st=1737095907~exp=1737099507~hmac=be78b1487ea944f09d602ce250908264df9e49a4d5a3a896d0c3a30c90a908c3&w=900',
-    'https://img.freepik.com/free-photo/construction-concept-with-engineering-tools_1150-17809.jpg?t=st=1737095907~exp=1737099507~hmac=be78b1487ea944f09d602ce250908264df9e49a4d5a3a896d0c3a30c90a908c3&w=900',
-    'https://img.freepik.com/free-photo/construction-concept-with-engineering-tools_1150-17809.jpg?t=st=1737095907~exp=1737099507~hmac=be78b1487ea944f09d602ce250908264df9e49a4d5a3a896d0c3a30c90a908c3&w=900',
+
   ];
 
   @override

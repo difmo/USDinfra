@@ -103,7 +103,6 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return const Center(child: Text('No properties available'));
                   }
-
                   final List<Future<Map<String, dynamic>>> futureProperties =
                       snapshot.data!.docs.map((doc) async {
                     final data = doc.data() as Map<String, dynamic>? ?? {};
