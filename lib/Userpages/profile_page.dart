@@ -60,16 +60,20 @@ class _ProfilePageState extends State<ProfilePage> {
             'name': userDoc.exists ? userDoc['name'] : null,
             'email': userDoc.exists ? userDoc['email'] : null,
             'mobile': userDoc.exists ? userDoc['mobile'] : null,
-            'addressLine1': profileDoc.exists ? profileDoc['addressLine1'] : null,
-            'addressLine2': profileDoc.exists ? profileDoc['addressLine2'] : null,
+            'addressLine1':
+                profileDoc.exists ? profileDoc['addressLine1'] : null,
+            'addressLine2':
+                profileDoc.exists ? profileDoc['addressLine2'] : null,
           };
 
           // Pre-fill the controllers with available data
           nameController.text = userDoc.exists ? userDoc['name'] : '';
           emailController.text = userDoc.exists ? userDoc['email'] : '';
           mobileController.text = userDoc.exists ? userDoc['mobile'] : '';
-          addressLine1Controller.text = profileDoc.exists ? profileDoc['addressLine1'] : '';
-          addressLine2Controller.text = profileDoc.exists ? profileDoc['addressLine2'] : '';
+          addressLine1Controller.text =
+              profileDoc.exists ? profileDoc['addressLine1'] : '';
+          addressLine2Controller.text =
+              profileDoc.exists ? profileDoc['addressLine2'] : '';
 
           isLoading = false;
         });
@@ -124,7 +128,6 @@ class _ProfilePageState extends State<ProfilePage> {
             // other fields as needed
           });
         }
-
 
         setState(() {
           isEditable = false;
@@ -248,7 +251,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
+                  Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -411,14 +414,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                   onPressed: _updateUserData,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.primary,
-                                    foregroundColor:
-                                        Colors.white,
+                                    foregroundColor: Colors.white,
                                   ),
-                                child: isLoading
-                                    ? CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                                )
-                                  :Text("Save Changes"),
+                                  child: isLoading
+                                      ? CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  AppColors.primary),
+                                        )
+                                      : Text("Save Changes"),
                                 ),
                               )
                             : SizedBox(
@@ -431,8 +435,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.primary,
-                                    foregroundColor:
-                                        Colors.white,
+                                    foregroundColor: Colors.white,
                                   ),
                                   child: Text("Edit Profile"),
                                 ),
