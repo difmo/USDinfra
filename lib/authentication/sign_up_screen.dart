@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+// import 'package:lottie/lottie.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import '../Controllers/authentication_controller.dart';
 import '../Customs/custom_textfield.dart';
@@ -130,11 +130,10 @@ class _SignupPageState extends State<SignupPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Lottie.asset(
-                  'assets/animations/login.json',
+                Image.asset(
+                  'assets/animations/logo.png',
                   height: 300,
                   fit: BoxFit.cover,
-                  repeat: false,
                 ),
                 Text(
                   'Create a new account',

@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+// import 'package:lottie/lottie.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
@@ -103,8 +103,8 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  child: Lottie.asset(
-                    'assets/animations/login.json',
+                  child: Image.asset(
+                    'assets/animations/logo.png',
                     height: 300,
                     fit: BoxFit.contain,
                   ),
