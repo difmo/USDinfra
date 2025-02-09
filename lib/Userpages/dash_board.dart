@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:usdinfra/Bottom/bottom_navigation.dart';
 import 'package:usdinfra/Customs/custom_app_bar.dart';
+import 'package:usdinfra/Property_Pages/Properties_detail_page.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../Components/cerosoule.dart';
@@ -17,6 +18,34 @@ class HomeDashBoard extends StatefulWidget {
 
 class _HomeDashBoard extends State<HomeDashBoard> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        // Home - Stay on current screen
+        break;
+      case 1:
+        Navigator.pushNamed(context, AppRouts.chat);
+        break;
+      case 2:
+        // Navigate to Add Property Form
+        Navigator.pushNamed(context, AppRouts.propertyform1);
+        break;
+      case 3:
+        // Navigate to Notifications Page
+        Navigator.pushNamed(context, AppRouts.upgardeservice);
+        break;
+      case 4:
+        // Navigate to Profile Page
+        Navigator.pushNamed(context, AppRouts.profile);
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +53,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: CustomAppBar(
-        scaffoldKey: _scaffoldKey,
-      ),
+      appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
       drawer: CustomDrawer(),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -77,8 +104,6 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return const Center(child: Text('No properties available'));
                   }
-                  print(
-                      "Total properties fetched: ${snapshot.data!.docs.length}");
                   final List<Future<Map<String, dynamic>>> futureProperties =
                       snapshot.data!.docs.map((doc) async {
                     final data = doc.data() as Map<String, dynamic>? ?? {};
@@ -94,7 +119,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                     }).toList();
 
                     return {
-                      'id': doc.id, // Unique ID
+                      'id': doc.id,
                       'imageUrl': data['imageUrl'] ??
                           'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
                       'expectedPrice': data['expectedPrice'] ?? '₹ 80 Lac',
@@ -110,8 +135,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                       'propertyStatus':
                           data['propertyStatus'] ?? 'Ready to move',
                       'contactDetails': data['contactDetails'] ?? '8875673210',
-
-                      'form1Data': form1DataList, // Sub-collection data
+                      'form1Data': form1DataList,
                     };
                   }).toList();
 
@@ -136,20 +160,59 @@ class _HomeDashBoard extends State<HomeDashBoard> {
 
                       return Column(
                         children: properties.map((property) {
-                          return Container(
-                            height: screenHeight * 0.39,
-                            margin: const EdgeInsets.only(bottom: 6),
-                            child: PropertyCard(
-                              imageUrl: property['imageUrl'],
-                              expectedPrice: property['expectedPrice'],
-                              plotArea: property['plotArea'],
-                              propertyType: property['propertyType'],
-                              address: property['address'],
-                              updateTime: property['updateTime'],
-                              title: property['title'],
-                              features: property['features'],
-                              propertyStatus: property['propertyStatus'],
-                              contactDetails: property['contactDetails'],
+                          return GestureDetector(
+                            onTap: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PropertyDetailPage(
+                                    imageUrl: property['imageUrl'] ??
+                                        'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
+                                    title: property['title'] ?? '',
+                                    address: property['address'] ?? '',
+                                    price: property['price'] ?? '',
+                                    description: property['description'] ?? '',
+                                    amenities: property['amenities'] ?? [],
+                                    builtYear:
+                                        property['builtYear']?.toString() ?? '',
+                                    floorNumber:
+                                        property['floorNumber']?.toString() ??
+                                            '',
+                                    totalFloors:
+                                        property['totalFloors']?.toString() ??
+                                            '',
+                                    furnishingStatus:
+                                        property['furnishingStatus'] ?? '',
+                                    ownership: property['ownership'] ?? '',
+                                    monthlyMaintenance:
+                                        property['monthlyMaintenance'] ?? '',
+                                    nearbyLandmarks:
+                                        property['nearbyLandmarks'] ?? [],
+                                    contactName:
+                                        property['contactInfo']?['name'] ?? '',
+                                    contactPhone:
+                                        property['contactInfo']?['phone'] ?? '',
+                                    contactEmail:
+                                        property['contactInfo']?['email'] ?? '',
+                                  ),
+                                ),
+                              )
+                            },
+                            child: Container(
+                              height: screenHeight * 0.39,
+                              margin: const EdgeInsets.only(bottom: 6),
+                              child: PropertyCard(
+                                imageUrl: property['imageUrl'],
+                                expectedPrice: property['expectedPrice'],
+                                plotArea: property['plotArea'],
+                                propertyType: property['propertyType'],
+                                address: property['address'],
+                                updateTime: property['updateTime'],
+                                title: property['title'],
+                                features: property['features'],
+                                propertyStatus: property['propertyStatus'],
+                                contactDetails: property['contactDetails'],
+                              ),
                             ),
                           );
                         }).toList(),
@@ -163,12 +226,9 @@ class _HomeDashBoard extends State<HomeDashBoard> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, AppRouts.propertyform1);
-        },
-        backgroundColor: AppColors.primary,
-        child: const Icon(Icons.add, color: Colors.white),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
     );
   }

@@ -12,28 +12,38 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 3), () {
-      Navigator.pushNamed(context, AppRouts.homePage);
+    Timer(const Duration(seconds: 3), () {
+      Navigator.pushReplacementNamed(context, AppRouts.homePage);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.ac_unit, size: 100, color: Colors.white),
-            SizedBox(height: 20),
-            Text(
-              'Welcome to USD',
+            Image.asset("assets/logo.png", width: 150, height: 150),
+            const SizedBox(height: 20),
+            const Text(
+              "USD Unique",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.primary,
               ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              "Building Your Dreams, One Brick at a Time.",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+                fontStyle: FontStyle.italic,
+              ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),

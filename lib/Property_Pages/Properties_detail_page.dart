@@ -1,192 +1,290 @@
 import 'package:flutter/material.dart';
+import 'package:usdinfra/Customs/CustomAppBar.dart';
+import 'package:usdinfra/conigs/app_colors.dart';
 
 class PropertyDetailPage extends StatelessWidget {
-  final String imageUrl;
-  final String title;
-  final String address;
-  final String price;
-  final String description;
-  final List<String> amenities;
-  final String builtYear;
-  final String floorNumber;
-  final String totalFloors;
-  final String furnishingStatus;
-  final String ownership;
-  final String monthlyMaintenance;
-  final List<String> nearbyLandmarks;
-  final String contactName;
-  final String contactPhone;
-  final String contactEmail;
+  final String? imageUrl;
+  final String? title;
+  final String? address;
+  final String? price;
+  final String? description;
+  final List<dynamic>? amenities;
+  final String? builtYear;
+  final String? floorNumber;
+  final String? totalFloors;
+  final String? furnishingStatus;
+  final String? ownership;
+  final String? monthlyMaintenance;
+  final List<dynamic>? nearbyLandmarks;
+  final String? contactName;
+  final String? contactPhone;
+  final String? contactEmail;
 
   const PropertyDetailPage({
-    Key? key,
-    required this.imageUrl,
-    required this.title,
-    required this.address,
-    required this.price,
-    required this.description,
-    required this.amenities,
-    required this.builtYear,
-    required this.floorNumber,
-    required this.totalFloors,
-    required this.furnishingStatus,
-    required this.ownership,
-    required this.monthlyMaintenance,
-    required this.nearbyLandmarks,
-    required this.contactName,
-    required this.contactPhone,
-    required this.contactEmail,
-  }) : super(key: key);
+    super.key,
+    this.imageUrl,
+    this.title,
+    this.address,
+    this.price,
+    this.description,
+    this.amenities,
+    this.builtYear,
+    this.floorNumber,
+    this.totalFloors,
+    this.furnishingStatus,
+    this.ownership,
+    this.monthlyMaintenance,
+    this.nearbyLandmarks,
+    this.contactName,
+    this.contactPhone,
+    this.contactEmail,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[50],
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              backgroundColor: Colors.transparent,
-              expandedHeight: 250.0,
-              floating: false,
-              pinned: true,
-              title: innerBoxIsScrolled
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          title,
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Handle contact button action
-                          },
-                          child: Text('Contact'),
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Colors.blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : null,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.black.withOpacity(0.5),
-                            Colors.transparent,
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 10,
-                      right: 10,
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          'Self-tour',
-                          style: TextStyle(
-                              color: Colors.blue, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+      appBar: CustomAppBar(title: "Propert Details"),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _imageSection(),
+            _propertyInfoSection(),
+            _descriptionSection(),
+            _amenitiesSection(),
+            _contactSellerSection(context),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _bottomPurchaseSection(context),
+    );
+  }
+
+  // 🔹 Property Image Section (With Default Placeholder)
+  Widget _imageSection() {
+    return Stack(
+      children: [
+        Image.network(
+          imageUrl ??
+              "https://via.placeholder.com/600x400?text=No+Image+Available",
+          height: 250,
+          width: double.infinity,
+          fit: BoxFit.cover,
+        ),
+        Positioned(
+          bottom: 10,
+          right: 10,
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.black54,
+              borderRadius: BorderRadius.circular(8),
             ),
-          ];
-        },
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  address,
-                  style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-                ),
-                SizedBox(height: 16),
-                Text(description, style: TextStyle(fontSize: 16)),
-                SizedBox(height: 16),
-                Text('Amenities:',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(amenities.join(', ')),
-                SizedBox(height: 16),
-                Text('Details:', style: TextStyle(fontWeight: FontWeight.bold)),
-                Text('Year Built: $builtYear'),
-                Text('Floor: $floorNumber of $totalFloors'),
-                Text('Furnishing: $furnishingStatus'),
-                Text('Ownership: $ownership'),
-                Text('Maintenance: $monthlyMaintenance'),
-                SizedBox(height: 16),
-                Text('Nearby Landmarks:',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(nearbyLandmarks.join(', ')),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      price,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
-                      ),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: Icon(Icons.flash_on),
-                      label: Text('Self-tour'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8),
-                Text('Contact:', style: TextStyle(fontWeight: FontWeight.bold)),
-                Text('Name: $contactName'),
-                Text('Phone: $contactPhone'),
-                Text('Email: $contactEmail'),
-              ],
+            child: Text(
+              price ?? "Price Not Available",
+              style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
           ),
         ),
+      ],
+    );
+  }
+
+  // 🔹 Property Details Section
+  Widget _propertyInfoSection() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title ?? "No Title",
+              style:
+                  const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 5),
+          Row(
+            children: [
+              const Icon(Icons.location_on, color: Colors.grey),
+              const SizedBox(width: 5),
+              Expanded(
+                child: Text(address ?? "No Address Provided",
+                    style: TextStyle(fontSize: 16, color: Colors.grey[700])),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          _infoRow("Built Year", builtYear ?? "N/A"),
+          _infoRow("Floor Number",
+              "${floorNumber ?? 'N/A'} / ${totalFloors ?? 'N/A'}"),
+          _infoRow("Furnishing Status", furnishingStatus ?? "N/A"),
+          _infoRow("Ownership", ownership ?? "N/A"),
+          _infoRow("Monthly Maintenance", monthlyMaintenance ?? "N/A"),
+        ],
+      ),
+    );
+  }
+
+  // 🔹 Property Description Section (Handles Missing Data)
+  Widget _descriptionSection() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Description",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 5),
+          Text(description ?? "No description available for this property.",
+              style: TextStyle(fontSize: 16, color: Colors.grey[800])),
+        ],
+      ),
+    );
+  }
+
+  // 🔹 Amenities Section (Handles Missing List)
+  Widget _amenitiesSection() {
+    List<dynamic> availableAmenities = amenities ?? ["No amenities listed"];
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Amenities",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 5),
+          Wrap(
+            spacing: 8,
+            children: availableAmenities.map((amenity) {
+              return Chip(
+                label: Text(amenity),
+                backgroundColor: AppColors.primary.withOpacity(0.1),
+                labelStyle: TextStyle(
+                    color: AppColors.primary, fontWeight: FontWeight.bold),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 🔹 Contact Seller Section (Handles Missing Data)
+  Widget _contactSellerSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Column(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.person, color: Colors.blue),
+              title: Text(
+                  // contactName ??
+                  "Suresh Kumar"),
+              subtitle: const Text("Seller"),
+            ),
+            ListTile(
+              leading: const Icon(Icons.phone, color: Colors.green),
+              title: Text(
+                  // contactPhone ??
+                  "+91 999 999 9999"),
+              onTap: () {
+                // Implement call functionality
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.email, color: Colors.red),
+              title: Text(
+                  // contactEmail ??
+                  "contact@default.com"),
+              onTap: () {
+                // Implement email functionality
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 🔹 Buy Property Bottom Section
+  Widget _bottomPurchaseSection(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Colors.grey[300]!)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            // price ??
+            "Total : Rs/- 1000",
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _showPurchaseDialog(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+            child: const Text(
+              "Buy Now",
+              style: TextStyle(color: AppColors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 🔹 Purchase Confirmation Dialog
+  void _showPurchaseDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text("Confirm Purchase"),
+        content: const Text("Are you sure you want to buy this property?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Property purchase initiated!")),
+              );
+            },
+            child: const Text("Confirm"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 🔹 Info Row Widget (Handles Missing Data)
+  Widget _infoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        children: [
+          Text("$label: ",
+              style:
+                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(value, style: const TextStyle(fontSize: 16)),
+        ],
       ),
     );
   }

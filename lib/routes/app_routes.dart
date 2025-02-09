@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:usdinfra/Userpages/AboutUsScreen.dart';
+import 'package:usdinfra/Userpages/ChatDetailScreen.dart';
+import 'package:usdinfra/Userpages/ChatScreen.dart';
+import 'package:usdinfra/Userpages/ContactUsScreen%20.dart';
+import 'package:usdinfra/Userpages/PrivacyPolicyScreen.dart';
+import 'package:usdinfra/Userpages/TermsandConditions.dart';
+import 'package:usdinfra/Userpages/UpgradeServiceScreen.dart';
 import 'package:usdinfra/Userpages/dash_board.dart';
 import 'package:usdinfra/authentication/welcome_screen.dart';
-import '../Bottom/bottom_navigation.dart';
-import '../Property_Pages/Properties_detail_page.dart';
 import '../Property_Pages/Property_Form/form_page_1.dart';
 import '../Property_Pages/Property_Form/form_page_2.dart';
 import '../Splash_screen.dart';
@@ -26,6 +31,13 @@ class AppRouts {
   static const propertyform2 = '/PropertyForm2';
   static const profile = '/profilepage';
   static const notification = '/NotificationPage';
+  static const String chat = '/chat';
+  static const String chatdetails = '/chatdetails';
+  static const String upgardeservice = '/upgardeservice';
+  static const String aboutus = '/aboutus';
+  static const String contactus = '/contactus';
+  static const String termconsition = '/termconsition';
+  static const String privacy = '/privacy';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -45,6 +57,16 @@ class AppRouts {
         return MaterialPageRoute(builder: (_) => AllProperties());
       case propertyform1:
         return MaterialPageRoute(builder: (_) => PropertyForm1());
+      case chat:
+        return MaterialPageRoute(builder: (_) => ChatScreen());
+      case upgardeservice:
+        return MaterialPageRoute(builder: (_) => UpgradeServiceScreen());
+      case chatdetails:
+        return MaterialPageRoute(
+            builder: (_) => ChatDetailScreen(
+                  name: '',
+                  profileUrl: '',
+                ));
       case propertyform2:
         Map<String, String?>? formData;
         return MaterialPageRoute(
@@ -55,6 +77,15 @@ class AppRouts {
         return MaterialPageRoute(builder: (_) => ProfilePage());
       case notification:
         return MaterialPageRoute(builder: (_) => NotificationPage());
+      case aboutus:
+        return MaterialPageRoute(builder: (_) => AboutUsScreen());
+      case contactus:
+        return MaterialPageRoute(builder: (_) => ContactUsScreen());
+      case privacy:
+        return MaterialPageRoute(builder: (_) => PrivacyPolicyScreen());
+
+      case termconsition:
+        return MaterialPageRoute(builder: (_) => TermsAndConditionsScreen());
       // case PROPERTDETAIL:
       //   return MaterialPageRoute(builder: (_) => PropertyDetailPage(title: '',));
       default:
