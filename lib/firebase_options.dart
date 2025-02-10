@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '654393750018',
     projectId: 'usdinfra-a11c2',
     storageBucket: 'usdinfra-a11c2.firebasestorage.app',
-    iosBundleId: 'com.example.usdinfra',
+    iosBundleId: 'com.difmo.usdunique',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '654393750018',
     projectId: 'usdinfra-a11c2',
     storageBucket: 'usdinfra-a11c2.firebasestorage.app',
-    iosBundleId: 'com.example.usdinfra',
+    iosBundleId: 'com.difmo.usdunique',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

@@ -310,7 +310,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         SizedBox(height: 10),
                         Text(
-                          userData?['name'] ?? 'Agni',
+                          userData?['name'] ?? 'Guest',
                           // Display name from Firebase or default
                           style: TextStyle(
                             fontSize: 28,

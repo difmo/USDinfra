@@ -93,7 +93,8 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
         await _firestore.collection('AppProfileSetup').doc(user.uid).set({
           'addressLine1': controllers.addressLine1Controller.text,
           'addressLine2': controllers.addressLine2Controller.text,
-          'profileImageUrl': imageUrl, // Saving the image URL
+          'profileImageUrl': 'https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png', // Saving the image URL
+          // 'profileImageUrl': imageUrl, // Saving the image URL
         });
 
         // Navigate to dashboard or the next screen

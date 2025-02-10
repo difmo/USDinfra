@@ -114,7 +114,8 @@ class CustomDrawer extends StatelessWidget {
             CircleAvatar(
               radius: 50,
               backgroundImage: NetworkImage(userData?['profileImage'] ??
-                  'https://cce.guru/wp-content/uploads/2022/12/Hydrangeas.jpg'),
+                  'https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png'
+              ),
               backgroundColor: Colors.white,
             ),
             const SizedBox(height: 10),
@@ -168,28 +169,66 @@ class CustomDrawer extends StatelessWidget {
   }
 
   // Logout Confirmation Dialog
-  void _logout(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text("Log Out"),
-        content: const Text("Are you sure you want to log out?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              FirebaseAuth.instance.signOut();
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-            },
-            child: const Text("Log Out"),
-          ),
+ void _logout(BuildContext context) {
+  showDialog(
+    // backgroundColor: colors.white,
+    context: context,
+    barrierDismissible: false, // Prevent accidental dismissal
+    builder: (ctx) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      title: Row(
+        children: [
+          Icon(Icons.logout, color: Colors.redAccent),
+          SizedBox(width: 8),
+          Text("Log Out", style: TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
-    );
-  }
+      content: Text(
+        "Are you sure you want to log out?",
+        style: TextStyle(fontSize: 16),
+      ),
+      actionsAlignment: MainAxisAlignment.spaceBetween,
+      actions: [
+ElevatedButton(
+  style:ElevatedButton.styleFrom(
+    backgroundColor: AppColors.secondry,
+                foregroundColor: Colors.white,
+shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+  ),
+         onPressed: () => Navigator.of(ctx).pop(),
+          child: Text("Cancel", style: TextStyle(color: Colors.black87)),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+          onPressed: () {
+            FirebaseAuth.instance.signOut();
+            Navigator.of(context).pushReplacement(
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) => LoginPage(),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  );
+                },
+              ),
+            );
+          },
+          child: Text("Log Out"),
+        ),
+      ],
+    ),
+  );
+}
 }

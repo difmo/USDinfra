@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset("assets/logo.png", width: 150, height: 150),
+            Image.asset("assets/animations/logo.png", width: 150, height: 150),
             const SizedBox(height: 20),
             const Text(
               "USD Unique",

@@ -133,7 +133,7 @@ class _SignupPageState extends State<SignupPage> {
                 Image.asset(
                   'assets/animations/logo.png',
                   height: 300,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
                 Text(
                   'Create a new account',
