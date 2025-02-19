@@ -93,7 +93,8 @@ class _SignupPageState extends State<SignupPage> {
         'name': name,
         'email': email,
         'mobile': mobile,
-        'createdAt': FieldValue.serverTimestamp(), // Store signup timestamp
+        'favoriteProperties': [],
+        'createdAt': FieldValue.serverTimestamp(),
       });
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -115,8 +116,40 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
+  Future<void> toggleFavoriteProperty(String propertyId) async {
+    if (_auth.currentUser == null) return;
+
+    DocumentReference userRef = _firestore.collection('AppUsers').doc(_auth.currentUser!.uid);
+
+    try {
+      DocumentSnapshot userDoc = await userRef.get();
+      List<dynamic> favoriteProperties = userDoc.get('favoriteProperties') ?? [];
+
+      if (favoriteProperties.contains(propertyId)) {
+        favoriteProperties.remove(propertyId); // Remove if already liked
+      } else {
+        favoriteProperties.add(propertyId); // Add if not liked
+      }
+
+      await userRef.update({'favoriteProperties': favoriteProperties});
+    } catch (e) {
+      print("Error updating favorites: $e");
+    }
+  }
+
+
   bool isValidEmail(String email) {
     return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$").hasMatch(email);
+  }
+
+  void showSnackBar(BuildContext context, String message, Color color) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      backgroundColor: color,
+    ));
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override

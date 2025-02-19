@@ -12,6 +12,7 @@ import 'package:usdinfra/authentication/welcome_screen.dart';
 import '../Property_Pages_form/Property_Form/Form_Page_2_Components/sell_residential.dart';
 import '../Property_Pages_form/Property_Form/form_page_1.dart';
 import '../Property_Pages_form/Property_Form/form_page_2.dart';
+import '../Property_Pages_form/favoriteProperties.dart';
 import '../Splash_screen.dart';
 import '../Property_Pages_form/All_properties_list.dart';
 import '../Userpages/notification.dart';
@@ -43,6 +44,7 @@ class AppRouts {
   static const privacy = '/privacy';
   static const sellresidential = '/sellresidential';
   static const myPropertiesPage = '/MypropertiesPage';
+  static const favoritePropertiesPage = '/FavoritePropertiesPage';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -96,6 +98,8 @@ class AppRouts {
         return MaterialPageRoute(builder: (_) => PropertyDetailsForm());
       case myPropertiesPage:
         return MaterialPageRoute(builder: (_) => MyPropertiesPage());
+        case favoritePropertiesPage:
+        return MaterialPageRoute(builder: (_) => FavoritePropertiesPage());
       default:
         return MaterialPageRoute(builder: (_) => SplashScreen());
     }

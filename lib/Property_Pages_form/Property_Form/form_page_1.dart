@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import '../../Controllers/authentication_controller.dart';
-import '../../authentication/dummy.dart';
-import '../../routes/app_routes.dart';
 import 'Form_page_1_components/Contact_Details.dart';
 import 'Form_page_1_components/Looking_To_Property.dart';
 import 'Form_page_1_components/Property_Category.dart';
-import 'Form_page_1_components/Property_Comercial_Type.dart';
 import 'Form_page_1_components/Property_Type.dart';
 import 'form_page_2.dart';
 
@@ -85,23 +82,6 @@ class _PropertyFormState extends State<PropertyForm1> {
       );
     }
   }
-
-
-  // void _validateAndSubmit() {
-  //   setState(() {
-  //     _lookingToError = lookingTo == null ? 'Please select what you\'re looking to do' : null;
-  //     _propertyTypeError = propertyType == null ? 'Please select a property type' : null;
-  //     _propertyCategoryError = propertyCategory == null ? 'Please select a property category' : null;
-  //   });
-  //
-  //   if (_formKey.currentState!.validate() &&
-  //       lookingTo != null &&
-  //       propertyType != null &&
-  //       propertyCategory != null) {
-  //     Navigator.pushNamed(context, AppRouts.propertyform2); // Fixed typo
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

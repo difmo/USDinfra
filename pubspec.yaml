@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
 #  lottie:
+  shimmer:
   image_picker:
   infinite_carousel:
   firebase_core:

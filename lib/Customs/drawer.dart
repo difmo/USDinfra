@@ -39,6 +39,8 @@ class CustomDrawer extends StatelessWidget {
                     Icons.person_outline, 'Profile', AppRouts.profile, context),
                 _buildDrawerItem(Icons.apartment, 'Published Properties',
                     AppRouts.myPropertiesPage, context),
+                _buildDrawerItem(Icons.favorite_border_outlined, 'Favorite Properties',
+                    AppRouts.favoritePropertiesPage, context),
                 _buildDrawerItem(Icons.shopping_bag, 'Purchased Properties',
                     AppRouts.properties, context),
                 _buildDrawerItem(

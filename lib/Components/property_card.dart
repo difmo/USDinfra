@@ -46,26 +46,26 @@ class _PropertyCardState extends State<PropertyCard> {
     });
   }
 
-  void _shareOnWhatsApp() async {
-    final String shareMessage = '''
-Property: ${widget.title}
-Price: ${widget.expectedPrice}
-Size: ${widget.plotArea}
-Type: ${widget.propertyType}
-Address: ${widget.address}
-Status: ${widget.propertyStatus}
-Features: ${widget.features.join(', ')}
-''';
-
-    final String url =
-        'https://wa.me/?text=${Uri.encodeComponent(shareMessage)}';
-
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not open WhatsApp';
-    }
-  }
+//   void _shareOnWhatsApp() async {
+//     final String shareMessage = '''
+// Property: ${widget.title}
+// Price: ${widget.expectedPrice}
+// Size: ${widget.plotArea}
+// Type: ${widget.propertyType}
+// Address: ${widget.address}
+// Status: ${widget.propertyStatus}
+// Features: ${widget.features.join(', ')}
+// ''';
+//
+//     final String url =
+//         'https://wa.me/?text=${Uri.encodeComponent(shareMessage)}';
+//
+//     if (await canLaunch(url)) {
+//       await launch(url);
+//     } else {
+//       throw 'Could not open WhatsApp';
+//     }
+//   }
 
   @override
   Widget build(BuildContext context) {
@@ -126,16 +126,16 @@ Features: ${widget.features.join(', ')}
                       //   ),
                       //   onPressed: _shareOnWhatsApp,
                       // ),
-                      IconButton(
-                        icon: Icon(
-                          isFavorited
-                              ? CupertinoIcons.heart_fill
-                              : CupertinoIcons.heart,
-                          color: isFavorited ? Colors.red : Colors.black,
-                          size: 24,
-                        ),
-                        onPressed: _toggleFavorite,
-                      ),
+                      // IconButton(
+                      //   icon: Icon(
+                      //     isFavorited
+                      //         ? CupertinoIcons.heart_fill
+                      //         : CupertinoIcons.heart,
+                      //     color: isFavorited ? Colors.red : Colors.black,
+                      //     size: 24,
+                      //   ),
+                      //   onPressed: _toggleFavorite,
+                      // ),
                     ],
                   ),
                 ],
