@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:usdinfra/Customs/CustomAppBar.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 
+import '../Controllers/authentication_controller.dart';
+
 class ContactUsScreen extends StatelessWidget {
-  const ContactUsScreen({super.key});
+  ContactUsScreen({super.key});
+
+  final controllers = ControllersManager();
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,7 @@ class ContactUsScreen extends StatelessWidget {
           children: [
             _headerSection(),
             _contactDetails(),
-            _contactForm(),
+            _contactForm(context),
             _mapSection(),
           ],
         ),
@@ -107,10 +112,45 @@ class ContactUsScreen extends StatelessWidget {
     );
   }
 
-  Widget _contactForm() {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController messageController = TextEditingController();
+  Widget _contactForm(context) {
+    void _sendMessage(
+      BuildContext context,
+      String name,
+      String email,
+      String mobile,
+      String message,
+      TextEditingController nameController,
+      TextEditingController emailController,
+      TextEditingController mobileController,
+      TextEditingController messageController,
+    ) async {
+      if (name.isEmpty || email.isEmpty || mobile.isEmpty || message.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("All fields are required!")),
+        );
+        return;
+      }
+      try {
+        await FirebaseFirestore.instance.collection("AppContacts").add({
+          'name': name,
+          'email': email,
+          'mobile': mobile,
+          'message': message,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+        nameController.clear();
+        emailController.clear();
+        mobileController.clear();
+        messageController.clear();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Message sent successfully!")),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e")),
+        );
+      }
+    }
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -121,13 +161,25 @@ class ContactUsScreen extends StatelessWidget {
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
-          _customTextField("Full Name", nameController),
-          _customTextField("Email Address", emailController),
-          _customTextField("Your Message", messageController, maxLines: 5),
+          _customTextField("Full Name", controllers.nameController),
+          _customTextField("Email Address", controllers.emailController),
+          _customTextField("Mobile Number", controllers.mobileController),
+          _customTextField("Your Message", controllers.messageController,
+              maxLines: 5),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              // Add send message function
+              _sendMessage(
+                context,
+                controllers.nameController.text,
+                controllers.emailController.text,
+                controllers.mobileController.text,
+                controllers.messageController.text,
+                controllers.nameController,
+                controllers.emailController,
+                controllers.mobileController,
+                controllers.messageController,
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,

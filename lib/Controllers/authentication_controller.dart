@@ -9,6 +9,8 @@ class ControllersManager {
   final TextEditingController confirmpasswordController = TextEditingController();
   final TextEditingController contactController = TextEditingController();
 
+//////////////////// Contact Us Controllers//////////////////////////
+  final TextEditingController messageController = TextEditingController();
 
 // Profile page controller
 

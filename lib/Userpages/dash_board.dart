@@ -114,27 +114,29 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                         subCollectionSnapshot.docs.map((subDoc) {
                       return subDoc.data();
                     }).toList();
+                    final createdAtTimestamp = data['createdAt'] as Timestamp?;
+                    final DateTime createdAtDate = createdAtTimestamp?.toDate() ?? DateTime.now();
+                    final int daysAgo = DateTime.now().difference(createdAtDate).inDays;
+                    final String createdAtString = daysAgo > 0 ? '$daysAgo days' : 'Today';
 
                     return {
                       'id': doc.id,
-                      'imageUrl': data['imageUrl'] ??
-                          'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
+                      'imageUrl': data['imageUrl'] ?? 'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
                       'expectedPrice': data['expectedPrice'] ?? '₹ 80 Lac',
                       'plotArea': data['plotArea'] ?? '1850 Sqft',
                       'propertyType': data['propertyType'] ?? '2 BHK Flat',
-                      'address':
-                          data['address'] ?? 'Sector 10 Greater Noida West',
-                      'updateTime': data['updateTime'] ?? '6 days',
+                      'address': data['address'] ?? 'Sector 10 Greater Noida West',
+                      'createdAt': createdAtString,  // Ensured non-null string
                       'title': data['title'] ?? 'Godrej Aristocrat',
                       'features': (data['features'] is List)
                           ? List<String>.from(data['features'])
                           : ['Lift', 'Parking', 'East Facing'],
-                      'propertyStatus':
-                          data['propertyStatus'] ?? 'Ready to move',
+                      'propertyStatus': data['propertyStatus'] ?? 'Ready to move',
                       'contactDetails': data['contactDetails'] ?? '8875673210',
                       'form1Data': form1DataList,
                     };
-                  }).toList();
+
+                      }).toList();
 
                   return FutureBuilder<List<Map<String, dynamic>>>(
                     future: Future.wait(futureProperties),
@@ -178,7 +180,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                                 plotArea: property['plotArea'],
                                 propertyType: property['propertyType'],
                                 address: property['address'],
-                                updateTime: property['updateTime'],
+                                createdAt: property['createdAt'],
                                 title: property['title'],
                                 features: property['features'],
                                 propertyStatus: property['propertyStatus'],

@@ -46,6 +46,10 @@ class _AllPropertiesState extends State<AllProperties> {
             itemCount: properties.length,
             itemBuilder: (context, index) {
               var property = properties[index].data() as Map<String, dynamic>;
+              final Timestamp? createdAtTimestamp = property['createdAt'] as Timestamp?;
+              final DateTime createdAtDate = createdAtTimestamp?.toDate() ?? DateTime.now();
+              final int daysAgo = DateTime.now().difference(createdAtDate).inDays;
+              final String createdAtString = daysAgo > 0 ? '$daysAgo days' : 'Today';
 
               return GestureDetector(
                 onTap: () {
@@ -67,7 +71,7 @@ class _AllPropertiesState extends State<AllProperties> {
                     plotArea: property['plotArea']?.toString() ?? 'N/A',
                     propertyType: property['propertyType'] ?? 'Unknown',
                     address: property['address'] ?? 'Address not available',
-                    updateTime: property['updateTime'] ?? 'N/A',
+                    createdAt: createdAtString,
                     title: property['title'] ?? 'No Title',
                     features: property['features'] ?? [],
                     propertyStatus: property['propertyStatus'] ?? 'Unknown',

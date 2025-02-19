@@ -8,7 +8,7 @@ import '../../Customs/custom_textfield.dart';
 import '../../conigs/app_colors.dart';
 
 class PropertyForm2 extends StatefulWidget {
-  Map<String, String?>?  formData;
+  final Map<String, dynamic> formData;
    PropertyForm2({super.key, required this.formData});
 
   @override
@@ -16,7 +16,6 @@ class PropertyForm2 extends StatefulWidget {
 }
 
 class _PropertyForm2State extends State<PropertyForm2> {
-  Map<String, String?>? get formData => widget.formData;
   final controllers = ControllersManager();
   String? availabilityStatus;
   String? ownershipType;
@@ -31,8 +30,9 @@ class _PropertyForm2State extends State<PropertyForm2> {
     try {
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null){
-        print("User not logged in .");
-        return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User is not logged in.')),
+        );        return;
       }
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('AppUsers')
@@ -46,13 +46,13 @@ class _PropertyForm2State extends State<PropertyForm2> {
 
       await FirebaseFirestore.instance.collection('AppProperties').add({
         'city': controllers.cityController.text,
-        'lookingTo':formData?['lookingTo'],
+        'lookingTo':widget.formData['lookingTo'],
         'createdBy': userId,
         'uid':user.uid,
         'isDeleted' : isDeleted,
-        'propertyType':formData?['propertyType'],
-        'propertyCategory':formData?[' propertyCategory'],
-        'contactDetails': formData?['contactDetails'],
+        'propertyType':widget.formData['propertyType'],
+        'propertyCategory':widget.formData['propertyCategory'],
+        'contactDetails': widget.formData['contactDetails'],
         'locality': controllers.localityController.text,
         'subLocality': controllers.subLocalityController.text,
         'apartment': controllers.apartmentController.text,
@@ -88,7 +88,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
   @override
   void initState() {
     super.initState();
-    print("Arguments received in PropertyForm2: ${formData?['lookingTo']}");
+    print("Arguments received in PropertyForm2: ${widget.formData['lookingTo']}");
   }
   // @override
   // void didChangeDependencies() {

@@ -7,6 +7,7 @@ import 'package:usdinfra/Userpages/PrivacyPolicyScreen.dart';
 import 'package:usdinfra/Userpages/TermsandConditions.dart';
 import 'package:usdinfra/Userpages/UpgradeServiceScreen.dart';
 import 'package:usdinfra/Userpages/dash_board.dart';
+import 'package:usdinfra/authentication/dummy.dart';
 import 'package:usdinfra/authentication/welcome_screen.dart';
 import '../Property_Pages_form/Property_Form/Form_Page_2_Components/sell_residential.dart';
 import '../Property_Pages_form/Property_Form/form_page_1.dart';
@@ -75,8 +76,7 @@ class AppRouts {
       case propertyform2:
         Map<String, String?> formData = {};
         return MaterialPageRoute(
-            builder: (_) => PropertyForm2(
-              formData: formData,
+            builder: (_) => PropertyForm2(formData:formData,
             ));
 
       case profile:

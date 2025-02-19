@@ -13,7 +13,7 @@ class PropertyCard extends StatefulWidget {
   final String plotArea;
   final String propertyType;
   final String address;
-  final String updateTime;
+  final String createdAt;
   final String title;
   final List<String> features;
   final String propertyStatus;
@@ -26,7 +26,7 @@ class PropertyCard extends StatefulWidget {
     required this.plotArea,
     required this.propertyType,
     required this.address,
-    required this.updateTime,
+    required this.createdAt,
     required this.title,
     required this.features,
     required this.propertyStatus,
@@ -39,6 +39,7 @@ class PropertyCard extends StatefulWidget {
 
 class _PropertyCardState extends State<PropertyCard> {
   bool isFavorited = false;
+
   void _toggleFavorite() {
     setState(() {
       isFavorited = !isFavorited;
@@ -161,7 +162,7 @@ Features: ${widget.features.join(', ')}
                           padding: const EdgeInsets.symmetric(
                               horizontal: 7, vertical: 4),
                           child: Text(
-                            'Updated ${widget.updateTime} ago',
+                            'Updated ${widget.createdAt} ago',
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 11),
                             overflow: TextOverflow.ellipsis,
