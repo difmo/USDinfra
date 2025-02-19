@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../Components/property_card.dart';
+import '../Customs/CustomAppBar.dart';
 import 'Properties_detail_page.dart';
 
 class AllProperties extends StatefulWidget {
@@ -17,31 +18,16 @@ class _AllPropertiesState extends State<AllProperties> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text(
+      appBar: CustomAppBar(
+        title:
           'All Properties',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0.5,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list, color: Colors.black),
-            onPressed: () {
-              // Implement filters functionality
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.sort, color: Colors.black),
-            onPressed: () {
-              // Implement sorting functionality
-            },
-          ),
-        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream:
-            FirebaseFirestore.instance.collection('AppProperties').snapshots(),
+            FirebaseFirestore.instance
+                .collection('AppProperties')
+                .where('isDeleted', isEqualTo: false)
+                .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -66,26 +52,7 @@ class _AllPropertiesState extends State<AllProperties> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PropertyDetailPage(
-                        imageUrl: property['imageUrl'] ??
-                            'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
-                        title: property['title'] ?? '',
-                        address: property['address'] ?? '',
-                        price: property['price'] ?? '',
-                        description: property['description'] ?? '',
-                        amenities: property['amenities'] ?? [],
-                        builtYear: property['builtYear']?.toString() ?? '',
-                        floorNumber: property['floorNumber']?.toString() ?? '',
-                        totalFloors: property['totalFloors']?.toString() ?? '',
-                        furnishingStatus: property['furnishingStatus'] ?? '',
-                        ownership: property['ownership'] ?? '',
-                        monthlyMaintenance:
-                            property['monthlyMaintenance'] ?? '',
-                        nearbyLandmarks: property['nearbyLandmarks'] ?? [],
-                        contactName: property['contactInfo']?['name'] ?? '',
-                        contactPhone: property['contactInfo']?['phone'] ?? '',
-                        contactEmail: property['contactInfo']?['email'] ?? '',
-                      ),
+                      builder: (context) => PropertyDetailPage(docId: properties[index].id),
                     ),
                   );
                 },

@@ -7,7 +7,6 @@ class ControllersManager {
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmpasswordController = TextEditingController();
-
   final TextEditingController contactController = TextEditingController();
 
 

@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:usdinfra/Userpages/ChatDetailScreen.dart';
 
+import '../Customs/CustomAppBar.dart';
+
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Chats",
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
-        ],
-        backgroundColor: Colors.white,
-        elevation: 1,
-      ),
+      appBar: CustomAppBar(
+        title:
+          "Chats",),
+      // actions: [
+      //     IconButton(icon: const Icon(Icons.search), onPressed: () {}),
+      //     IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
+      //   ],
+      //   backgroundColor: Colors.white,
+      //   elevation: 1,
+      // ),
       body: ListView.builder(
         padding: const EdgeInsets.only(top: 10),
         itemCount: chatUsers.length,

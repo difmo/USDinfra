@@ -1,12 +1,8 @@
-// import 'dart:nativewrappers/_internal/vm/lib/internal_patch.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:usdinfra/Components/Choice_Chip.dart';
 import 'package:usdinfra/routes/app_routes.dart';
-// import 'package:usdinfra/Property_Pages/Property_Form/form_page_1.dart';
-
 import '../../Controllers/authentication_controller.dart';
 import '../../Customs/custom_textfield.dart';
 import '../../conigs/app_colors.dart';
@@ -20,17 +16,14 @@ class PropertyForm2 extends StatefulWidget {
 }
 
 class _PropertyForm2State extends State<PropertyForm2> {
-  Map<String, String?> get formData => widget.formData!;
+  Map<String, String?>? get formData => widget.formData;
   final controllers = ControllersManager();
   String? availabilityStatus;
   String? ownershipType;
   bool allInclusivePrice = false;
   bool taxExcluded = false;
   bool isLoading = false;
-
-
-
-
+  bool isDeleted = false;
   Future<void> saveToFirestore() async {
     setState(() {
       isLoading = true; // Show loader
@@ -43,21 +36,23 @@ class _PropertyForm2State extends State<PropertyForm2> {
       }
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('AppUsers')
-          .doc(user.uid) // Assuming the document ID is the same as the Firebase Auth UID
+          .doc(user.uid)
           .get();
       if (!userDoc.exists) {
         print("User document not found in AppUsers collection.");
         return;
       }
-      String userId = userDoc['userId']; // Make sure 'userId' exists in AppUsers
+      String userId = userDoc['userId'];
 
       await FirebaseFirestore.instance.collection('AppProperties').add({
         'city': controllers.cityController.text,
-        'lookingTo':formData['lookingTo'],
-        'userId': userId,
-        'propertyType':formData['propertyType'],
-        'propertyCategory':formData[' propertyCategory'],
-        'contactDetails': formData['contactDetails'],
+        'lookingTo':formData?['lookingTo'],
+        'createdBy': userId,
+        'uid':user.uid,
+        'isDeleted' : isDeleted,
+        'propertyType':formData?['propertyType'],
+        'propertyCategory':formData?[' propertyCategory'],
+        'contactDetails': formData?['contactDetails'],
         'locality': controllers.localityController.text,
         'subLocality': controllers.subLocalityController.text,
         'apartment': controllers.apartmentController.text,
@@ -65,7 +60,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
         'totalFloors': controllers.totalFloorsController.text,
         'availabilityStatus': availabilityStatus,
         'ownershipType': ownershipType,
-        'expectedPrice': '₹${controllers.nameController.text}',
+        'expectedPrice': '₹${controllers.expectedPriceController.text}',
         'allInclusivePrice': allInclusivePrice,
         'taxExcluded': taxExcluded,
         'description': controllers.descriptionController.text,
@@ -93,7 +88,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
   @override
   void initState() {
     super.initState();
-    print("Arguments received in PropertyForm2: ${formData['lookingTo']}");
+    print("Arguments received in PropertyForm2: ${formData?['lookingTo']}");
   }
   // @override
   // void didChangeDependencies() {
@@ -294,8 +289,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                 'Leasehold',
                 'Co-operative society',
                 'Power of Attorney'
-              ]
-                  .map((option) => ChoiceChipOption(
+              ].map((option) => ChoiceChipOption(
                         label: option,
                         isSelected: ownershipType == option,
                         onSelected: (selected) {
@@ -319,7 +313,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                           color: AppColors.primary)),
                   SizedBox(height: 8),
                   CustomInputField(
-                      controller: controllers.nameController,
+                      controller: controllers.expectedPriceController,
                       hintText: 'Expected Price'),
                 ],
               ),

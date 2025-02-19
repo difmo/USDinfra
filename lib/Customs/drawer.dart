@@ -29,8 +29,6 @@ class CustomDrawer extends StatelessWidget {
               return _buildUserHeader(userData);
             },
           ),
-
-          // Drawer Menu Items
           Expanded(
             child: ListView(
               padding: const EdgeInsets.only(top: 10),
@@ -40,7 +38,7 @@ class CustomDrawer extends StatelessWidget {
                 _buildDrawerItem(
                     Icons.person_outline, 'Profile', AppRouts.profile, context),
                 _buildDrawerItem(Icons.apartment, 'Published Properties',
-                    AppRouts.properties, context),
+                    AppRouts.myPropertiesPage, context),
                 _buildDrawerItem(Icons.shopping_bag, 'Purchased Properties',
                     AppRouts.properties, context),
                 _buildDrawerItem(

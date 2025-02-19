@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:usdinfra/Bottom/bottom_navigation.dart';
 import 'package:usdinfra/Customs/custom_app_bar.dart';
-import 'package:usdinfra/Property_Pages/Properties_detail_page.dart';
+import 'package:usdinfra/Property_Pages_form/Properties_detail_page.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../Components/cerosoule.dart';
@@ -27,21 +27,17 @@ class _HomeDashBoard extends State<HomeDashBoard> {
 
     switch (index) {
       case 0:
-        // Home - Stay on current screen
         break;
       case 1:
         Navigator.pushNamed(context, AppRouts.chat);
         break;
       case 2:
-        // Navigate to Add Property Form
         Navigator.pushNamed(context, AppRouts.propertyform1);
         break;
       case 3:
-        // Navigate to Notifications Page
         Navigator.pushNamed(context, AppRouts.upgardeservice);
         break;
       case 4:
-        // Navigate to Profile Page
         Navigator.pushNamed(context, AppRouts.profile);
         break;
     }
@@ -93,6 +89,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection("AppProperties")
+                    .where('isDeleted', isEqualTo: false)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -159,44 +156,18 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                       final properties = asyncSnapshot.data!;
 
                       return Column(
-                        children: properties.map((property) {
+                        children: properties.asMap().entries.map((entry) {
+                          int index = entry.key;
+                          Map<String, dynamic> property = entry.value;
+
                           return GestureDetector(
-                            onTap: () => {
+                            onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => PropertyDetailPage(
-                                    imageUrl: property['imageUrl'] ??
-                                        'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
-                                    title: property['title'] ?? '',
-                                    address: property['address'] ?? '',
-                                    price: property['price'] ?? '',
-                                    description: property['description'] ?? '',
-                                    amenities: property['amenities'] ?? [],
-                                    builtYear:
-                                        property['builtYear']?.toString() ?? '',
-                                    floorNumber:
-                                        property['floorNumber']?.toString() ??
-                                            '',
-                                    totalFloors:
-                                        property['totalFloors']?.toString() ??
-                                            '',
-                                    furnishingStatus:
-                                        property['furnishingStatus'] ?? '',
-                                    ownership: property['ownership'] ?? '',
-                                    monthlyMaintenance:
-                                        property['monthlyMaintenance'] ?? '',
-                                    nearbyLandmarks:
-                                        property['nearbyLandmarks'] ?? [],
-                                    contactName:
-                                        property['contactInfo']?['name'] ?? '',
-                                    contactPhone:
-                                        property['contactInfo']?['phone'] ?? '',
-                                    contactEmail:
-                                        property['contactInfo']?['email'] ?? '',
-                                  ),
+                                  builder: (context) => PropertyDetailPage(docId: property['id']),
                                 ),
-                              )
+                              );
                             },
                             child: Container(
                               height: screenHeight * 0.39,

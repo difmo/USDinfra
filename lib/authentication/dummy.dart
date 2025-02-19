@@ -1,207 +1,304 @@
 // import 'package:flutter/material.dart';
 //
 // void main() {
-//   runApp(const MyApp());
+//   runApp(MaterialApp(
+//     home: PropertyDetailsPage(),
+//   ));
 // }
 //
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       home: PropertyDetailPage(
-//         imageUrl: 'https://cce.guru/wp-content/uploads/2022/12/Hydrangeas.jpg',
-//         title: 'Charming Single-Family Home',
-//         address: '3703 Castle Rock Dr\nRound Rock, TX 78681',
-//         price: '\$267,000',
-//         description: 'Very charming 3 bed/2 bath renovated single-family home with open new kitchen with brand new appliances and fixtures...',
-//         amenities: ['Swimming Pool', 'Gym', 'Playground'],
-//         builtYear: '2005',
-//         floorNumber: '1',
-//         totalFloors: '2',
-//         furnishingStatus: 'Furnished',
-//         ownership: 'Freehold',
-//         monthlyMaintenance: '\$200',
-//         nearbyLandmarks: ['Park', 'Shopping Mall', 'School'],
-//         contactName: 'John Doe',
-//         contactPhone: '(123) 456-7890',
-//         contactEmail: 'john.doe@example.com',
-//       ),
-//     );
-//   }
-// }
-//
-// class PropertyDetailPage extends StatelessWidget {
-//   final String imageUrl;
-//   final String title;
-//   final String address;
-//   final String price;
-//   final String description;
-//   final List<String> amenities;
-//   final String builtYear;
-//   final String floorNumber;
-//   final String totalFloors;
-//   final String furnishingStatus;
-//   final String ownership;
-//   final String monthlyMaintenance;
-//   final List<String> nearbyLandmarks;
-//   final String contactName;
-//   final String contactPhone;
-//   final String contactEmail;
-//
-//   const PropertyDetailPage({
-//     Key? key,
-//     required this.imageUrl,
-//     required this.title,
-//     required this.address,
-//     required this.price,
-//     required this.description,
-//     required this.amenities,
-//     required this.builtYear,
-//     required this.floorNumber,
-//     required this.totalFloors,
-//     required this.furnishingStatus,
-//     required this.ownership,
-//     required this.monthlyMaintenance,
-//     required this.nearbyLandmarks,
-//     required this.contactName,
-//     required this.contactPhone,
-//     required this.contactEmail,
-//   }) : super(key: key);
-//
+// class PropertyDetailsPage extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       backgroundColor: Colors.blue[50],
-//       body: NestedScrollView(
-//         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-//           return [
-//             SliverAppBar(
-//               backgroundColor: Colors.transparent,
-//               expandedHeight: 250.0,
-//               floating: false,
-//               pinned: true,
-//               title: innerBoxIsScrolled ? Text(title) : null,
-//               actions: innerBoxIsScrolled
-//                   ? [
-//                 IconButton(
-//                   icon: Icon(Icons.phone),
-//                   onPressed: () {
-//                     // Handle contact button
-//                   },
-//                 ),
-//               ]
-//                   : null,
-//               flexibleSpace: FlexibleSpaceBar(
-//                 background: Stack(
-//                   fit: StackFit.expand,
-//                   children: [
-//                     Image.network(
-//                       imageUrl,
-//                       fit: BoxFit.cover,
-//                     ),
-//                     Container(
-//                       decoration: BoxDecoration(
-//                         gradient: LinearGradient(
-//                           colors: [
-//                             Colors.black.withOpacity(0.5),
-//                             Colors.transparent,
-//                           ],
-//                           begin: Alignment.topCenter,
-//                           end: Alignment.bottomCenter,
-//                         ),
-//                       ),
-//                     ),
-//                     Positioned(
-//                       bottom: 10,
-//                       right: 10,
-//                       child: Container(
-//                         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-//                         decoration: BoxDecoration(
-//                           color: Colors.white,
-//                           borderRadius: BorderRadius.circular(20),
-//                         ),
-//                         child: Text(
-//                           'Self-tour',
-//                           style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
+//       appBar: AppBar(
+//         title: Text('Add Property Details'),
+//         actions: [
+//           TextButton(
+//             onPressed: () {},
+//             child: Text('Post Via WhatsApp', style: TextStyle(color: Colors.blue)),
+//           )
+//         ],
+//       ),
+//       body: SingleChildScrollView(
+//         padding: EdgeInsets.all(16.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             _buildSectionTitle('Where is your property located?'),
+//             TextField(decoration: InputDecoration(labelText: 'City')),
+//             TextButton.icon(
+//               onPressed: () {},
+//               icon: Icon(Icons.location_on, color: Colors.blue),
+//               label: Text('Detect my location', style: TextStyle(color: Colors.blue)),
 //             ),
-//           ];
-//         },
-//         body: SingleChildScrollView(
-//           child: Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
+//             _buildSectionTitle('Add Room Details'),
+//             _buildChipOptions('No. of Bedrooms', ['1', '2', '3', '4', '5+']),
+//             _buildChipOptions('No. of Bathrooms', ['1', '2', '3', '4+']),
+//             _buildChipOptions('Balconies', ['0', '1', '2', '3', 'More than 3']),
+//             _buildSectionTitle('Add Area Details'),
+//             Row(
 //               children: [
-//                 Text(
-//                   title,
-//                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-//                 ),
-//                 SizedBox(height: 8),
-//                 Text(
-//                   address,
-//                   style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-//                 ),
-//                 SizedBox(height: 16),
-//                 Text(description, style: TextStyle(fontSize: 16)),
-//                 SizedBox(height: 16),
-//                 Text('Amenities:', style: TextStyle(fontWeight: FontWeight.bold)),
-//                 Text(amenities.join(', ')),
-//                 SizedBox(height: 16),
-//                 Text('Details:', style: TextStyle(fontWeight: FontWeight.bold)),
-//                 Text('Year Built: $builtYear'),
-//                 Text('Floor: $floorNumber of $totalFloors'),
-//                 Text('Furnishing: $furnishingStatus'),
-//                 Text('Ownership: $ownership'),
-//                 Text('Maintenance: $monthlyMaintenance'),
-//                 SizedBox(height: 16),
-//                 Text('Nearby Landmarks:', style: TextStyle(fontWeight: FontWeight.bold)),
-//                 Text(nearbyLandmarks.join(', ')),
-//                 SizedBox(height: 16),
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                   children: [
-//                     Text(
-//                       price,
-//                       style: TextStyle(
-//                         fontSize: 24,
-//                         fontWeight: FontWeight.bold,
-//                         color: Colors.green,
-//                       ),
-//                     ),
-//                     ElevatedButton.icon(
-//                       onPressed: () {},
-//                       icon: Icon(Icons.flash_on),
-//                       label: Text('Self-tour'),
-//                       style: ElevatedButton.styleFrom(
-//                         backgroundColor: Colors.blue,
-//                         foregroundColor: Colors.white,
-//                         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-//                         shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(20),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//                 SizedBox(height: 8),
-//                 Text('Contact:', style: TextStyle(fontWeight: FontWeight.bold)),
-//                 Text('Name: $contactName'),
-//                 Text('Phone: $contactPhone'),
-//                 Text('Email: $contactEmail'),
+//                 Expanded(child: TextField(decoration: InputDecoration(labelText: 'Carpet Area'))),
+//                 SizedBox(width: 10),
+//                 Expanded(child: DropdownButtonFormField(items: ['sq.ft.'].map((e) => DropdownMenuItem(child: Text(e), value: e)).toList(), onChanged: (value) {})),
 //               ],
 //             ),
-//           ),
+//             _buildSectionTitle('Floor Details'),
+//             TextField(decoration: InputDecoration(labelText: 'Total Floors')),
+//             _buildSectionTitle('Availability Status'),
+//             _buildChipOptions('', ['Ready to move', 'Under construction']),
+//             _buildSectionTitle('Ownership'),
+//             _buildChipOptions('', ['Freehold', 'Leasehold', 'Co-operative society', 'Power of Attorney']),
+//             _buildSectionTitle('Price Details'),
+//             TextField(decoration: InputDecoration(labelText: '₹ Expected Price')),
+//             _buildCheckboxOptions(['All inclusive price', 'Price Negotiable', 'Tax and Govt. charges excluded']),
+//             _buildSectionTitle('What makes your property unique'),
+//             TextField(
+//               maxLength: 5000,
+//               minLines: 3,
+//               maxLines: 5,
+//               decoration: InputDecoration(
+//                 hintText: 'Share some details about your property... ',
+//                 border: OutlineInputBorder(),
+//               ),
+//             ),
+//             SizedBox(height: 20),
+//             ElevatedButton(
+//               onPressed: () {},
+//               style: ElevatedButton.styleFrom(minimumSize: Size(double.infinity, 50)),
+//               child: Text('Post and Continue'),
+//             ),
+//           ],
 //         ),
 //       ),
 //     );
 //   }
+//
+//   Widget _buildSectionTitle(String title) {
+//     return Padding(
+//       padding: const EdgeInsets.only(top: 20, bottom: 5),
+//       child: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+//     );
+//   }
+//
+//   Widget _buildChipOptions(String title, List<String> options) {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         if (title.isNotEmpty) _buildSectionTitle(title),
+//         Wrap(
+//           spacing: 8.0,
+//           children: options.map((e) => ChoiceChip(label: Text(e), selected: false, onSelected: (val) {})).toList(),
+//         ),
+//       ],
+//     );
+//   }
+//
+//   Widget _buildCheckboxOptions(List<String> options) {
+//     return Column(
+//       children: options.map((e) => CheckboxListTile(title: Text(e), value: false, onChanged: (val) {})).toList(),
+//     );
+//   }
 // }
+
+
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+class EditPropertyPage extends StatefulWidget {
+  final String docId;
+
+  const EditPropertyPage({Key? key, required this.docId}) : super(key: key);
+
+  @override
+  _EditPropertyPageState createState() => _EditPropertyPageState();
+}
+
+class _EditPropertyPageState extends State<EditPropertyPage> {
+  final ImagePicker _picker = ImagePicker();
+  List<File> _selectedImages = [];
+  List<String> _imageUrls = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPropertyData();
+  }
+
+  // Fetch property data including image URLs
+  Future<void> _fetchPropertyData() async {
+    try {
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+          .collection('AppProperties')
+          .doc(widget.docId)
+          .get();
+
+      if (docSnapshot.exists) {
+        final propertyData = docSnapshot.data() as Map<String, dynamic>;
+
+        setState(() {
+          _imageUrls = List<String>.from(propertyData['imageUrls'] ?? []);
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() => _isLoading = false);
+      print('Error fetching property data: $e');
+    }
+  }
+
+  // Select multiple images
+  Future<void> _pickImages() async {
+    final pickedFiles = await _picker.pickMultiImage();
+
+    if (pickedFiles.isNotEmpty) {
+      setState(() {
+        _selectedImages = pickedFiles.map((e) => File(e.path)).toList();
+      });
+
+      // Upload images
+      _uploadImages();
+    }
+  }
+
+  // Upload images to Firebase Storage
+  Future<void> _uploadImages() async {
+    List<String> uploadedUrls = [];
+
+    for (var image in _selectedImages) {
+      try {
+        String fileName = 'property_images/${widget.docId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+        Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
+        UploadTask uploadTask = storageRef.putFile(image);
+        TaskSnapshot snapshot = await uploadTask;
+        String downloadUrl = await snapshot.ref.getDownloadURL();
+        uploadedUrls.add(downloadUrl);
+      } catch (e) {
+        print("Error uploading image: $e");
+      }
+    }
+
+    // Update Firestore with new image URLs
+    if (uploadedUrls.isNotEmpty) {
+      setState(() {
+        _imageUrls.addAll(uploadedUrls);
+      });
+
+      await FirebaseFirestore.instance
+          .collection('AppProperties')
+          .doc(widget.docId)
+          .update({'imageUrls': _imageUrls});
+    }
+  }
+
+  // Delete image from Firebase and Firestore
+  Future<void> _deleteImage(String imageUrl) async {
+    try {
+      // Delete from Firebase Storage
+      Reference storageRef = FirebaseStorage.instance.refFromURL(imageUrl);
+      await storageRef.delete();
+
+      // Update Firestore
+      setState(() {
+        _imageUrls.remove(imageUrl);
+      });
+
+      await FirebaseFirestore.instance
+          .collection('AppProperties')
+          .doc(widget.docId)
+          .update({'imageUrls': _imageUrls});
+    } catch (e) {
+      print("Error deleting image: $e");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Edit Property')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(title: const Text('Edit Property')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Property Images',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+
+            const SizedBox(height: 8),
+
+            // Display selected images in a grid
+            _imageUrls.isNotEmpty
+                ? GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _imageUrls.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, // Display 3 images per row
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemBuilder: (context, index) {
+                return Stack(
+                  children: [
+                    Image.network(_imageUrls[index], fit: BoxFit.cover),
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: IconButton(
+                        icon: const Icon(Icons.cancel, color: Colors.red),
+                        onPressed: () => _deleteImage(_imageUrls[index]),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            )
+                : Container(
+              height: 150,
+              color: Colors.grey[300],
+              child: const Center(child: Text("No Images Available")),
+            ),
+
+            const SizedBox(height: 8),
+
+            // Button to choose images
+            ElevatedButton.icon(
+              onPressed: _pickImages,
+              icon: const Icon(Icons.add_a_photo, color: Colors.white),
+              label: const Text("Add Images", style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Align Save Button to the Right
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                onPressed: () {}, // Add property update logic
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                ),
+                child: const Text('Save Changes',
+                    style: TextStyle(color: Colors.white, fontSize: 16)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
