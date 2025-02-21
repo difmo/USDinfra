@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../Property_Pages/Properties_detail_page.dart';
+import '../Property_Pages_form/Properties_detail_page.dart';
 // import 'package:usdinfra/conigs/app_colors.dart';
 
 class AllPropertyCard extends StatelessWidget {

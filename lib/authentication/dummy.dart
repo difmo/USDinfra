@@ -1,206 +1,218 @@
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/material.dart';
+// import 'package:usdinfra/Bottom/bottom_navigation.dart';
+// import 'package:usdinfra/Customs/custom_app_bar.dart';
+// import 'package:usdinfra/Property_Pages_form/Properties_detail_page.dart';
+// import 'package:usdinfra/conigs/app_colors.dart';
+// import 'package:usdinfra/routes/app_routes.dart';
+// import '../Components/cerosoule.dart';
+// import '../Components/property_card.dart';
+// import '../Customs/drawer.dart';
 //
-// void main() {
-//   runApp(const MyApp());
-// }
-//
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
+// class HomeDashBoard extends StatefulWidget {
+//   const HomeDashBoard({super.key});
 //
 //   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       home: PropertyDetailPage(
-//         imageUrl: 'https://cce.guru/wp-content/uploads/2022/12/Hydrangeas.jpg',
-//         title: 'Charming Single-Family Home',
-//         address: '3703 Castle Rock Dr\nRound Rock, TX 78681',
-//         price: '\$267,000',
-//         description: 'Very charming 3 bed/2 bath renovated single-family home with open new kitchen with brand new appliances and fixtures...',
-//         amenities: ['Swimming Pool', 'Gym', 'Playground'],
-//         builtYear: '2005',
-//         floorNumber: '1',
-//         totalFloors: '2',
-//         furnishingStatus: 'Furnished',
-//         ownership: 'Freehold',
-//         monthlyMaintenance: '\$200',
-//         nearbyLandmarks: ['Park', 'Shopping Mall', 'School'],
-//         contactName: 'John Doe',
-//         contactPhone: '(123) 456-7890',
-//         contactEmail: 'john.doe@example.com',
-//       ),
-//     );
+//   State<HomeDashBoard> createState() => _HomeDashBoard();
+// }
+//
+// class _HomeDashBoard extends State<HomeDashBoard> {
+//   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+//   int _selectedIndex = 0;
+//   String? userId;
+//   List<String> favoriteProperties = [];
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _getCurrentUserFavorites();
 //   }
-// }
 //
-// class PropertyDetailPage extends StatelessWidget {
-//   final String imageUrl;
-//   final String title;
-//   final String address;
-//   final String price;
-//   final String description;
-//   final List<String> amenities;
-//   final String builtYear;
-//   final String floorNumber;
-//   final String totalFloors;
-//   final String furnishingStatus;
-//   final String ownership;
-//   final String monthlyMaintenance;
-//   final List<String> nearbyLandmarks;
-//   final String contactName;
-//   final String contactPhone;
-//   final String contactEmail;
+//   /// Fetch current user's favorite properties from Firestore
+//   Future<void> _getCurrentUserFavorites() async {
+//     final user = FirebaseAuth.instance.currentUser;
+//     if (user != null) {
+//       userId = user.uid;
+//       final doc = await FirebaseFirestore.instance.collection("AppUsers").doc(userId).get();
+//       if (doc.exists) {
+//         setState(() {
+//           favoriteProperties = List<String>.from(doc.data()?["favoriteProperties"] ?? []);
+//         });
+//       }
+//     }
+//   }
 //
-//   const PropertyDetailPage({
-//     Key? key,
-//     required this.imageUrl,
-//     required this.title,
-//     required this.address,
-//     required this.price,
-//     required this.description,
-//     required this.amenities,
-//     required this.builtYear,
-//     required this.floorNumber,
-//     required this.totalFloors,
-//     required this.furnishingStatus,
-//     required this.ownership,
-//     required this.monthlyMaintenance,
-//     required this.nearbyLandmarks,
-//     required this.contactName,
-//     required this.contactPhone,
-//     required this.contactEmail,
-//   }) : super(key: key);
+//   /// Toggle favorite status of a property
+//   Future<void> _toggleFavorite(String propertyId) async {
+//     if (userId == null) return;
+//
+//     final docRef = FirebaseFirestore.instance.collection("AppUsers").doc(userId);
+//     if (favoriteProperties.contains(propertyId)) {
+//       // Remove property from favorites
+//       favoriteProperties.remove(propertyId);
+//     } else {
+//       // Add property to favorites
+//       favoriteProperties.add(propertyId);
+//     }
+//
+//     await docRef.update({"favoriteProperties": favoriteProperties});
+//     setState(() {});
+//   }
+//
+//   void _onItemTapped(int index) {
+//     setState(() {
+//       _selectedIndex = index;
+//     });
+//
+//     switch (index) {
+//       case 1:
+//         Navigator.pushNamed(context, AppRouts.chat);
+//         break;
+//       case 2:
+//         Navigator.pushNamed(context, AppRouts.propertyform1);
+//         break;
+//       case 3:
+//         Navigator.pushNamed(context, AppRouts.upgardeservice);
+//         break;
+//       case 4:
+//         Navigator.pushNamed(context, AppRouts.profile);
+//         break;
+//     }
+//   }
 //
 //   @override
 //   Widget build(BuildContext context) {
+//     final screenHeight = MediaQuery.of(context).size.height;
+//
 //     return Scaffold(
-//       backgroundColor: Colors.blue[50],
-//       body: NestedScrollView(
-//         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-//           return [
-//             SliverAppBar(
-//               backgroundColor: Colors.transparent,
-//               expandedHeight: 250.0,
-//               floating: false,
-//               pinned: true,
-//               title: innerBoxIsScrolled ? Text(title) : null,
-//               actions: innerBoxIsScrolled
-//                   ? [
-//                 IconButton(
-//                   icon: Icon(Icons.phone),
-//                   onPressed: () {
-//                     // Handle contact button
-//                   },
-//                 ),
-//               ]
-//                   : null,
-//               flexibleSpace: FlexibleSpaceBar(
-//                 background: Stack(
-//                   fit: StackFit.expand,
-//                   children: [
-//                     Image.network(
-//                       imageUrl,
-//                       fit: BoxFit.cover,
+//       key: _scaffoldKey,
+//       appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
+//       drawer: CustomDrawer(),
+//       backgroundColor: Colors.white,
+//       body: SingleChildScrollView(
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             SizedBox(height: screenHeight * 0.28, child: const Carousel()),
+//             Padding(
+//               padding: const EdgeInsets.symmetric(horizontal: 8.0),
+//               child: Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 children: [
+//                   const Padding(
+//                     padding: EdgeInsets.only(left: 9),
+//                     child: Text(
+//                       'Properties',
+//                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
 //                     ),
-//                     Container(
-//                       decoration: BoxDecoration(
-//                         gradient: LinearGradient(
-//                           colors: [
-//                             Colors.black.withOpacity(0.5),
-//                             Colors.transparent,
-//                           ],
-//                           begin: Alignment.topCenter,
-//                           end: Alignment.bottomCenter,
-//                         ),
-//                       ),
+//                   ),
+//                   TextButton(
+//                     onPressed: () {
+//                       Navigator.pushNamed(context, AppRouts.properties);
+//                     },
+//                     child: Text(
+//                       'View More',
+//                       style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
 //                     ),
-//                     Positioned(
-//                       bottom: 10,
-//                       right: 10,
-//                       child: Container(
-//                         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-//                         decoration: BoxDecoration(
-//                           color: Colors.white,
-//                           borderRadius: BorderRadius.circular(20),
-//                         ),
-//                         child: Text(
-//                           'Self-tour',
-//                           style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
+//                   ),
+//                 ],
 //               ),
 //             ),
-//           ];
-//         },
-//         body: SingleChildScrollView(
-//           child: Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Text(
-//                   title,
-//                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-//                 ),
-//                 SizedBox(height: 8),
-//                 Text(
-//                   address,
-//                   style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-//                 ),
-//                 SizedBox(height: 16),
-//                 Text(description, style: TextStyle(fontSize: 16)),
-//                 SizedBox(height: 16),
-//                 Text('Amenities:', style: TextStyle(fontWeight: FontWeight.bold)),
-//                 Text(amenities.join(', ')),
-//                 SizedBox(height: 16),
-//                 Text('Details:', style: TextStyle(fontWeight: FontWeight.bold)),
-//                 Text('Year Built: $builtYear'),
-//                 Text('Floor: $floorNumber of $totalFloors'),
-//                 Text('Furnishing: $furnishingStatus'),
-//                 Text('Ownership: $ownership'),
-//                 Text('Maintenance: $monthlyMaintenance'),
-//                 SizedBox(height: 16),
-//                 Text('Nearby Landmarks:', style: TextStyle(fontWeight: FontWeight.bold)),
-//                 Text(nearbyLandmarks.join(', ')),
-//                 SizedBox(height: 16),
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                   children: [
-//                     Text(
-//                       price,
-//                       style: TextStyle(
-//                         fontSize: 24,
-//                         fontWeight: FontWeight.bold,
-//                         color: Colors.green,
-//                       ),
-//                     ),
-//                     ElevatedButton.icon(
-//                       onPressed: () {},
-//                       icon: Icon(Icons.flash_on),
-//                       label: Text('Self-tour'),
-//                       style: ElevatedButton.styleFrom(
-//                         backgroundColor: Colors.blue,
-//                         foregroundColor: Colors.white,
-//                         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-//                         shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(20),
+//             Padding(
+//               padding: const EdgeInsets.symmetric(horizontal: 8.0),
+//               child: StreamBuilder<QuerySnapshot>(
+//                 stream: FirebaseFirestore.instance
+//                     .collection("AppProperties")
+//                     .where('isDeleted', isEqualTo: false)
+//                     .snapshots(),
+//                 builder: (context, snapshot) {
+//                   if (snapshot.connectionState == ConnectionState.waiting) {
+//                     return const Center(child: CircularProgressIndicator());
+//                   }
+//                   if (snapshot.hasError) {
+//                     return Center(child: Text('Error: ${snapshot.error}'));
+//                   }
+//                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+//                     return const Center(child: Text('No properties available'));
+//                   }
+//
+//                   final properties = snapshot.data!.docs.map((doc) {
+//                     final data = doc.data() as Map<String, dynamic>? ?? {};
+//                     final String propertyId = doc.id;
+//
+//                     return {
+//                       'id': propertyId,
+//                       'imageUrl': data['imageUrl'] ?? '',
+//                       'expectedPrice': data['expectedPrice'] ?? '₹ 80 Lac',
+//                       'plotArea': data['plotArea'] ?? '1850 Sqft',
+//                       'propertyType': data['propertyType'] ?? '2 BHK Flat',
+//                       'address': data['address'] ?? 'Sector 10 Greater Noida West',
+//                       'createdAt': data['createdAt']?.toDate().toString() ?? 'Today',
+//                       'title': data['title'] ?? 'Property Title',
+//                       'features': List<String>.from(data['features'] ?? ['Lift', 'Parking']),
+//                       'propertyStatus': data['propertyStatus'] ?? 'Ready to move',
+//                       'contactDetails': data['contactDetails'] ?? 'N/A',
+//                     };
+//                   }).toList();
+//
+//                   return Column(
+//                     children: properties.map((property) {
+//                       bool isFavorite = favoriteProperties.contains(property['id']);
+//
+//                       return GestureDetector(
+//                         onTap: () {
+//                           Navigator.push(
+//                             context,
+//                             MaterialPageRoute(
+//                               builder: (context) => PropertyDetailPage(docId: property['id']),
+//                             ),
+//                           );
+//                         },
+//                         child: Stack(
+//                           children: [
+//                             Container(
+//                               height: screenHeight * 0.39,
+//                               margin: const EdgeInsets.only(bottom: 6),
+//                               child: PropertyCard(
+//                                 imageUrl: property['imageUrl'],
+//                                 expectedPrice: property['expectedPrice'],
+//                                 plotArea: property['plotArea'],
+//                                 propertyType: property['propertyType'],
+//                                 address: property['address'],
+//                                 createdAt: property['createdAt'],
+//                                 title: property['title'],
+//                                 features: property['features'],
+//                                 propertyStatus: property['propertyStatus'],
+//                                 contactDetails: property['contactDetails'],
+//                               ),
+//                             ),
+//                             Positioned(
+//                               top: 10,
+//                               right: 10,
+//                               child: IconButton(
+//                                 icon: Icon(
+//                                   isFavorite ? Icons.favorite : Icons.favorite_border,
+//                                   color: isFavorite ? Colors.red : Colors.grey,
+//                                 ),
+//                                 onPressed: () => _toggleFavorite(property['id']),
+//                               ),
+//                             ),
+//                           ],
 //                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//                 SizedBox(height: 8),
-//                 Text('Contact:', style: TextStyle(fontWeight: FontWeight.bold)),
-//                 Text('Name: $contactName'),
-//                 Text('Phone: $contactPhone'),
-//                 Text('Email: $contactEmail'),
-//               ],
+//                       );
+//                     }).toList(),
+//                   );
+//                 },
+//               ),
 //             ),
-//           ),
+//             const SizedBox(height: 80),
+//           ],
 //         ),
+//       ),
+//       bottomNavigationBar: CustomBottomNavigationBar(
+//         currentIndex: _selectedIndex,
+//         onTap: _onItemTapped,
 //       ),
 //     );
 //   }

@@ -50,12 +50,10 @@ class _ProfilePageState extends State<ProfilePage> {
           .collection('AppUsers')
           .doc(user.uid)
           .get();
-
       DocumentSnapshot profileDoc = await FirebaseFirestore.instance
           .collection('AppProfileSetup')
           .doc(user.uid)
           .get();
-
       if (userDoc.exists || profileDoc.exists) {
         setState(() {
           userData = {
@@ -67,8 +65,6 @@ class _ProfilePageState extends State<ProfilePage> {
             'addressLine2':
                 profileDoc.exists ? profileDoc['addressLine2'] : null,
           };
-
-          // Pre-fill the controllers with available data
           nameController.text = userDoc.exists ? userDoc['name'] : '';
           emailController.text = userDoc.exists ? userDoc['email'] : '';
           mobileController.text = userDoc.exists ? userDoc['mobile'] : '';
@@ -76,7 +72,6 @@ class _ProfilePageState extends State<ProfilePage> {
               profileDoc.exists ? profileDoc['addressLine1'] : '';
           addressLine2Controller.text =
               profileDoc.exists ? profileDoc['addressLine2'] : '';
-
           isLoading = false;
         });
       } else {
@@ -107,27 +102,20 @@ class _ProfilePageState extends State<ProfilePage> {
           'email': emailController.text,
           'mobile': mobileController.text,
         });
-
-        // Before updating, check if the document exists
         DocumentReference profileDocRef = FirebaseFirestore.instance
             .collection('AppProfileSetup')
             .doc(user.uid);
 
         DocumentSnapshot profileDoc = await profileDocRef.get();
-
-// If the document does not exist, create it
         if (!profileDoc.exists) {
           await profileDocRef.set({
             'addressLine1': addressLine1Controller.text,
             'addressLine2': addressLine2Controller.text,
-            // other fields as needed
           });
         } else {
-          // If document exists, update it
           await profileDocRef.update({
             'addressLine1': addressLine1Controller.text,
             'addressLine2': addressLine2Controller.text,
-            // other fields as needed
           });
         }
 
@@ -230,222 +218,247 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
-          'Profile Page',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: AppColors.primary,
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.logout,
-              color: Colors.white,
+      // appBar: AppBar(
+      //   automaticallyImplyLeading: false,
+      //   title: Text(
+      //     'Profile Page',
+      //     style: TextStyle(color: Colors.white),
+      //   ),
+      //   backgroundColor: AppColors.secondry,
+      //   actions: [
+      //     IconButton(
+      //       icon: Icon(
+      //         Icons.logout,
+      //         color: Colors.white,
+      //       ),
+      //       onPressed: () => _logout(context),
+      //     ),
+      //   ],
+      // ),
+      body: Column(children: [
+        // Custom Header with Gradient
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AppColors.primary, AppColors.secondry],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            onPressed: () => _logout(context),
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(30),
+            ),
           ),
-        ],
-      ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.vertical(
-                        bottom: Radius.circular(30),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Profile Page',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.logout, color: Colors.white),
+                    onPressed: () => _logout(context),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20), // Spacing between title and profile picture
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  GestureDetector(
+                    onTap: () => _showImageSourceDialog(context),
+                    child: ClipOval(
+                      child: _selectedImage != null
+                          ? Image.file(
+                        _selectedImage!,
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.cover,
+                      )
+                          : Image.network(
+                        'https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png',
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    child: Column(
+                  ),
+                  Positioned(
+                    bottom: -10,
+                    left: 10,
+                    right: 10,
+                    child: ElevatedButton(
+                      onPressed: () => _showImageSourceDialog(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        elevation: 2,
+                        shadowColor: AppColors.shadow,
+                      ),
+                      child: Text(
+                        "Edit Image",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 10),
+              Text(
+                userData?['name'] ?? 'Guest',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 5),
+            ],
+          ),
+        ),
+
+        Expanded(
+          child: isLoading
+              ? Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Stack(
-                          clipBehavior:
-                              Clip.none, // Allowing the button to overlap
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
                           children: [
-                            GestureDetector(
-                              onTap: () => _showImageSourceDialog(context),
-                              child: ClipOval(
-                                child: _selectedImage != null
-                                    ? Image.file(
-                                        _selectedImage!,
-                                        width: 150,
-                                        height: 150,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Image.network(
-                                        'https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png',
-                                        width: 150,
-                                        height: 150,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: -10,
-                              left: 10,
-                              right: 10,
-                              child: ElevatedButton(
-                                onPressed: () =>
-                                    _showImageSourceDialog(context),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  elevation: 2,
-                                  shadowColor: AppColors.shadow,
-                                ),
-                                child: Text(
-                                  "Edit Image",
+                            SizedBox(height: 20),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Email :',
                                   style: TextStyle(
                                     fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w500,
                                     color: AppColors.primary,
                                   ),
                                 ),
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          userData?['name'] ?? 'Agni',
-                          // Display name from Firebase or default
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Email :',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            CustomInputField(
-                              controller: emailController,
-                              hintText: 'Email',
-                              enable: isEditable,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Mobile :',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            CustomInputField(
-                              controller: mobileController,
-                              hintText: 'Mobile',
-                              enable: isEditable,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Address Line 1 :',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            CustomInputField(
-                              controller: addressLine1Controller,
-                              hintText: 'Address Line 1',
-                              enable: isEditable,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Address Line 2 :',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            CustomInputField(
-                              controller: addressLine2Controller,
-                              hintText: 'Address Line 2',
-                              enable: isEditable,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        isEditable
-                            ? SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: _updateUserData,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    foregroundColor: Colors.white,
-                                  ),
-                                  child: isLoading
-                                      ? CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  AppColors.primary),
-                                        )
-                                      : Text("Save Changes"),
+                                SizedBox(height: 8),
+                                CustomInputField(
+                                  controller: emailController,
+                                  hintText: 'Email',
+                                  enable: isEditable,
                                 ),
-                              )
-                            : SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      isEditable = true;
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    foregroundColor: Colors.white,
+                              ],
+                            ),
+                            SizedBox(height: 20),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Mobile :',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.primary,
                                   ),
-                                  child: Text("Edit Profile"),
                                 ),
-                              ),
-                      ],
-                    ),
-                  ),
-                ])),
+                                SizedBox(height: 8),
+                                CustomInputField(
+                                  controller: mobileController,
+                                  hintText: 'Mobile',
+                                  enable: isEditable,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 20),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Address Line 1 :',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                CustomInputField(
+                                  controller: addressLine1Controller,
+                                  hintText: 'Address Line 1',
+                                  enable: isEditable,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 20),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Address Line 2 :',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                CustomInputField(
+                                  controller: addressLine2Controller,
+                                  hintText: 'Address Line 2',
+                                  enable: isEditable,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 20),
+                            isEditable
+                                ? SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: _updateUserData,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.primary,
+                                        foregroundColor: Colors.white,
+                                      ),
+                                      child: isLoading
+                                          ? CircularProgressIndicator(
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      AppColors.primary),
+                                            )
+                                          : Text("Save Changes"),
+                                    ),
+                                  )
+                                : SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          isEditable = true;
+                                        });
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.primary,
+                                        foregroundColor: Colors.white,
+                                      ),
+                                      child: Text("Edit Profile"),
+                                    ),
+                                  ),
+                          ],
+                        ),
+                      ),
+                    ])),
+        ),
+      ]),
     );
   }
 }

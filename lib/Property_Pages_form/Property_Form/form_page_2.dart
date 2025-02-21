@@ -1,35 +1,28 @@
-// import 'dart:nativewrappers/_internal/vm/lib/internal_patch.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:usdinfra/Components/Choice_Chip.dart';
 import 'package:usdinfra/routes/app_routes.dart';
-// import 'package:usdinfra/Property_Pages/Property_Form/form_page_1.dart';
-
 import '../../Controllers/authentication_controller.dart';
 import '../../Customs/custom_textfield.dart';
 import '../../conigs/app_colors.dart';
 
 class PropertyForm2 extends StatefulWidget {
-  Map<String, String?>?  formData;
-   PropertyForm2({super.key, required this.formData});
+  final Map<String, dynamic> formData;
+  PropertyForm2({super.key, required this.formData});
 
   @override
   State<PropertyForm2> createState() => _PropertyForm2State();
 }
 
 class _PropertyForm2State extends State<PropertyForm2> {
-  Map<String, String?> get formData => widget.formData!;
   final controllers = ControllersManager();
   String? availabilityStatus;
   String? ownershipType;
   bool allInclusivePrice = false;
   bool taxExcluded = false;
   bool isLoading = false;
-
-
-
+  bool isDeleted = false;
 
   Future<void> saveToFirestore() async {
     setState(() {
@@ -37,27 +30,39 @@ class _PropertyForm2State extends State<PropertyForm2> {
     });
     try {
       User? user = FirebaseAuth.instance.currentUser;
-      if (user == null){
-        print("User not logged in .");
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User is not logged in.')),
+        );
         return;
       }
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('AppUsers')
-          .doc(user.uid) // Assuming the document ID is the same as the Firebase Auth UID
+          .doc(user.uid)
           .get();
       if (!userDoc.exists) {
         print("User document not found in AppUsers collection.");
         return;
       }
-      String userId = userDoc['userId']; // Make sure 'userId' exists in AppUsers
+      if (userDoc['name'] is! String) {
+        print("Error: 'name' field is not a String.");
+        return;
+      }
+
+      String userId = userDoc['userId'];
+      String name = userDoc['name'];
+      print("User Name: $name"); // Debugging purpose
 
       await FirebaseFirestore.instance.collection('AppProperties').add({
         'city': controllers.cityController.text,
-        'lookingTo':formData['lookingTo'],
-        'userId': userId,
-        'propertyType':formData['propertyType'],
-        'propertyCategory':formData[' propertyCategory'],
-        'contactDetails': formData['contactDetails'],
+        'lookingTo': widget.formData['lookingTo'],
+        'createdBy': userId,
+        'uid': user.uid,
+        'contactName': name,
+        'isDeleted': isDeleted,
+        'propertyType': widget.formData['propertyType'],
+        'propertyCategory': widget.formData['propertyCategory'],
+        'contactDetails': widget.formData['contactDetails'],
         'locality': controllers.localityController.text,
         'subLocality': controllers.subLocalityController.text,
         'apartment': controllers.apartmentController.text,
@@ -65,25 +70,25 @@ class _PropertyForm2State extends State<PropertyForm2> {
         'totalFloors': controllers.totalFloorsController.text,
         'availabilityStatus': availabilityStatus,
         'ownershipType': ownershipType,
-        'expectedPrice': '₹${controllers.nameController.text}',
+        'expectedPrice': '₹${controllers.expectedPriceController.text}',
         'allInclusivePrice': allInclusivePrice,
         'taxExcluded': taxExcluded,
         'description': controllers.descriptionController.text,
         'createdAt': FieldValue.serverTimestamp(),
-        'imageUrl': 'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
-
+        'imageUrl':
+            'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Property saved successfully!')),
       );
 
-      Navigator.pushNamed(context ,AppRouts.dashBoard);
+      Navigator.pushNamed(context, AppRouts.dashBoard);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
-    }finally{
+    } finally {
       setState(() {
         isLoading = false;
       });
@@ -93,8 +98,10 @@ class _PropertyForm2State extends State<PropertyForm2> {
   @override
   void initState() {
     super.initState();
-    print("Arguments received in PropertyForm2: ${formData['lookingTo']}");
+    print(
+        "Arguments received in PropertyForm2: ${widget.formData['lookingTo']}");
   }
+
   // @override
   // void didChangeDependencies() {
   //   super.didChangeDependencies();
@@ -319,7 +326,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                           color: AppColors.primary)),
                   SizedBox(height: 8),
                   CustomInputField(
-                      controller: controllers.nameController,
+                      controller: controllers.expectedPriceController,
                       hintText: 'Expected Price'),
                 ],
               ),
@@ -379,23 +386,25 @@ class _PropertyForm2State extends State<PropertyForm2> {
                   elevation: 3,
                   shadowColor: Colors.grey,
                   padding: EdgeInsets.symmetric(vertical: 10),
-                  textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  textStyle:
+                      TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                ),  // Make sure to call the saveToFirestore function
+                ), // Make sure to call the saveToFirestore function
                 child: isLoading
                     ? CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                )
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(AppColors.primary),
+                      )
                     : Text(
-                  'Post and Continue',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
+                        'Post and Continue',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ),
               ),
             )
           ],

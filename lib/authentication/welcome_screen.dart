@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
@@ -22,7 +21,7 @@ class HomePage extends StatelessWidget {
                     alignment: Alignment.topCenter,
                     child: Column(
                       children: [
-                        Image.asset("assets/logo.png"),
+                        Image.asset("assets/animations/logo.png"),
                         // Lottie.asset(
                         //   'assets/animations/welcome.json',
                         //   // width: 390,

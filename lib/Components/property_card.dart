@@ -13,7 +13,7 @@ class PropertyCard extends StatefulWidget {
   final String plotArea;
   final String propertyType;
   final String address;
-  final String updateTime;
+  final String createdAt;
   final String title;
   final List<String> features;
   final String propertyStatus;
@@ -26,7 +26,7 @@ class PropertyCard extends StatefulWidget {
     required this.plotArea,
     required this.propertyType,
     required this.address,
-    required this.updateTime,
+    required this.createdAt,
     required this.title,
     required this.features,
     required this.propertyStatus,
@@ -39,32 +39,33 @@ class PropertyCard extends StatefulWidget {
 
 class _PropertyCardState extends State<PropertyCard> {
   bool isFavorited = false;
+
   void _toggleFavorite() {
     setState(() {
       isFavorited = !isFavorited;
     });
   }
 
-  void _shareOnWhatsApp() async {
-    final String shareMessage = '''
-Property: ${widget.title}
-Price: ${widget.expectedPrice}
-Size: ${widget.plotArea}
-Type: ${widget.propertyType}
-Address: ${widget.address}
-Status: ${widget.propertyStatus}
-Features: ${widget.features.join(', ')}
-''';
-
-    final String url =
-        'https://wa.me/?text=${Uri.encodeComponent(shareMessage)}';
-
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not open WhatsApp';
-    }
-  }
+//   void _shareOnWhatsApp() async {
+//     final String shareMessage = '''
+// Property: ${widget.title}
+// Price: ${widget.expectedPrice}
+// Size: ${widget.plotArea}
+// Type: ${widget.propertyType}
+// Address: ${widget.address}
+// Status: ${widget.propertyStatus}
+// Features: ${widget.features.join(', ')}
+// ''';
+//
+//     final String url =
+//         'https://wa.me/?text=${Uri.encodeComponent(shareMessage)}';
+//
+//     if (await canLaunch(url)) {
+//       await launch(url);
+//     } else {
+//       throw 'Could not open WhatsApp';
+//     }
+//   }
 
   @override
   Widget build(BuildContext context) {
@@ -125,16 +126,16 @@ Features: ${widget.features.join(', ')}
                       //   ),
                       //   onPressed: _shareOnWhatsApp,
                       // ),
-                      IconButton(
-                        icon: Icon(
-                          isFavorited
-                              ? CupertinoIcons.heart_fill
-                              : CupertinoIcons.heart,
-                          color: isFavorited ? Colors.red : Colors.black,
-                          size: 24,
-                        ),
-                        onPressed: _toggleFavorite,
-                      ),
+                      // IconButton(
+                      //   icon: Icon(
+                      //     isFavorited
+                      //         ? CupertinoIcons.heart_fill
+                      //         : CupertinoIcons.heart,
+                      //     color: isFavorited ? Colors.red : Colors.black,
+                      //     size: 24,
+                      //   ),
+                      //   onPressed: _toggleFavorite,
+                      // ),
                     ],
                   ),
                 ],
@@ -167,7 +168,7 @@ Features: ${widget.features.join(', ')}
                             color: Colors.black54,
                           ),
                           child: Text(
-                            'Updated ${widget.updateTime} ago',
+                            'Updated ${widget.createdAt} ago',
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 11),
                             overflow: TextOverflow.ellipsis,

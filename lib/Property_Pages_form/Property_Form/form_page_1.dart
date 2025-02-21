@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import '../../Controllers/authentication_controller.dart';
-import '../../routes/app_routes.dart';
 import 'Form_page_1_components/Contact_Details.dart';
 import 'Form_page_1_components/Looking_To_Property.dart';
 import 'Form_page_1_components/Property_Category.dart';
 import 'Form_page_1_components/Property_Type.dart';
-
+import 'form_page_2.dart';
 
 class PropertyForm1 extends StatefulWidget {
   const PropertyForm1({super.key});
@@ -27,14 +26,14 @@ class _PropertyFormState extends State<PropertyForm1> {
   final controllers = ControllersManager();
 
   List<String> getPropertyTypes() {
-    if (lookingTo == 'Sell') {
-      return ['Residential', 'Commercial'];
-    } else if (lookingTo == 'Rent / Lease') {
-      return ['Residential', 'Commercial'];
-    } else if (lookingTo == 'Paying Guest') {
-      return ['Residential'];
-    } else {
-      return [];
+    switch (lookingTo) {
+      case 'Sell':
+      case 'Rent / Lease':
+        return ['Residential', 'Commercial'];
+      case 'Paying Guest':
+        return ['Residential'];
+      default:
+        return [];
     }
   }
 
@@ -68,10 +67,21 @@ class _PropertyFormState extends State<PropertyForm1> {
         lookingTo != null &&
         propertyType != null &&
         propertyCategory != null) {
-      Navigator.pushNamed(context, AppRouts.propertyform2);
+      Map<String, dynamic> formData = {
+        'lookingTo': lookingTo,
+        'propertyType': propertyType,
+        'propertyCategory': propertyCategory,
+        'contactDetails': controllers.contactController.text,
+      };
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PropertyForm2(formData: formData),
+        ),
+      );
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,15 +92,6 @@ class _PropertyFormState extends State<PropertyForm1> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        // actions: [
-        //   TextButton(
-        //     onPressed: () {},
-        //     child: const Text(
-        //       'Post Via WhatsApp',
-        //       style: TextStyle(color: Colors.green, fontSize: 14),
-        //     ),
-        //   ),
-        // ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -169,7 +170,7 @@ class _PropertyFormState extends State<PropertyForm1> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       elevation: 2,
-                      shadowColor: AppColors.shadow
+                      shadowColor: AppColors.shadow,
                     ),
                     child: const Text(
                       'Next',
