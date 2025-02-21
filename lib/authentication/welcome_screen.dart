@@ -4,6 +4,8 @@ import 'package:usdinfra/conigs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,10 +62,6 @@ class HomePage extends StatelessWidget {
                             onPressed: () {
                               Navigator.pushNamed(context, AppRouts.dashBoard);
                             },
-                            child: Text(
-                              'Getting Started',
-                              style: TextStyle(color: Colors.white),
-                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
                               elevation: 3, // Add elevation here
@@ -75,6 +73,10 @@ class HomePage extends StatelessWidget {
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
+                            ),
+                            child: Text(
+                              'Getting Started',
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
                         ),

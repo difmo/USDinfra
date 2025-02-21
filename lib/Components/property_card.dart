@@ -20,7 +20,7 @@ class PropertyCard extends StatefulWidget {
   final contactDetails;
 
   const PropertyCard({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.expectedPrice,
     required this.plotArea,
@@ -31,7 +31,7 @@ class PropertyCard extends StatefulWidget {
     required this.features,
     required this.propertyStatus,
     required this.contactDetails,
-  }) : super(key: key);
+  });
 
   @override
   _PropertyCardState createState() => _PropertyCardState();
@@ -160,18 +160,18 @@ Features: ${widget.features.join(', ')}
                           width: screenWidth * 0.3,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 7, vertical: 4),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(8),
+                                bottomRight: Radius.circular(8)),
+                            color: Colors.black54,
+                          ),
                           child: Text(
                             'Updated ${widget.updateTime} ago',
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 11),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(8),
-                                bottomRight: Radius.circular(8)),
-                            color: Colors.black54,
                           ),
                         ),
                       ),
@@ -258,9 +258,9 @@ Features: ${widget.features.join(', ')}
                       )
                     },
                     style: ButtonStyle(
-                        side: MaterialStateProperty.all(
+                        side: WidgetStateProperty.all(
                             BorderSide(color: AppColors.primary, width: 2)),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ))),
                     child: const Text('Get Phone No.',

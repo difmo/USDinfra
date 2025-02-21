@@ -14,7 +14,7 @@ class CustomInputField extends StatelessWidget {
   // final int ? maxlines;
 
   const CustomInputField({
-    Key? key,
+    super.key,
     required this.hintText,
     this.prefixIcon,
     required this.controller,
@@ -26,7 +26,7 @@ class CustomInputField extends StatelessWidget {
     this.onTap,
     this.enable = true,
    // this.maxlines,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

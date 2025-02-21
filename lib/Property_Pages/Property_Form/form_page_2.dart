@@ -374,7 +374,17 @@ class _PropertyForm2State extends State<PropertyForm2> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: isLoading ? null : () => saveToFirestore(),  // Make sure to call the saveToFirestore function
+                onPressed: isLoading ? null : () => saveToFirestore(),
+                style: ElevatedButton.styleFrom(
+                  elevation: 3,
+                  shadowColor: Colors.grey,
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  backgroundColor: AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),  // Make sure to call the saveToFirestore function
                 child: isLoading
                     ? CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
@@ -385,16 +395,6 @@ class _PropertyForm2State extends State<PropertyForm2> {
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold),
-                ),
-                style: ElevatedButton.styleFrom(
-                  elevation: 3,
-                  shadowColor: Colors.grey,
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  backgroundColor: AppColors.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
                 ),
               ),
             )

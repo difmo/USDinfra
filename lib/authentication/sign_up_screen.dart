@@ -8,6 +8,8 @@ import '../Customs/custom_textfield.dart';
 import '../routes/app_routes.dart';
 
 class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
+
   @override
   _SignupPageState createState() => _SignupPageState();
 }
@@ -238,9 +240,6 @@ class _SignupPageState extends State<SignupPage> {
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: ElevatedButton(
           onPressed: _isLoading ? null : () => _signup(context),
-          child: _isLoading
-              ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary))
-              : Text('Signup', style: TextStyle(color: Colors.white)),
           style: ElevatedButton.styleFrom(
             elevation: 3,
             shadowColor: Colors.grey,
@@ -249,6 +248,9 @@ class _SignupPageState extends State<SignupPage> {
             backgroundColor: AppColors.primary,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           ),
+          child: _isLoading
+              ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary))
+              : Text('Signup', style: TextStyle(color: Colors.white)),
         ),
       ),
     );

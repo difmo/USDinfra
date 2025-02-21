@@ -12,12 +12,12 @@ class PropertyCategoryColumn extends StatelessWidget {
   final String? propertyCategoryError;
 
   const PropertyCategoryColumn({
-    Key? key,
+    super.key,
     required this.propertyCategory,
     required this.onSelectPropertyCategory,
     required this.propertyCategories,
     this.propertyCategoryError,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

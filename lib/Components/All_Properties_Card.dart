@@ -14,13 +14,13 @@ class AllPropertyCard extends StatelessWidget {
   // final String ownership;
 
   const AllPropertyCard({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.price,
     required this.propertyType,
     required this.address,
     required this.title,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -7,10 +7,10 @@ class ContactDetailsColumn extends StatelessWidget {
   final FormFieldValidator<String>? validator1;
 
   const ContactDetailsColumn({
-    Key? key,
+    super.key,
     required this.controller,
     this.validator1,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

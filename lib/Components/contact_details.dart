@@ -6,7 +6,7 @@ import '../conigs/app_colors.dart';
 class ContactDetailDialog extends StatelessWidget {
   final String phoneNumber;
 
-  ContactDetailDialog({required this.phoneNumber});
+  const ContactDetailDialog({super.key, required this.phoneNumber});
 
   @override
   Widget build(BuildContext context) {

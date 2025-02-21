@@ -5,7 +5,6 @@ import '../../routes/app_routes.dart';
 import 'Form_page_1_components/Contact_Details.dart';
 import 'Form_page_1_components/Looking_To_Property.dart';
 import 'Form_page_1_components/Property_Category.dart';
-import 'Form_page_1_components/Property_Comercial_Type.dart';
 import 'Form_page_1_components/Property_Type.dart';
 
 

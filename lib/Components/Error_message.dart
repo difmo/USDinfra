@@ -3,7 +3,7 @@ import '../../conigs/app_colors.dart';
 
 class ErrorMessage extends StatelessWidget {
   final String? errorText;
-  const ErrorMessage({Key? key, this.errorText}) : super(key: key);
+  const ErrorMessage({super.key, this.errorText});
 
   @override
   Widget build(BuildContext context) {

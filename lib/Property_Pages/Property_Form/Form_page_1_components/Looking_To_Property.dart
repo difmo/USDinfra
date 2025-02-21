@@ -12,11 +12,11 @@ class LookingToColumn extends StatelessWidget {
   final String? lookingToError;
 
   const LookingToColumn({
-    Key? key,
+    super.key,
     required this.lookingTo,
     required this.onSelectLookingTo,
     this.lookingToError,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -9,6 +9,8 @@ import '../Customs/custom_textfield.dart';
 import '../authentication/login_screen.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }

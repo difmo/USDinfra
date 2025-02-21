@@ -8,6 +8,8 @@ class NotificationPage extends StatelessWidget {
     {'title': 'Reminder', 'subtitle': 'Your meeting is scheduled for 3 PM'},
   ];
 
+  const NotificationPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

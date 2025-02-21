@@ -12,6 +12,8 @@ import '../Controllers/authentication_controller.dart';
 import '../Customs/custom_textfield.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -79,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushNamed(context, AppRouts.signup);
         }
       }
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Please register'),
         backgroundColor: AppColors.primary,
@@ -206,15 +208,6 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : () => _login(context),
-                    child: _isLoading
-                        ? CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.primary),
-                          )
-                        : Text(
-                            'Log In',
-                            style: TextStyle(color: Colors.white),
-                          ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       elevation: 3,
@@ -228,6 +221,15 @@ class _LoginPageState extends State<LoginPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    child: _isLoading
+                        ? CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.primary),
+                          )
+                        : Text(
+                            'Log In',
+                            style: TextStyle(color: Colors.white),
+                          ),
                   ),
                 ),
                 SizedBox(height: 20),

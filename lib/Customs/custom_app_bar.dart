@@ -7,7 +7,7 @@ import '../conigs/app_colors.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
-  CustomAppBar({required this.scaffoldKey});
+  const CustomAppBar({super.key, required this.scaffoldKey});
 
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight); // Define the height of the AppBar

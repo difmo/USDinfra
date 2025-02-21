@@ -7,11 +7,11 @@ class ChoiceChipOption extends StatelessWidget {
   final ValueChanged<bool> onSelected;
 
   const ChoiceChipOption({
-    Key? key,
+    super.key,
     required this.label,
     required this.isSelected,
     required this.onSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

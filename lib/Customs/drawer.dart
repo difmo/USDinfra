@@ -6,6 +6,8 @@ import 'package:usdinfra/routes/app_routes.dart';
 import '../authentication/login_screen.dart'; // Import Login Page
 
 class CustomDrawer extends StatelessWidget {
+  const CustomDrawer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(

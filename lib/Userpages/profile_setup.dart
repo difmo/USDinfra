@@ -10,6 +10,8 @@ import 'package:usdinfra/routes/app_routes.dart';
 import '../Customs/custom_textfield.dart';
 
 class ProfilesetupPage extends StatefulWidget {
+  const ProfilesetupPage({super.key});
+
   @override
   _ProfilesetupPageState createState() => _ProfilesetupPageState();
 }
@@ -210,15 +212,6 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _saveUserData,
-                  child: _isLoading
-                      ? CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.primary),
-                  )
-                      : Text(
-                    'Save & Next',
-                    style: TextStyle(color: Colors.white),
-                  ),
                   style: ElevatedButton.styleFrom(
                     elevation: 3,
                     shadowColor: AppColors.shadow,
@@ -231,6 +224,15 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
+                  ),
+                  child: _isLoading
+                      ? CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.primary),
+                  )
+                      : Text(
+                    'Save & Next',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),

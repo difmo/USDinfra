@@ -29,7 +29,7 @@ class _CarouselExampleState extends State<Carousel> {
     return ListView(
       children: <Widget>[
         const SizedBox(height: 20),
-        Container(
+        SizedBox(
           height: 200,
           child: CarouselView(
             itemExtent: 400,
