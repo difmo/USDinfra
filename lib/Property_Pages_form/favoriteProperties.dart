@@ -5,8 +5,6 @@ import 'package:shimmer/shimmer.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 
 import '../Customs/CustomAppBar.dart';
-import '../authentication/dummy.dart';
-import 'All_properties_list.dart';
 import 'Properties_detail_page.dart';
 
 class FavoritePropertiesPage extends StatefulWidget {
@@ -91,7 +89,8 @@ class _FavoritePropertiesPageState extends State<FavoritePropertiesPage> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(22),
                     ),
@@ -144,7 +143,7 @@ class _FavoritePropertiesPageState extends State<FavoritePropertiesPage> {
     //   ),
     // );
 
-  return Scaffold(
+    return Scaffold(
       appBar: CustomAppBar(title: 'Favorite Properties'),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:usdinfra/Admin/adminappbar.dart';
 import 'package:usdinfra/routes/app_routes.dart';
-import '../Customs/CustomAppBar.dart';
 
 class ApprovedPropertiesPage extends StatefulWidget {
   @override

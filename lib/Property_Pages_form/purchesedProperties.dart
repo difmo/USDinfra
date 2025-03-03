@@ -5,8 +5,6 @@ import 'package:shimmer/shimmer.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 
 import '../Customs/CustomAppBar.dart';
-import '../authentication/dummy.dart';
-import 'All_properties_list.dart';
 import 'Properties_detail_page.dart';
 
 class PurchesedPropertiesPage extends StatefulWidget {

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 
-import 'admin_dashboard.dart';
-import 'approved_property.dart';
-import 'enquaries.dart';
-
 class AdminBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;

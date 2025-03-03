@@ -57,7 +57,7 @@ class _SoldPropertiesPageState extends State<SoldPropertiesPage> {
               ),
               itemBuilder: (context, index) {
                 var property = properties[index];
-                String docId = property.id;
+                // String docId = property.id;
                 String title = property["title"] ?? "Untitled Property";
                 String city = property["city"] ?? "Unknown City";
                 String expectedPrice = property["expectedPrice"] != null
@@ -113,8 +113,6 @@ class _SoldPropertiesPageState extends State<SoldPropertiesPage> {
                             ),
                           ],
                         ),
-
-                        /// ✅ Property Info Section
                         Expanded(
                           child: Padding(
                             padding: EdgeInsets.all(12),
