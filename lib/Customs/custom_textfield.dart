@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:usdinfra/conigs/app_colors.dart';
 
-class CustomInputField extends StatelessWidget {
+class CustomInputField extends StatefulWidget {
   final String hintText;
   final Icon? prefixIcon;
   final TextEditingController controller;
@@ -11,7 +12,11 @@ class CustomInputField extends StatelessWidget {
   final String? errorMessage;
   final Function()? onTap;
   final bool enable;
-  // final int ? maxlines;
+  final int maxLines;
+  final int? minLength;
+  final int? maxLength;
+  final double? borderRadius;
+  final TextInputType inputType;
 
   const CustomInputField({
     super.key,
@@ -24,55 +29,124 @@ class CustomInputField extends StatelessWidget {
     this.validator,
     this.errorMessage,
     this.onTap,
+    this.maxLines = 1,
+    this.minLength,
+    this.maxLength,
     this.enable = true,
-   // this.maxlines,
+    this.borderRadius,
+    this.inputType = TextInputType.text,
   });
 
   @override
+  _CustomInputFieldState createState() => _CustomInputFieldState();
+}
+
+class _CustomInputFieldState extends State<CustomInputField> {
+  final FocusNode _focusNode = FocusNode();
+  bool _isFocused = false;
+  String? _currentErrorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      setState(() {
+        _isFocused = _focusNode.hasFocus;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    double radius = widget.borderRadius ?? 8.0;
+
+    bool isFieldEmpty = widget.controller.text.isEmpty;
+
+    if (widget.minLength != null && widget.controller.text.length < widget.minLength!) {
+      _currentErrorMessage = 'Minimum ${widget.minLength} characters required.';
+    } else if (widget.maxLength != null && widget.controller.text.length > widget.maxLength!) {
+      _currentErrorMessage = 'Maximum ${widget.maxLength} characters allowed.';
+    } else {
+      _currentErrorMessage = null; // Clear error if valid
+    }
+
+    Color borderColor = widget.enable
+        ? (widget.errorMessage != null && widget.errorMessage!.isNotEmpty
+        ? Colors.red
+        : isFieldEmpty
+        ? (_isFocused ? Colors.black : Colors.grey)
+        : Colors.black)
+        : Colors.grey.withOpacity(0.5); // Handle disabled state
+
+    Color iconColor = widget.enable
+        ? (_isFocused ? Colors.black : Colors.grey)
+        : Colors.grey.withOpacity(0.5);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
-          onTap: onTap,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey,
-                  blurRadius: 1.0,
-                  offset: Offset(0, 0.5),
-                ),
-              ],
-            ),
-            child: TextFormField(
-              controller: controller,
-              obscureText: obscureText,
-              onChanged: onChanged,
-              validator: validator,
-              enabled: enable,
-              // maxLines: maxlines,
-              decoration: InputDecoration(
-                prefixIcon: prefixIcon,
-                hintText: hintText,
-                border: InputBorder.none,
-                suffixIcon: suffixIcon,
-                contentPadding:
-                EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          onTap: widget.onTap,
+          child: TextFormField(
+            controller: widget.controller,
+            obscureText: widget.obscureText,
+            validator: widget.validator,
+            maxLength: widget.maxLength,
+            enabled: widget.enable,
+            focusNode: _focusNode,
+            keyboardType: widget.inputType,
+            maxLines: widget.maxLines,
+            decoration: InputDecoration(
+              prefixIcon: widget.prefixIcon != null
+                  ? Icon(
+                widget.prefixIcon!.icon,
+                color: borderColor,
+              )
+                  : null,
+              hintText: widget.hintText,
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: borderColor, width: 1.0),
+                borderRadius: BorderRadius.circular(radius),
               ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black, width: 2.0),
+                borderRadius: BorderRadius.circular(radius),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: borderColor, width: 1.0),
+                borderRadius: BorderRadius.circular(radius),
+              ),
+              suffixIcon: widget.suffixIcon,
+              contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
+            onChanged: (value) {
+              setState(() {
+                // Recalculate the error message based on the text length
+                if (widget.minLength != null && value.length < widget.minLength!) {
+                  _currentErrorMessage = 'Minimum ${widget.minLength} characters required.';
+                } else if (widget.maxLength != null && value.length > widget.maxLength!) {
+                  _currentErrorMessage = 'Maximum ${widget.maxLength} characters allowed.';
+                } else {
+                  _currentErrorMessage = null; // Clear error when valid
+                }
+              });
+              widget.onChanged?.call(value);
+            },
           ),
         ),
-        // Error message is displayed outside the text field
-        if (errorMessage != null && errorMessage!.isNotEmpty)
+        if (_currentErrorMessage != null)
           Padding(
             padding: const EdgeInsets.only(top: 4.0),
             child: Align(
-              alignment: Alignment.bottomLeft, // Align the error message outside
+              alignment: Alignment.bottomLeft,
               child: Text(
-                errorMessage!,
+                _currentErrorMessage!,
                 style: TextStyle(color: Colors.red, fontSize: 12),
               ),
             ),
@@ -81,3 +155,106 @@ class CustomInputField extends StatelessWidget {
     );
   }
 }
+
+
+// class _CustomInputFieldState extends State<CustomInputField> {
+//   final FocusNode _focusNode = FocusNode();
+//   bool _isFocused = false;
+//   String? _currentErrorMessage;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _focusNode.addListener(() {
+//       setState(() {
+//         _isFocused = _focusNode.hasFocus;
+//       });
+//     });
+//   }
+//
+//   @override
+//   void dispose() {
+//     _focusNode.dispose();
+//     super.dispose();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     bool isFieldEmpty = widget.controller.text.isEmpty;
+//
+//     if (widget.controller.text.length < widget.minLength) {
+//       _currentErrorMessage = 'Minimum ${widget.minLength} characters required.';
+//     } else if (widget.controller.text.length > widget.maxLength) {
+//       _currentErrorMessage = 'Maximum ${widget.maxLength} characters allowed.';
+//     } else {
+//       _currentErrorMessage = null; // Clear error if valid
+//     }
+//
+//     Color borderColor = widget.enable
+//         ? (widget.errorMessage != null && widget.errorMessage!.isNotEmpty
+//         ? Colors.red
+//         : isFieldEmpty
+//         ? (_isFocused ? Colors.black : Colors.grey)
+//         : Colors.black) // Focused border color if not empty
+//         : Colors.grey.withOpacity(0.5);
+//
+//     Color iconColor = widget.enable
+//         ? (_isFocused ? Colors.black : Colors.grey)
+//         : Colors.grey.withOpacity(0.5);
+//
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         GestureDetector(
+//           onTap: widget.onTap,
+//           child: TextFormField(
+//             controller: widget.controller,
+//             obscureText: widget.obscureText,
+//             // onChanged: widget.onChanged,
+//             validator: widget.validator,
+//             maxLength: widget.maxLength,
+//             enabled: widget.enable,
+//             focusNode: _focusNode,
+//             keyboardType: widget.inputType,
+//             maxLines: widget.maxLines,
+//             decoration: InputDecoration(
+//               prefixIcon: widget.prefixIcon != null
+//                   ? Icon(
+//                 widget.prefixIcon!.icon,
+//                 color: borderColor,
+//               )
+//                   : null,
+//               hintText: widget.hintText,
+//               border: InputBorder.none,
+//               suffixIcon: widget.suffixIcon,
+//               contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+//             ),
+//             onChanged: (value) {
+//               setState(() {
+//                 if (value.length < widget.minLength) {
+//                   _currentErrorMessage = 'Minimum ${widget.minLength} characters required.';
+//                 } else if (value.length > widget.maxLength) {
+//                   _currentErrorMessage = 'Maximum ${widget.maxLength} characters allowed.';
+//                 } else {
+//                   _currentErrorMessage = null; // Clear error when valid
+//                 }
+//               });
+//               widget.onChanged?.call(value);
+//             },
+//           ),
+//         ),
+//         if (_currentErrorMessage != null)
+//           Padding(
+//             padding: const EdgeInsets.only(top: 4.0),
+//             child: Align(
+//               alignment: Alignment.bottomLeft,
+//               child: Text(
+//                 _currentErrorMessage!,
+//                 style: TextStyle(color: Colors.red, fontSize: 12),
+//               ),
+//             ),
+//           ),
+//       ],
+//     );
+//   }
+// }

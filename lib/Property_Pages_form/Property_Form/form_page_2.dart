@@ -5,10 +5,13 @@ import 'package:usdinfra/Components/Choice_Chip.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../../Controllers/authentication_controller.dart';
 import '../../Customs/custom_textfield.dart';
+import '../../Customs/form_input_field.dart';
 import '../../conigs/app_colors.dart';
+import 'form_page_3.dart';
 
 class PropertyForm2 extends StatefulWidget {
   final Map<String, dynamic> formData;
+
   PropertyForm2({super.key, required this.formData});
 
   @override
@@ -49,23 +52,23 @@ class _PropertyForm2State extends State<PropertyForm2> {
         return;
       }
 
-      String userId = userDoc['userId'];
       String name = userDoc['name'];
-      print("User Name: $name"); // Debugging purpose
+      print("User Name: $name");
 
-      await FirebaseFirestore.instance.collection('AppProperties').add({
+      DocumentReference newPropertyRef =
+          await FirebaseFirestore.instance.collection('AppProperties').add({
         'city': controllers.cityController.text,
         'lookingTo': widget.formData['lookingTo'],
-        'createdBy': userId,
         'uid': user.uid,
-        'contactName': name,
+        // 'contactName': name,
         'isDeleted': isDeleted,
         'propertyType': widget.formData['propertyType'],
         'propertyCategory': widget.formData['propertyCategory'],
         'contactDetails': widget.formData['contactDetails'],
         'locality': controllers.localityController.text,
         'subLocality': controllers.subLocalityController.text,
-        'apartment': controllers.apartmentController.text,
+        'apartment/Society': controllers.apartmentController.text,
+        'title': controllers.propertyName.text,
         'plotArea': controllers.plotAreaController.text,
         'totalFloors': controllers.totalFloorsController.text,
         'availabilityStatus': availabilityStatus,
@@ -75,15 +78,19 @@ class _PropertyForm2State extends State<PropertyForm2> {
         'taxExcluded': taxExcluded,
         'description': controllers.descriptionController.text,
         'createdAt': FieldValue.serverTimestamp(),
-        'imageUrl':
-            'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
       });
+      String docId = newPropertyRef.id; // Get the generated document ID
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Property saved successfully!')),
       );
 
-      Navigator.pushNamed(context, AppRouts.dashBoard);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddPhotosDetailsPage(docId: docId),
+        ),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
@@ -117,15 +124,15 @@ class _PropertyForm2State extends State<PropertyForm2> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          // TextButton(
-          //   onPressed: () {},
-          //   child: const Text(
-          //     'Post Via WhatsApp',
-          //     style: TextStyle(color: Colors.green, fontSize: 14),
-          //   ),
-          // ),
-        ],
+        // actions: [
+        //   // TextButton(
+        //   //   onPressed: () {},
+        //   //   child: const Text(
+        //   //     'Post Via WhatsApp',
+        //   //     style: TextStyle(color: Colors.green, fontSize: 14),
+        //   //   ),
+        //   // ),
+        // ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -141,13 +148,51 @@ class _PropertyForm2State extends State<PropertyForm2> {
               'STEP 2 OF 3',
               style: TextStyle(color: Colors.grey, fontSize: 14),
             ),
-            const SizedBox(height: 20),
-            Text('Where is your property located?',
-                style: TextStyle(
+            SizedBox(height: 20),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Title',
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.primary)),
-            SizedBox(height: 8),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                FormTextField(
+                  hint: "Property Title",
+                  controller: controllers.propertyName,
+                  maxLength: 50,
+                  inputType: TextInputType.text,
+                  maxLines: 2,
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Description',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    )),
+                SizedBox(height: 8),
+                FormTextField(
+                  hint: "Description",
+                  controller: controllers.descriptionController,
+                  maxLength: 200,
+                  inputType: TextInputType.text,
+                  maxLines: 5,
+                ),
+              ],
+            ),
+            Text('Where is your property located?',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                )),
+            SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Column(
@@ -159,9 +204,10 @@ class _PropertyForm2State extends State<PropertyForm2> {
                         fontWeight: FontWeight.w500,
                       )),
                   SizedBox(height: 8),
-                  CustomInputField(
+                  FormTextField(
                       controller: controllers.cityController,
-                      hintText: 'Enter City Name'),
+                      hint: 'Enter City Name',
+                  borderRadius: 25,),
                 ],
               ),
             ),
@@ -177,9 +223,10 @@ class _PropertyForm2State extends State<PropertyForm2> {
                         fontWeight: FontWeight.w500,
                       )),
                   SizedBox(height: 8),
-                  CustomInputField(
+                  FormTextField(
                       controller: controllers.localityController,
-                      hintText: 'Locality'),
+                      hint: 'Locality',
+                      borderRadius: 25),
                 ],
               ),
             ),
@@ -195,9 +242,10 @@ class _PropertyForm2State extends State<PropertyForm2> {
                         fontWeight: FontWeight.w500,
                       )),
                   SizedBox(height: 8),
-                  CustomInputField(
+                  FormTextField(
                       controller: controllers.subLocalityController,
-                      hintText: 'Sub Locality'),
+                      hint: 'Sub Locality',
+                      borderRadius: 25),
                 ],
               ),
             ),
@@ -213,18 +261,19 @@ class _PropertyForm2State extends State<PropertyForm2> {
                         fontWeight: FontWeight.w500,
                       )),
                   SizedBox(height: 8),
-                  CustomInputField(
+                  FormTextField(
                       controller: controllers.apartmentController,
-                      hintText: 'Apartment / Society'),
+                      hint: 'Apartment / Society',
+                      borderRadius: 25),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Text('Add Area Details',
                 style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.primary)),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                )),
             Row(
               children: [
                 Expanded(
@@ -240,16 +289,17 @@ class _PropertyForm2State extends State<PropertyForm2> {
                               fontWeight: FontWeight.w500,
                             )),
                         SizedBox(height: 8),
-                        CustomInputField(
+                        FormTextField(
                             controller: controllers.plotAreaController,
-                            hintText: 'Plot Area'),
+                            hint: 'Plot Area',
+                            borderRadius: 25),
                       ],
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Column(
@@ -261,18 +311,16 @@ class _PropertyForm2State extends State<PropertyForm2> {
                         fontWeight: FontWeight.w500,
                       )),
                   SizedBox(height: 8),
-                  CustomInputField(
+                  FormTextField(
                       controller: controllers.totalFloorsController,
-                      hintText: 'Total Floors'),
+                      hint: 'Total Floors',
+                      borderRadius: 25),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Text('Availability Status',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.primary)),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             Wrap(
               spacing: 10,
               children: ['Ready to move', 'Under construction']
@@ -291,9 +339,9 @@ class _PropertyForm2State extends State<PropertyForm2> {
             const SizedBox(height: 20),
             Text('Ownership',
                 style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.primary)),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                )),
             Wrap(
               spacing: 10,
               children: [
@@ -321,13 +369,16 @@ class _PropertyForm2State extends State<PropertyForm2> {
                 children: [
                   Text('Price Details',
                       style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primary)),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      )),
                   SizedBox(height: 8),
-                  CustomInputField(
+                  FormTextField(
                       controller: controllers.expectedPriceController,
-                      hintText: 'Expected Price'),
+                      hint: 'Expected Price',
+                    borderRadius: 25,
+                    inputType: TextInputType.phone,
+                  ),
                 ],
               ),
             ),
@@ -356,26 +407,6 @@ class _PropertyForm2State extends State<PropertyForm2> {
                 ),
                 const Text('Tax and Govt. charges excluded'),
               ],
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('What makes your property unique',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primary)),
-                  SizedBox(height: 8),
-                  CustomInputField(
-                    controller: controllers.descriptionController,
-                    hintText: 'Share some details about your property...',
-                    // maxlines: 3,
-                  ),
-                ],
-              ),
             ),
             const SizedBox(height: 30),
             SizedBox(

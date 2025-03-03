@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../Customs/CustomAppBar.dart';
 import '../Property_Pages_form/edit_property.dart';
+import '../conigs/app_colors.dart';
 
 class MyPropertiesPage extends StatefulWidget {
   @override
@@ -11,6 +11,8 @@ class MyPropertiesPage extends StatefulWidget {
 }
 
 class _MyPropertiesPageState extends State<MyPropertiesPage> {
+  final User? user = FirebaseAuth.instance.currentUser;
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? _currentUser;
 
@@ -39,6 +41,56 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (user == null) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: CustomAppBar(title: 'Published Properties'),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.lock_outline,
+                  size: 80,
+                  color: Colors.grey,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'You need to login to view your published properties.',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                  ),
+                  child: const Text(
+                    'Log In',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: CustomAppBar(
         title: "All Listed Properties",
@@ -62,86 +114,180 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
             itemCount: properties.length,
             itemBuilder: (context, index) {
               var property = properties[index];
-              String docId = property.id;  // Fetch the document ID here
+              String docId = property.id;
 
-              // Safely fetch imageUrl with fallback to a default image
+              // Fetch values safely
               String imageUrl = property['imageUrl'] ??
                   'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=';
+              String city =  property['city'] ?? "No City";
+              String locality = property['locality'] ?? "Unknown Location";
+              String expectedPrice = "${property['expectedPrice'] ?? 0}";
 
-              return Card(
+              // **Determine Property Status**
+              bool? isApproved = property['isApproved'];
+              String statusText;
+              Color statusColor;
+
+              if (isApproved == true) {
+                statusText = "Approved";
+                statusColor = Colors.green;
+              } else if (isApproved == false) {
+                statusText = "Pending Approval";
+                statusColor = Colors.orange;
+              } else {
+                statusText = "Rejected";
+                statusColor = Colors.red;
+              }
+
+              return Container(
                 margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                shape: RoundedRectangleBorder(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black12,
+                      width: 0.5),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                elevation: 4,
                 child: Column(
                   children: [
-                    // Property Image
-                    ClipRRect(
-                      borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(10)),
-                      child: Image.network(
-                        imageUrl,
-                        height: 180,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            Icon(Icons.broken_image, size: 50),
-                      ),
-                    ),
+                    Stack(
+                      children: [
+                        // Property Image
+                        ClipRRect(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+                          child: Image.network(
+                            imageUrl,
+                            height: 180,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Icon(Icons.broken_image, size: 50),
+                          ),
+                        ),
 
-                    // Property Details
+                        // Positioned Edit & Delete Icons (Top-Right Corner) with Background Color
+                        Positioned(
+                          top: 10,
+                          right: 10,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.3), // Semi-transparent black
+                              borderRadius: BorderRadius.circular(20), // Rounded corners
+                            ),
+                            child: Row(
+                              children: [
+                                // Edit Icon
+                                IconButton(
+                                  icon: Icon(Icons.edit, color: AppColors.secondry),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EditPropertyPage(docId: docId),
+                                      ),
+                                    );
+                                  },
+                                ),
+
+                                // Delete Icon
+                                IconButton(
+                                  icon: Icon(Icons.delete, color: AppColors.primary),
+                                  onPressed: () {
+                                    _showDeleteConfirmationDialog(context, property.id);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     Padding(
                       padding: EdgeInsets.all(12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            property['city'] ?? "No City",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            property['locality'] ?? "Unknown Location",
-                            style: TextStyle(fontSize: 14, color: Colors.grey),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            "${property['expectedPrice'] ?? 0}",
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.green),
-                          ),
-                          SizedBox(height: 10),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.edit, color: Colors.blue),
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditPropertyPage(
-                                                    docId: docId,  // Pass docId to the EditPropertyPage
-                                                  )));
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () {
-                                      _deleteProperty(property.id);
-                                    },
-                                  ),
-                                ],
+                              Text(
+                                "City: ",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                city, // Fixed syntax error
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  // fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ],
                           ),
+
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              Text(
+                                "Locality: ",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                locality,
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              Text(
+                                "Price: ",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                    color: Colors.green
+                                ),
+                              ),
+                              Text(
+                                expectedPrice,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.green),
+                              ),
+                            ],
+                          ),
+
+                          // **Property Status Row**
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Text(
+                                "Status: ",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: statusColor.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: statusColor),
+                                ),
+                                child: Text(
+                                  statusText,
+                                  style: TextStyle(
+                                      fontSize: 14, color: statusColor),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
                         ],
                       ),
                     ),
@@ -155,7 +301,6 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
     );
   }
 
-  // Function to delete a property
   void _deleteProperty(String propertyId) async {
     await FirebaseFirestore.instance
         .collection('AppProperties')
@@ -165,5 +310,40 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
     });
     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Property deleted successfully!")));
+  }
+  void _showDeleteConfirmationDialog(BuildContext context, String propertyId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text("Confirm Delete"),
+          content: Text("Are you sure you want to delete this property?"),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the popup
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.secondry
+              ),
+              child: Text("Cancel", style: TextStyle(color: Colors.white,
+                  fontWeight: FontWeight.bold)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _deleteProperty(propertyId); // Call delete function
+                Navigator.of(context).pop(); // Close the popup after deletion
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary
+              ),
+              child: Text("Delete", style: TextStyle(color: Colors.white,
+              fontWeight: FontWeight.bold)),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

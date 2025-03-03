@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
@@ -15,7 +16,12 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, AppRouts.homePage);
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        Navigator.pushReplacementNamed(context, AppRouts.dashBoard);
+      } else {
+        Navigator.pushReplacementNamed(context, AppRouts.homePage);
+      }
     });
   }
 

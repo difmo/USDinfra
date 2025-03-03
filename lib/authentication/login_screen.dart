@@ -108,15 +108,18 @@ class _LoginPageState extends State<LoginPage> {
                   child: Image.asset(
                     'assets/animations/logo.png',
                     height: 300,
+                    width: 300,
                     fit: BoxFit.contain,
                   ),
                 ),
-                Text(
-                  'Log In Now',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                Container(
+                  child: Text(
+                    'Login Now',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -135,21 +138,23 @@ class _LoginPageState extends State<LoginPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Email Address:',
+                        'Email Address',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.primary,
+                          color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 8),
                       CustomInputField(
-                        hintText: 'Email',
+                        hintText: 'Enter email',
+                        borderRadius: 25,
                         prefixIcon: Icon(
-                          Icons.email,
+                          Icons.email_outlined,
                           color: AppColors.primary,
                         ),
                         controller: controllers.emailController,
+                        inputType: TextInputType.emailAddress,
                         // validator: (value){
                         //   if (value == null || value.isEmpty){
                         //     return 'Please enter your email address';
@@ -161,49 +166,59 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                // Password TextField
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Password:',
+                        'Password',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.primary,
+                          color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 8),
                       CustomInputField(
-                        hintText: 'Password',
+                        hintText: 'Enter Password',
+                        borderRadius: 25,
                         prefixIcon: Icon(
-                          Icons.lock,
-                          color: AppColors.primary,
+                          Icons.lock_outline,
+                          color: AppColors.primary,size: 12,
                         ),
                         controller: controllers.passwordController,
-                        suffixIcon:
-                            IconButton(
-                              icon: Icon(
-                                _ispasswordVisible
-                                ?Icons.visibility_off
-                                    :Icons.visibility,
+                        obscureText: true,
+                        inputType: TextInputType.text,
+                      ),
+                      SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, AppRouts.forgetpassemail);
+                          },
+                          child: Text.rich(
+                            TextSpan(
+                              // text: "Don't have an account? ",
+                              style: TextStyle(color: Colors.grey),
+                              children: [
+                                TextSpan(
+                                  text: "Forgot password?",
+                                  style: TextStyle(
                                     color: AppColors.primary,
-                              ),
-                              onPressed: (){
-                                setState(() {
-                                  _ispasswordVisible = !_ispasswordVisible;
-                                });
-                              },
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
-                        obscureText: !_ispasswordVisible,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
                 SizedBox(height: 30),
-                // Login Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -233,7 +248,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                // Footer with Sign Up
                 GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, AppRouts.signup);

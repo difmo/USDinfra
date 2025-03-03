@@ -9,9 +9,10 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(
         title:
-          "Chats",),
+        "Chats",),
       // actions: [
       //     IconButton(icon: const Icon(Icons.search), onPressed: () {}),
       //     IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
@@ -47,7 +48,6 @@ class ChatScreen extends StatelessWidget {
     );
   }
 }
-
 class ChatTile extends StatelessWidget {
   final String name;
   final String message;
@@ -68,48 +68,58 @@ class ChatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      leading: CircleAvatar(
-        radius: 28,
-        backgroundImage: NetworkImage(profileUrl),
-      ),
-      title: Text(
-        name,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-      ),
-      subtitle: Text(
-        message,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: Colors.grey[600],
-          fontSize: 14,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black12,
+              width: 1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          leading: CircleAvatar(
+            radius: 28,
+            backgroundImage: NetworkImage(profileUrl),
+          ),
+          title: Text(
+            name,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          ),
+          subtitle: Text(
+            message,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 14,
+            ),
+          ),
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                time,
+                style: TextStyle(color: Colors.grey[500], fontSize: 12),
+              ),
+              if (unreadCount > 0)
+                Container(
+                  margin: const EdgeInsets.only(top: 5),
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    unreadCount.toString(),
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+            ],
+          ),
+          onTap: onTap,
         ),
       ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            time,
-            style: TextStyle(color: Colors.grey[500], fontSize: 12),
-          ),
-          if (unreadCount > 0)
-            Container(
-              margin: const EdgeInsets.only(top: 5),
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                shape: BoxShape.circle,
-              ),
-              child: Text(
-                unreadCount.toString(),
-                style: const TextStyle(color: Colors.white, fontSize: 12),
-              ),
-            ),
-        ],
-      ),
-      onTap: onTap,
     );
   }
 }

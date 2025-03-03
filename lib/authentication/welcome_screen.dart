@@ -21,10 +21,13 @@ class HomePage extends StatelessWidget {
                     alignment: Alignment.topCenter,
                     child: Column(
                       children: [
-                        Image.asset("assets/animations/logo.png"),
+                        Image.asset("assets/animations/logo.png",
+                          width: 300,
+                          height: 300,
+                        ),
                         // Lottie.asset(
                         //   'assets/animations/welcome.json',
-                        //   // width: 390,
+                        //   width: 390,
                         //   height: 400,
                         //   fit: BoxFit.fill,
                         //   repeat: false,

@@ -321,7 +321,7 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
               const SizedBox(height: 16),
               ContactDetailsColumn(
                 controller: controllers.contactController,
-                validator1: (value) {
+                validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your contact details';
                   }

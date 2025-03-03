@@ -35,7 +35,7 @@ android {
 
     signingConfigs {
         release {
-            keyAlias 'upload'
+            keyAlias 'key'
             keyPassword 'Difmo2025@'
             storeFile file('upload-keystore.jks')
             storePassword 'Difmo2025@'

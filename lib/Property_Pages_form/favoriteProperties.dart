@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:usdinfra/conigs/app_colors.dart';
 
 import '../Customs/CustomAppBar.dart';
+import '../authentication/dummy.dart';
+import 'All_properties_list.dart';
 import 'Properties_detail_page.dart';
 
 class FavoritePropertiesPage extends StatefulWidget {
@@ -57,9 +60,91 @@ class _FavoritePropertiesPageState extends State<FavoritePropertiesPage> {
   @override
   Widget build(BuildContext context) {
     if (user == null) {
-      return const Center(child: Text('Please log in to view favorites.'));
+      return Scaffold(
+        appBar: CustomAppBar(title: 'Favorite Properties'),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.lock_outline,
+                  size: 80,
+                  color: Colors.grey,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'You need to log in to view your favorite properties.',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                  ),
+                  child: const Text(
+                    'Log In',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     }
-    return Scaffold(
+
+    // The rest of the code for fetching favorites and displaying them.
+    // return Scaffold(
+    //   appBar: CustomAppBar(title: 'Favorite Properties'),
+    //   body: FutureBuilder<QuerySnapshot>(
+    //     future: FirebaseFirestore.instance
+    //         .collection('AppProperties')
+    //         .where(FieldPath.documentId,
+    //         whereIn: favoritePropertyIds.isEmpty
+    //             ? ['dummy']
+    //             : favoritePropertyIds)
+    //         .get(),
+    //     builder: (context, snapshot) {
+    //       if (snapshot.connectionState == ConnectionState.waiting) {
+    //         return _buildShimmerLoading();
+    //       }
+    //
+    //       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+    //         return _buildEmptyState();
+    //       }
+    //
+    //       var favoriteProperties = snapshot.data!.docs;
+    //
+    //       return ListView.builder(
+    //         padding: const EdgeInsets.all(10),
+    //         itemCount: favoriteProperties.length,
+    //         itemBuilder: (context, index) {
+    //           var property = favoriteProperties[index];
+    //           var propertyData = property.data() as Map<String, dynamic>;
+    //
+    //           return _buildPropertyCard(propertyData, property.id);
+    //         },
+    //       );
+    //     },
+    //   ),
+    // );
+
+  return Scaffold(
       appBar: CustomAppBar(title: 'Favorite Properties'),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance

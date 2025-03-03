@@ -27,5 +27,6 @@ class ControllersManager {
   final TextEditingController totalFloorsController = TextEditingController();
   final TextEditingController expectedPriceController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController propertyName = TextEditingController();
 
 }

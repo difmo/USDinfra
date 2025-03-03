@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// import 'package:lottie/lottie.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import '../Controllers/authentication_controller.dart';
 import '../Customs/custom_textfield.dart';
@@ -22,10 +21,16 @@ class _SignupPageState extends State<SignupPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  String? nameError;
+  String? emailError;
+  String? mobileError;
+  String? passwordError;
+  String? confirmPasswordError;
+
   Future<String> generateUserId() async {
-    String currentYear = DateTime.now().year.toString().substring(2); // '24'
-    String userPrefix = "USDINFRA$currentYear"; // USR24
-    String userId = "${userPrefix}00001"; // Default ID if no users exist
+    String currentYear = DateTime.now().year.toString().substring(2);
+    String userPrefix = "USDINFRA$currentYear";
+    String userId = "${userPrefix}00001";
 
     try {
       var querySnapshot = await _firestore
@@ -35,9 +40,12 @@ class _SignupPageState extends State<SignupPage> {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        String lastUserId = querySnapshot.docs.first['userId']; // Last stored ID
-        int lastNumber = int.parse(lastUserId.substring(7)); // Extract numeric part
-        userId = "$userPrefix${(lastNumber + 1).toString().padLeft(5, '0')}"; // Increment ID
+        String lastUserId =
+        querySnapshot.docs.first['userId'];
+        int lastNumber =
+        int.parse(lastUserId.substring(7));
+        userId =
+        "$userPrefix${(lastNumber + 1).toString().padLeft(5, '0')}";
       }
     } catch (e) {
       print("Error generating user ID: $e");
@@ -49,6 +57,11 @@ class _SignupPageState extends State<SignupPage> {
   Future<void> _signup(BuildContext context) async {
     setState(() {
       _isLoading = true;
+      nameError = null;
+      emailError = null;
+      mobileError = null;
+      passwordError = null;
+      confirmPasswordError = null;
     });
 
     String name = controllers.nameController.text;
@@ -57,22 +70,54 @@ class _SignupPageState extends State<SignupPage> {
     String password = controllers.passwordController.text;
     String confirmPassword = controllers.confirmpasswordController.text;
 
-    if (!isValidEmail(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Invalid email format'),
-        backgroundColor: Colors.red,
-      ));
+    bool isValid = true;
+
+    if (name.isEmpty) {
       setState(() {
-        _isLoading = false;
+        nameError = 'Name cannot be empty';
       });
-      return;
+      isValid = false;
+    }
+
+    bool isValidEmail(String email) {
+      return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+          .hasMatch(email);
+    }
+
+    if (email.isEmpty) {
+      setState(() {
+        emailError = 'Email cannot be empty';
+      });
+      isValid = false;
+    } else if (!isValidEmail(email)) {
+      setState(() {
+        emailError = 'Invalid email format';
+      });
+      isValid = false;
+    }
+
+    if (mobile.isEmpty || mobile.length != 10) {
+      setState(() {
+        mobileError = 'Mobile number must be 10 digits';
+      });
+      isValid = false;
+    }
+
+    if (password.isEmpty || password.length < 8) {
+      setState(() {
+        passwordError = 'Password must be at least 8 characters long';
+      });
+      isValid = false;
     }
 
     if (password != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Passwords do not match'),
-        backgroundColor: Colors.red,
-      ));
+      setState(() {
+        confirmPasswordError = 'Passwords do not match';
+      });
+      isValid = false;
+    }
+
+    if (!isValid) {
       setState(() {
         _isLoading = false;
       });
@@ -80,21 +125,25 @@ class _SignupPageState extends State<SignupPage> {
     }
 
     try {
-      // Generate unique userId
       String userId = await generateUserId();
 
-      // Create a new user in Firebase Authentication
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+      await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      // Store user details including userId in Firestore
-      await _firestore.collection('AppUsers').doc(userCredential.user?.uid).set({
+      await _firestore
+          .collection('AppUsers')
+          .doc(userCredential.user?.uid)
+          .set({
         'userId': userId,
         'name': name,
         'email': email,
         'mobile': mobile,
+        'passWord': password,
+        'role': 'isUser',
+        'confirmpassWord': confirmPassword,
         'favoriteProperties': [],
         'createdAt': FieldValue.serverTimestamp(),
       });
@@ -104,13 +153,9 @@ class _SignupPageState extends State<SignupPage> {
         backgroundColor: Colors.green,
       ));
 
-      // Navigate to profile setup page
       Navigator.pushNamed(context, AppRouts.profilesetup);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Error: ${e.toString()}'),
-        backgroundColor: Colors.red,
-      ));
+      showSnackBar(context, 'Error: ${e.toString()}', Colors.red);
     } finally {
       setState(() {
         _isLoading = false;
@@ -118,30 +163,9 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
-  Future<void> toggleFavoriteProperty(String propertyId) async {
-    if (_auth.currentUser == null) return;
-
-    DocumentReference userRef = _firestore.collection('AppUsers').doc(_auth.currentUser!.uid);
-
-    try {
-      DocumentSnapshot userDoc = await userRef.get();
-      List<dynamic> favoriteProperties = userDoc.get('favoriteProperties') ?? [];
-
-      if (favoriteProperties.contains(propertyId)) {
-        favoriteProperties.remove(propertyId); // Remove if already liked
-      } else {
-        favoriteProperties.add(propertyId); // Add if not liked
-      }
-
-      await userRef.update({'favoriteProperties': favoriteProperties});
-    } catch (e) {
-      print("Error updating favorites: $e");
-    }
-  }
-
-
   bool isValidEmail(String email) {
-    return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$").hasMatch(email);
+    return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+        .hasMatch(email);
   }
 
   void showSnackBar(BuildContext context, String message, Color color) {
@@ -168,34 +192,42 @@ class _SignupPageState extends State<SignupPage> {
                 Image.asset(
                   'assets/animations/logo.png',
                   height: 300,
+                  width: 300,
                   fit: BoxFit.contain,
                 ),
                 Text(
                   'Create a new account',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primary),
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary),
                 ),
                 SizedBox(height: 20),
-
-                buildTextField("Name", controllers.nameController, Icons.person_2_outlined),
-                buildTextField("Email", controllers.emailController, Icons.email_outlined),
-                buildTextField("Mobile", controllers.mobileController, Icons.local_phone_outlined),
-
-                buildPasswordTextField("Password", controllers.passwordController, _isPVisible, () {
-                  setState(() {
-                    _isPVisible = !_isPVisible;
-                  });
-                }),
-
-                buildPasswordTextField("Confirm Password", controllers.confirmpasswordController, _isCPVisible, () {
-                  setState(() {
-                    _isCPVisible = !_isCPVisible;
-                  });
-                }),
-
+                buildInputField('Name', controllers.nameController,
+                    Icons.person_2_outlined, TextInputType.text,
+                    errorMessage: nameError),
+                buildInputField('Email', controllers.emailController,
+                    Icons.email_outlined, TextInputType.emailAddress,
+                    errorMessage: emailError),
+                buildInputField('Mobile', controllers.mobileController,
+                    Icons.local_phone_outlined, TextInputType.phone,
+                    errorMessage: mobileError, maxLength: 10),
+                buildPasswordTextField(
+                    "Password", controllers.passwordController, _isPVisible,
+                        () {
+                      setState(() {
+                        _isPVisible = !_isPVisible;
+                      });
+                    }, TextInputType.text, errorMessage: passwordError),
+                buildPasswordTextField("Confirm Password",
+                    controllers.confirmpasswordController, _isCPVisible, () {
+                      setState(() {
+                        _isCPVisible = !_isCPVisible;
+                      });
+                    }, TextInputType.text, errorMessage: confirmPasswordError),
                 SizedBox(height: 30),
                 buildSignupButton(context),
                 SizedBox(height: 20),
-
                 GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, AppRouts.login);
@@ -207,7 +239,9 @@ class _SignupPageState extends State<SignupPage> {
                       children: [
                         TextSpan(
                           text: "Log in",
-                          style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -222,44 +256,74 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
-  Widget buildTextField(String label, TextEditingController controller, IconData icon) {
+  Widget buildInputField(String label, TextEditingController controller,
+      IconData icon, TextInputType inputType,
+      {int? maxLength, String? errorMessage}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.primary)),
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black)),
           SizedBox(height: 8),
           CustomInputField(
+            borderRadius: 25,
             controller: controller,
             prefixIcon: Icon(icon, color: AppColors.primary),
             hintText: "Enter $label",
+            inputType: inputType,
+            maxLength: maxLength,
           ),
+          if (errorMessage != null && errorMessage.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Text(errorMessage,
+                  style: TextStyle(color: Colors.red, fontSize: 12)),
+            ),
         ],
       ),
     );
   }
 
-  Widget buildPasswordTextField(String label, TextEditingController controller, bool isVisible, VoidCallback onToggle) {
+  Widget buildPasswordTextField(String label, TextEditingController controller,
+      bool isVisible, VoidCallback onToggle, TextInputType text,
+      {String? errorMessage}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.primary)),
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black)),
           SizedBox(height: 8),
           CustomInputField(
+            borderRadius: 25,
             controller: controller,
-            prefixIcon: Icon(Icons.lock, color: AppColors.primary),
+            prefixIcon: Icon(Icons.lock_outline, color: AppColors.primary),
             hintText: label,
             obscureText: !isVisible,
             suffixIcon: IconButton(
-              icon: Icon(isVisible ? Icons.visibility_off : Icons.visibility, color: AppColors.primary),
+              icon: Icon(
+                  isVisible
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                  color: Colors.black),
               onPressed: onToggle,
             ),
           ),
+          if (errorMessage != null && errorMessage.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Text(errorMessage,
+                  style: TextStyle(color: Colors.red, fontSize: 12)),
+            ),
         ],
       ),
     );
@@ -278,10 +342,12 @@ class _SignupPageState extends State<SignupPage> {
             padding: EdgeInsets.symmetric(vertical: 10),
             textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             backgroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           ),
           child: _isLoading
-              ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary))
+              ? CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary))
               : Text('Signup', style: TextStyle(color: Colors.white)),
         ),
       ),

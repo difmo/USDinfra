@@ -1,218 +1,199 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/material.dart';
-// import 'package:usdinfra/Bottom/bottom_navigation.dart';
-// import 'package:usdinfra/Customs/custom_app_bar.dart';
-// import 'package:usdinfra/Property_Pages_form/Properties_detail_page.dart';
 // import 'package:usdinfra/conigs/app_colors.dart';
-// import 'package:usdinfra/routes/app_routes.dart';
-// import '../Components/cerosoule.dart';
-// import '../Components/property_card.dart';
-// import '../Customs/drawer.dart';
+// import '../../Controllers/authentication_controller.dart';
+// import 'Form_page_1_components/Contact_Details.dart';
+// import 'Form_page_1_components/Looking_To_Property.dart';
+// import 'Form_page_1_components/Property_Category.dart';
+// import 'Form_page_1_components/Property_Type.dart';
+// import 'form_page_2.dart';
 //
-// class HomeDashBoard extends StatefulWidget {
-//   const HomeDashBoard({super.key});
+// class PropertyForm1 extends StatefulWidget {
+//   const PropertyForm1({super.key});
 //
 //   @override
-//   State<HomeDashBoard> createState() => _HomeDashBoard();
+//   State<PropertyForm1> createState() => _PropertyFormState();
 // }
 //
-// class _HomeDashBoard extends State<HomeDashBoard> {
-//   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-//   int _selectedIndex = 0;
-//   String? userId;
-//   List<String> favoriteProperties = [];
+// class _PropertyFormState extends State<PropertyForm1> {
+//   String? lookingTo;
+//   String? propertyType;
+//   String? propertyCategory;
 //
-//   @override
-//   void initState() {
-//     super.initState();
-//     _getCurrentUserFavorites();
-//   }
+//   final _formKey = GlobalKey<FormState>();
+//   String? _lookingToError;
+//   String? _propertyTypeError;
+//   String? _propertyCategoryError;
+//   final controllers = ControllersManager();
 //
-//   /// Fetch current user's favorite properties from Firestore
-//   Future<void> _getCurrentUserFavorites() async {
-//     final user = FirebaseAuth.instance.currentUser;
-//     if (user != null) {
-//       userId = user.uid;
-//       final doc = await FirebaseFirestore.instance.collection("AppUsers").doc(userId).get();
-//       if (doc.exists) {
-//         setState(() {
-//           favoriteProperties = List<String>.from(doc.data()?["favoriteProperties"] ?? []);
-//         });
-//       }
+//   List<String> getPropertyTypes() {
+//     switch (lookingTo) {
+//       case 'Sell':
+//       case 'Rent / Lease':
+//         return ['Residential', 'Commercial'];
+//       case 'Paying Guest':
+//         return ['Residential'];
+//       default:
+//         return [];
 //     }
 //   }
 //
-//   /// Toggle favorite status of a property
-//   Future<void> _toggleFavorite(String propertyId) async {
-//     if (userId == null) return;
-//
-//     final docRef = FirebaseFirestore.instance.collection("AppUsers").doc(userId);
-//     if (favoriteProperties.contains(propertyId)) {
-//       // Remove property from favorites
-//       favoriteProperties.remove(propertyId);
+//   List<String> getPropertyCategories() {
+//     if (lookingTo == 'Sell' && propertyType == 'Commercial') {
+//       return ['Office', 'Retail', 'Storage', 'Plot/Land', 'Industry', 'Hospitality', 'Other'];
+//     } else if (lookingTo == 'Sell' && propertyType == 'Residential') {
+//       return ['Apartment', 'Independent House/Villa', 'Independent/Builder Floor',
+//         'Plot/Land', '1RK/Studio Apartment', 'Serviced Apartment', 'Farmhouse', 'Other'];
+//     } else if (lookingTo == 'Rent / Lease' && propertyType == 'Residential') {
+//       return ['Apartment', 'Independent House/Villa', 'Independent/Builder Floor',
+//         '1RK/Studio Apartment', 'Serviced Apartment', 'Farmhouse', 'Other'];
+//     } else if (lookingTo == 'Rent / Lease' && propertyType == 'Commercial') {
+//       return ['Office', 'Retail', 'Storage', 'Plot/Land', 'Industry', 'Hospitality', 'Other'];
+//     } else if (lookingTo == 'Paying Guest' && propertyType == 'Residential') {
+//       return ['Apartment', 'Independent House/Villa', 'Independent/Builder Floor',
+//         '1RK/Studio Apartment', 'Serviced Apartment'];
 //     } else {
-//       // Add property to favorites
-//       favoriteProperties.add(propertyId);
+//       return [];
 //     }
-//
-//     await docRef.update({"favoriteProperties": favoriteProperties});
-//     setState(() {});
 //   }
 //
-//   void _onItemTapped(int index) {
+//   // Validate Contact Details, lookingTo, propertyType, and propertyCategory
+//   void _validateAndSubmit() {
 //     setState(() {
-//       _selectedIndex = index;
+//       _lookingToError = lookingTo == null ? 'Please select what you\'re looking to do' : null;
+//       _propertyTypeError = propertyType == null ? 'Please select a property type' : null;
+//       _propertyCategoryError = propertyCategory == null ? 'Please select a property category' : null;
 //     });
 //
-//     switch (index) {
-//       case 1:
-//         Navigator.pushNamed(context, AppRouts.chat);
-//         break;
-//       case 2:
-//         Navigator.pushNamed(context, AppRouts.propertyform1);
-//         break;
-//       case 3:
-//         Navigator.pushNamed(context, AppRouts.upgardeservice);
-//         break;
-//       case 4:
-//         Navigator.pushNamed(context, AppRouts.profile);
-//         break;
+//     // Check if all fields are valid
+//     if (_formKey.currentState!.validate() &&
+//         lookingTo != null &&
+//         propertyType != null &&
+//         propertyCategory != null) {
+//       Map<String, dynamic> formData = {
+//         'lookingTo': lookingTo,
+//         'propertyType': propertyType,
+//         'propertyCategory': propertyCategory,
+//         'contactDetails': controllers.contactController.text,
+//       };
+//
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//           builder: (context) => PropertyForm2(formData: formData),
+//         ),
+//       );
 //     }
 //   }
 //
 //   @override
 //   Widget build(BuildContext context) {
-//     final screenHeight = MediaQuery.of(context).size.height;
-//
 //     return Scaffold(
-//       key: _scaffoldKey,
-//       appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
-//       drawer: CustomDrawer(),
 //       backgroundColor: Colors.white,
-//       body: SingleChildScrollView(
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             SizedBox(height: screenHeight * 0.28, child: const Carousel()),
-//             Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-//               child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   const Padding(
-//                     padding: EdgeInsets.only(left: 9),
-//                     child: Text(
-//                       'Properties',
-//                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//                     ),
-//                   ),
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.pushNamed(context, AppRouts.properties);
-//                     },
-//                     child: Text(
-//                       'View More',
-//                       style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-//               child: StreamBuilder<QuerySnapshot>(
-//                 stream: FirebaseFirestore.instance
-//                     .collection("AppProperties")
-//                     .where('isDeleted', isEqualTo: false)
-//                     .snapshots(),
-//                 builder: (context, snapshot) {
-//                   if (snapshot.connectionState == ConnectionState.waiting) {
-//                     return const Center(child: CircularProgressIndicator());
-//                   }
-//                   if (snapshot.hasError) {
-//                     return Center(child: Text('Error: ${snapshot.error}'));
-//                   }
-//                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-//                     return const Center(child: Text('No properties available'));
-//                   }
-//
-//                   final properties = snapshot.data!.docs.map((doc) {
-//                     final data = doc.data() as Map<String, dynamic>? ?? {};
-//                     final String propertyId = doc.id;
-//
-//                     return {
-//                       'id': propertyId,
-//                       'imageUrl': data['imageUrl'] ?? '',
-//                       'expectedPrice': data['expectedPrice'] ?? '₹ 80 Lac',
-//                       'plotArea': data['plotArea'] ?? '1850 Sqft',
-//                       'propertyType': data['propertyType'] ?? '2 BHK Flat',
-//                       'address': data['address'] ?? 'Sector 10 Greater Noida West',
-//                       'createdAt': data['createdAt']?.toDate().toString() ?? 'Today',
-//                       'title': data['title'] ?? 'Property Title',
-//                       'features': List<String>.from(data['features'] ?? ['Lift', 'Parking']),
-//                       'propertyStatus': data['propertyStatus'] ?? 'Ready to move',
-//                       'contactDetails': data['contactDetails'] ?? 'N/A',
-//                     };
-//                   }).toList();
-//
-//                   return Column(
-//                     children: properties.map((property) {
-//                       bool isFavorite = favoriteProperties.contains(property['id']);
-//
-//                       return GestureDetector(
-//                         onTap: () {
-//                           Navigator.push(
-//                             context,
-//                             MaterialPageRoute(
-//                               builder: (context) => PropertyDetailPage(docId: property['id']),
-//                             ),
-//                           );
-//                         },
-//                         child: Stack(
-//                           children: [
-//                             Container(
-//                               height: screenHeight * 0.39,
-//                               margin: const EdgeInsets.only(bottom: 6),
-//                               child: PropertyCard(
-//                                 imageUrl: property['imageUrl'],
-//                                 expectedPrice: property['expectedPrice'],
-//                                 plotArea: property['plotArea'],
-//                                 propertyType: property['propertyType'],
-//                                 address: property['address'],
-//                                 createdAt: property['createdAt'],
-//                                 title: property['title'],
-//                                 features: property['features'],
-//                                 propertyStatus: property['propertyStatus'],
-//                                 contactDetails: property['contactDetails'],
-//                               ),
-//                             ),
-//                             Positioned(
-//                               top: 10,
-//                               right: 10,
-//                               child: IconButton(
-//                                 icon: Icon(
-//                                   isFavorite ? Icons.favorite : Icons.favorite_border,
-//                                   color: isFavorite ? Colors.red : Colors.grey,
-//                                 ),
-//                                 onPressed: () => _toggleFavorite(property['id']),
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-//                       );
-//                     }).toList(),
-//                   );
-//                 },
-//               ),
-//             ),
-//             const SizedBox(height: 80),
-//           ],
+//       appBar: AppBar(
+//         backgroundColor: Colors.white,
+//         leading: IconButton(
+//           icon: const Icon(Icons.arrow_back, color: Colors.black),
+//           onPressed: () => Navigator.pop(context),
 //         ),
 //       ),
-//       bottomNavigationBar: CustomBottomNavigationBar(
-//         currentIndex: _selectedIndex,
-//         onTap: _onItemTapped,
+//       body: SingleChildScrollView(
+//         child: Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+//           child: Form(
+//             key: _formKey,
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 const Text(
+//                   'Add Basic Details',
+//                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+//                 ),
+//                 const SizedBox(height: 4),
+//                 const Text(
+//                   'STEP 1 OF 3',
+//                   style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+//                 ),
+//                 const SizedBox(height: 20),
+//                 LookingToColumn(
+//                   lookingTo: lookingTo,
+//                   onSelectLookingTo: (value) {
+//                     setState(() {
+//                       lookingTo = value;
+//                       propertyType = null;
+//                       propertyCategory = null;
+//                     });
+//                   },
+//                   lookingToError: _lookingToError,
+//                 ),
+//                 const SizedBox(height: 20),
+//                 PropertyTypeColumn(
+//                   propertyType: propertyType,
+//                   onSelectPropertyType: (value) {
+//                     setState(() {
+//                       propertyType = value;
+//                       propertyCategory = null;
+//                     });
+//                   },
+//                   propertyTypes: getPropertyTypes(),
+//                   propertyTypeError: _propertyTypeError,
+//                 ),
+//                 const SizedBox(height: 20),
+//                 PropertyCategoryColumn(
+//                   propertyCategory: propertyCategory,
+//                   onSelectPropertyCategory: (value) {
+//                     setState(() {
+//                       propertyCategory = value;
+//                     });
+//                   },
+//                   propertyCategories: getPropertyCategories(),
+//                   propertyCategoryError: _propertyCategoryError,
+//                 ),
+//                 const SizedBox(height: 20),
+//                 ContactDetailsColumn(
+//                   controller: controllers.contactController,
+//                   validator1: (value) {
+//                     if (value == null || value.isEmpty) {
+//                       return 'Please enter your contact details';
+//                     }
+//                     // Validate the length of the contact details (phone number or email)
+//                     if (value.length < 10) {
+//                       return 'Please enter at least 10 characters';
+//                     }
+//                     // Regex for validating phone or email
+//                     if (!RegExp(r'^[0-9]+$').hasMatch(value) && !value.contains('@')) {
+//                       return 'Please enter a valid phone number or email';
+//                     }
+//                     return null;
+//                   },
+//                 ),
+//                 const SizedBox(height: 30),
+//                 SizedBox(
+//                   width: double.infinity,
+//                   child: ElevatedButton(
+//                     onPressed: _validateAndSubmit,
+//                     style: ElevatedButton.styleFrom(
+//                       backgroundColor: AppColors.primary,
+//                       padding: const EdgeInsets.symmetric(vertical: 10),
+//                       shape: RoundedRectangleBorder(
+//                         borderRadius: BorderRadius.circular(20),
+//                       ),
+//                       elevation: 2,
+//                       shadowColor: AppColors.shadow,
+//                     ),
+//                     child: const Text(
+//                       'Next',
+//                       style: TextStyle(
+//                         color: Colors.white,
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: 16,
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
 //       ),
 //     );
 //   }

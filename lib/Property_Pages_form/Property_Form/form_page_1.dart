@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import '../../Controllers/authentication_controller.dart';
+import '../../Customs/CustomAppBar.dart';
 import 'Form_page_1_components/Contact_Details.dart';
 import 'Form_page_1_components/Looking_To_Property.dart';
 import 'Form_page_1_components/Property_Category.dart';
@@ -15,9 +17,12 @@ class PropertyForm1 extends StatefulWidget {
 }
 
 class _PropertyFormState extends State<PropertyForm1> {
+  final User? user = FirebaseAuth.instance.currentUser;
+
   String? lookingTo;
   String? propertyType;
   String? propertyCategory;
+  String? contactDetailsError;
 
   final _formKey = GlobalKey<FormState>();
   String? _lookingToError;
@@ -56,6 +61,19 @@ class _PropertyFormState extends State<PropertyForm1> {
     }
   }
 
+  String? _validateContactDetails(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your contact details';
+    }
+    if (RegExp(r'^[0-9]+$').hasMatch(value) && value.length != 10) {
+      return 'Phone number must be exactly 10 digits long';
+    }
+    if (!RegExp(r'^[0-9]+$').hasMatch(value) && !value.contains('@')) {
+      return 'Please enter a valid phone number or email';
+    }
+    return null;
+  }
+
   void _validateAndSubmit() {
     setState(() {
       _lookingToError = lookingTo == null ? 'Please select what you\'re looking to do' : null;
@@ -63,10 +81,13 @@ class _PropertyFormState extends State<PropertyForm1> {
       _propertyCategoryError = propertyCategory == null ? 'Please select a property category' : null;
     });
 
+    contactDetailsError = _validateContactDetails(controllers.contactController.text);
+
     if (_formKey.currentState!.validate() &&
         lookingTo != null &&
         propertyType != null &&
-        propertyCategory != null) {
+        propertyCategory != null &&
+        contactDetailsError == null) {
       Map<String, dynamic> formData = {
         'lookingTo': lookingTo,
         'propertyType': propertyType,
@@ -80,10 +101,63 @@ class _PropertyFormState extends State<PropertyForm1> {
           builder: (context) => PropertyForm2(formData: formData),
         ),
       );
+    } else {
+      setState(() {});
     }
   }
+
   @override
   Widget build(BuildContext context) {
+    if (user == null) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: CustomAppBar(title: 'Property From'),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.lock_outline,
+                  size: 80,
+                  color: Colors.grey,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'You need to login to list your properties.',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                  ),
+                  child: const Text(
+                    'Log In',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -111,6 +185,7 @@ class _PropertyFormState extends State<PropertyForm1> {
                   style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
+                // Looking to property
                 LookingToColumn(
                   lookingTo: lookingTo,
                   onSelectLookingTo: (value) {
@@ -123,6 +198,7 @@ class _PropertyFormState extends State<PropertyForm1> {
                   lookingToError: _lookingToError,
                 ),
                 const SizedBox(height: 20),
+                // Property Type
                 PropertyTypeColumn(
                   propertyType: propertyType,
                   onSelectPropertyType: (value) {
@@ -135,6 +211,7 @@ class _PropertyFormState extends State<PropertyForm1> {
                   propertyTypeError: _propertyTypeError,
                 ),
                 const SizedBox(height: 20),
+                // Property Category
                 PropertyCategoryColumn(
                   propertyCategory: propertyCategory,
                   onSelectPropertyCategory: (value) {
@@ -146,19 +223,13 @@ class _PropertyFormState extends State<PropertyForm1> {
                   propertyCategoryError: _propertyCategoryError,
                 ),
                 const SizedBox(height: 20),
+                // Contact Details
                 ContactDetailsColumn(
                   controller: controllers.contactController,
-                  validator1: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your contact details';
-                    }
-                    if (!RegExp(r'^[0-9]+$').hasMatch(value) && !value.contains('@')) {
-                      return 'Please enter a valid phone number or email';
-                    }
-                    return null;
-                  },
+                  validator: _validateContactDetails,
                 ),
                 const SizedBox(height: 30),
+                // Next button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(

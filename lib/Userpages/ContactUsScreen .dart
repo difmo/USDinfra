@@ -161,11 +161,11 @@ class ContactUsScreen extends StatelessWidget {
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
-          _customTextField("Full Name", controllers.nameController),
-          _customTextField("Email Address", controllers.emailController),
-          _customTextField("Mobile Number", controllers.mobileController),
+          _customTextField("Full Name", controllers.nameController, inputType: TextInputType.text),
+          _customTextField("Email Address", controllers.emailController, inputType: TextInputType.emailAddress),
+          _customTextField("Mobile Number", controllers.mobileController, inputType: TextInputType.phone),
           _customTextField("Your Message", controllers.messageController,
-              maxLines: 5),
+              maxLines: 5, inputType: TextInputType.text),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
@@ -196,7 +196,9 @@ class ContactUsScreen extends StatelessWidget {
   }
 
   Widget _customTextField(String hint, TextEditingController controller,
-      {int maxLines = 1}) {
+      {int maxLines = 1,
+        TextInputType inputType = TextInputType.text,
+      }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: TextField(

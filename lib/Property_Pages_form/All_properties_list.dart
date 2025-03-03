@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../Components/property_card.dart';
 import '../Customs/CustomAppBar.dart';
+import '../authentication/dummy.dart';
 import 'Properties_detail_page.dart';
 
 class AllProperties extends StatefulWidget {
@@ -27,6 +28,7 @@ class _AllPropertiesState extends State<AllProperties> {
             FirebaseFirestore.instance
                 .collection('AppProperties')
                 .where('isDeleted', isEqualTo: false)
+                .where('isApproved', isEqualTo: true)
                 .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -61,7 +63,7 @@ class _AllPropertiesState extends State<AllProperties> {
                   );
                 },
                 child: Container(
-                  height: screenHeight * 0.38,
+                  height: screenHeight * 0.28,
                   margin: const EdgeInsets.only(bottom: 16),
                   child: PropertyCard(
                     imageUrl: property['imageUrl'] ??
@@ -73,8 +75,8 @@ class _AllPropertiesState extends State<AllProperties> {
                     address: property['address'] ?? 'Address not available',
                     createdAt: createdAtString,
                     title: property['title'] ?? 'No Title',
-                    features: property['features'] ?? [],
-                    propertyStatus: property['propertyStatus'] ?? 'Unknown',
+                    // features: property['features'] ?? [],
+                    propertyStatus: property['availabilityStatus'] ?? 'Unknown',
                     contactDetails: property['contactDetails'] ?? {},
                   ),
                 ),

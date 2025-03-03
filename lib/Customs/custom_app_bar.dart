@@ -27,8 +27,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               colors: [AppColors.primary, AppColors.secondry], // Custom gradient colors
             ),
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(30),
-              bottomRight: Radius.circular(30),
+              bottomLeft: Radius.circular(00),
+              bottomRight: Radius.circular(00),
             ),
           ),
         ),
@@ -49,15 +49,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         actions: <Widget>[
           // List Our Property Button (New)
           Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: const EdgeInsets.only(right: 20.0),
             child: OutlinedButton(
               onPressed: () {
-                Navigator.pushNamed(context, AppRouts.propertyform1); // Navigate to list our property screen
-              },
+                Navigator.pushNamed(context, AppRouts.propertyform1);
+                },
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: Colors.white), // White border color
+                side: BorderSide(color: Colors.white),
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30), // Border radius
+                  borderRadius: BorderRadius.circular(30),
                 ),
                 // padding: EdgeInsets.symmetric(horizontal: 20, vertical:0), // Optional padding
               ),
@@ -71,9 +72,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
           ),
-
           // Notifications Button
-
         ],
       ),
     );

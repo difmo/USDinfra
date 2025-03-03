@@ -36,7 +36,7 @@ class _CarouselExampleState extends State<Carousel> {
             shrinkExtent: 200,
             // reverse: false,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                borderRadius: BorderRadius.all(Radius.circular(0.0))),
             children: List<Widget>.generate(imageUrls.length, (int index) {
               return ImageCard(imageUrl: imageUrls[index]);
             }),

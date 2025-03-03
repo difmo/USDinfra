@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
+import '../Customs/CustomAppBar.dart';
 import '../Customs/custom_textfield.dart';
 import '../authentication/login_screen.dart';
 
@@ -16,6 +17,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final User? user = FirebaseAuth.instance.currentUser;
   File? _selectedImage;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -216,6 +218,56 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (user == null) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: CustomAppBar(title: 'Profile Page'),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.lock_outline,
+                  size: 80,
+                  color: Colors.grey,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'You need to log in to view your Profile.',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                  ),
+                  child: const Text(
+                    'Log In',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       // appBar: AppBar(
@@ -236,7 +288,6 @@ class _ProfilePageState extends State<ProfilePage> {
       //   ],
       // ),
       body: Column(children: [
-        // Custom Header with Gradient
         Container(
           width: double.infinity,
           padding: EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 20),
@@ -344,11 +395,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Email :',
+                                  'Email',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
-                                    color: AppColors.primary,
+                                    // color: Colors.primary,
                                   ),
                                 ),
                                 SizedBox(height: 8),
@@ -356,6 +407,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   controller: emailController,
                                   hintText: 'Email',
                                   enable: isEditable,
+                                  borderRadius: 25,
+
                                 ),
                               ],
                             ),
@@ -364,11 +417,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Mobile :',
+                                  'Mobile',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
-                                    color: AppColors.primary,
+                                    // color: AppColors.primary,
                                   ),
                                 ),
                                 SizedBox(height: 8),
@@ -376,6 +429,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   controller: mobileController,
                                   hintText: 'Mobile',
                                   enable: isEditable,
+                                  borderRadius: 25,
                                 ),
                               ],
                             ),
@@ -384,11 +438,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Address Line 1 :',
+                                  'Address Line 1',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
-                                    color: AppColors.primary,
+                                    // color: AppColors.primary,
                                   ),
                                 ),
                                 SizedBox(height: 8),
@@ -396,6 +450,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   controller: addressLine1Controller,
                                   hintText: 'Address Line 1',
                                   enable: isEditable,
+                                  borderRadius: 25,
+
                                 ),
                               ],
                             ),
@@ -404,11 +460,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Address Line 2 :',
+                                  'Address Line 2',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
-                                    color: AppColors.primary,
+                                    // color: AppColors.primary,
                                   ),
                                 ),
                                 SizedBox(height: 8),
@@ -416,6 +472,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   controller: addressLine2Controller,
                                   hintText: 'Address Line 2',
                                   enable: isEditable,
+                                  borderRadius: 25,
+
                                 ),
                               ],
                             ),
