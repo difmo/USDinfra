@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import '../Controllers/authentication_controller.dart';
 import '../Customs/custom_textfield.dart';
@@ -40,12 +41,9 @@ class _SignupPageState extends State<SignupPage> {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        String lastUserId =
-        querySnapshot.docs.first['userId'];
-        int lastNumber =
-        int.parse(lastUserId.substring(7));
-        userId =
-        "$userPrefix${(lastNumber + 1).toString().padLeft(5, '0')}";
+        String lastUserId = querySnapshot.docs.first['userId'];
+        int lastNumber = int.parse(lastUserId.substring(7));
+        userId = "$userPrefix${(lastNumber + 1).toString().padLeft(5, '0')}";
       }
     } catch (e) {
       print("Error generating user ID: $e");
@@ -128,7 +126,7 @@ class _SignupPageState extends State<SignupPage> {
       String userId = await generateUserId();
 
       UserCredential userCredential =
-      await _auth.createUserWithEmailAndPassword(
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -145,13 +143,18 @@ class _SignupPageState extends State<SignupPage> {
         'role': 'isUser',
         'confirmpassWord': confirmPassword,
         'favoriteProperties': [],
+        'purchesedProperties': [],
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Signup successful!'),
+      Fluttertoast.showToast(
+        msg: "Signup successful!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM, // Position: TOP, CENTER, or BOTTOM
         backgroundColor: Colors.green,
-      ));
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
 
       Navigator.pushNamed(context, AppRouts.profilesetup);
     } catch (e) {
@@ -214,17 +217,17 @@ class _SignupPageState extends State<SignupPage> {
                     errorMessage: mobileError, maxLength: 10),
                 buildPasswordTextField(
                     "Password", controllers.passwordController, _isPVisible,
-                        () {
-                      setState(() {
-                        _isPVisible = !_isPVisible;
-                      });
-                    }, TextInputType.text, errorMessage: passwordError),
+                    () {
+                  setState(() {
+                    _isPVisible = !_isPVisible;
+                  });
+                }, TextInputType.text, errorMessage: passwordError),
                 buildPasswordTextField("Confirm Password",
                     controllers.confirmpasswordController, _isCPVisible, () {
-                      setState(() {
-                        _isCPVisible = !_isCPVisible;
-                      });
-                    }, TextInputType.text, errorMessage: confirmPasswordError),
+                  setState(() {
+                    _isCPVisible = !_isCPVisible;
+                  });
+                }, TextInputType.text, errorMessage: confirmPasswordError),
                 SizedBox(height: 30),
                 buildSignupButton(context),
                 SizedBox(height: 20),
@@ -343,11 +346,11 @@ class _SignupPageState extends State<SignupPage> {
             textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             backgroundColor: AppColors.primary,
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           ),
           child: _isLoading
               ? CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary))
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary))
               : Text('Signup', style: TextStyle(color: Colors.white)),
         ),
       ),

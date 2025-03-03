@@ -23,7 +23,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
   int _selectedIndex = 0;
   String? userId;
   List<String> favoriteProperties = [];
- bool isLoading =false;
+  bool isLoading = false;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -175,7 +175,10 @@ class _HomeDashBoard extends State<HomeDashBoard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: screenHeight * 0.28, child: const Carousel()),
+            Container(
+              height: screenHeight * 0.25,
+              child: const Carousel(),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
@@ -194,7 +197,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                       Navigator.pushNamed(context, AppRouts.properties);
                     },
                     child: Text(
-                      'View More',
+                      'View All',
                       style: TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.bold),
@@ -209,6 +212,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                 stream: FirebaseFirestore.instance
                     .collection("AppProperties")
                     .where('isDeleted', isEqualTo: false)
+                    .where('isPurchesed', isEqualTo: false)
                     .where('isApproved', isEqualTo: true)
                     .snapshots(),
                 builder: (context, snapshot) {
@@ -220,7 +224,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                   }
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return Align(
-                      alignment: Alignment.center,
+                        alignment: Alignment.center,
                         child: Text('No properties available'));
                   }
                   final List<Future<Map<String, dynamic>>> futureProperties =

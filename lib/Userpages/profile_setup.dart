@@ -84,7 +84,9 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
     try {
       String imageUrl = '';
       if (_selectedImage != null) {
-        final storageRef = _storage.ref().child('profile_images/${DateTime.now().millisecondsSinceEpoch}');
+        final storageRef = _storage
+            .ref()
+            .child('profile_images/${DateTime.now().millisecondsSinceEpoch}');
         final uploadTask = storageRef.putFile(_selectedImage!);
         final taskSnapshot = await uploadTask.whenComplete(() {});
         imageUrl = await taskSnapshot.ref.getDownloadURL();
@@ -95,7 +97,8 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
         await _firestore.collection('AppProfileSetup').doc(user.uid).set({
           'addressLine1': controllers.addressLine1Controller.text,
           'addressLine2': controllers.addressLine2Controller.text,
-          'profileImageUrl': 'https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png', // Saving the image URL
+          'profileImageUrl':
+              'https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png',
           // 'profileImageUrl': imageUrl, // Saving the image URL
         });
 
@@ -125,51 +128,50 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            Center(
-              child: Stack(
-              clipBehavior:
-              Clip.none, // Allowing the button to overlap
-              children: [
-                    GestureDetector(
-                      onTap: () => _showImageSourceDialog(context),
-                      child: ClipOval(
-                      child: _selectedImage != null
-                          ? Image.file(
-                        _selectedImage!,
-                        width: 150,
-                        height: 150,
-                        fit: BoxFit.cover, 
-                      )
-                          : Image.network(
-                        'https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png',
-                        width: 150,
-                        height: 150,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                ),
-                SizedBox(height: 8),
-                  Positioned(
-                    bottom: -10,
-                    child: ElevatedButton(
-                      onPressed: () => _showImageSourceDialog(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        elevation: 2,
-                        shadowColor: AppColors.shadow,
-                      ),
-                      child: Text(
-                        "Upload Image",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
+              Center(
+                child: Stack(
+                    clipBehavior: Clip.none, // Allowing the button to overlap
+                    children: [
+                      GestureDetector(
+                        onTap: () => _showImageSourceDialog(context),
+                        child: ClipOval(
+                          child: _selectedImage != null
+                              ? Image.file(
+                                  _selectedImage!,
+                                  width: 150,
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.network(
+                                  'https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png',
+                                  width: 150,
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                       ),
-                    ),
-                  ),
-                ]),
-            ),
+                      SizedBox(height: 8),
+                      Positioned(
+                        bottom: -10,
+                        child: ElevatedButton(
+                          onPressed: () => _showImageSourceDialog(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            elevation: 2,
+                            shadowColor: AppColors.shadow,
+                          ),
+                          child: Text(
+                            "Upload Image",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]),
+              ),
               SizedBox(height: 30),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,6 +188,7 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                   CustomInputField(
                     controller: controllers.addressLine1Controller,
                     hintText: "Address Line1",
+                    borderRadius: 25,
                   ),
                 ],
               ),
@@ -205,6 +208,7 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                   CustomInputField(
                     controller: controllers.addressLine2Controller,
                     hintText: "Address Line2",
+                    borderRadius: 25,
                   ),
                 ],
               ),
@@ -228,13 +232,13 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                   ),
                   child: _isLoading
                       ? CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.primary),
-                  )
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        )
                       : Text(
-                    'Save & Next',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                          'Save & Next',
+                          style: TextStyle(color: Colors.white),
+                        ),
                 ),
               ),
             ],

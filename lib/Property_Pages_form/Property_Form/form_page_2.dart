@@ -2,9 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:usdinfra/Components/Choice_Chip.dart';
-import 'package:usdinfra/routes/app_routes.dart';
 import '../../Controllers/authentication_controller.dart';
-import '../../Customs/custom_textfield.dart';
 import '../../Customs/form_input_field.dart';
 import '../../conigs/app_colors.dart';
 import 'form_page_3.dart';
@@ -26,6 +24,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
   bool taxExcluded = false;
   bool isLoading = false;
   bool isDeleted = false;
+  bool isPurchesed = false;
 
   Future<void> saveToFirestore() async {
     setState(() {
@@ -60,6 +59,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
         'city': controllers.cityController.text,
         'lookingTo': widget.formData['lookingTo'],
         'uid': user.uid,
+        'isPurchesed': isPurchesed,
         // 'contactName': name,
         'isDeleted': isDeleted,
         'propertyType': widget.formData['propertyType'],
@@ -205,9 +205,10 @@ class _PropertyForm2State extends State<PropertyForm2> {
                       )),
                   SizedBox(height: 8),
                   FormTextField(
-                      controller: controllers.cityController,
-                      hint: 'Enter City Name',
-                  borderRadius: 25,),
+                    controller: controllers.cityController,
+                    hint: 'Enter City Name',
+                    borderRadius: 25,
+                  ),
                 ],
               ),
             ),
@@ -374,8 +375,8 @@ class _PropertyForm2State extends State<PropertyForm2> {
                       )),
                   SizedBox(height: 8),
                   FormTextField(
-                      controller: controllers.expectedPriceController,
-                      hint: 'Expected Price',
+                    controller: controllers.expectedPriceController,
+                    hint: 'Expected Price',
                     borderRadius: 25,
                     inputType: TextInputType.phone,
                   ),

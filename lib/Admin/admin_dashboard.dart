@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:usdinfra/Admin/adminappbar.dart';
 
 import '../Customs/CustomAppBar.dart';
 import '../routes/app_routes.dart';
 import 'admin_bottom_nav.dart';
-
 
 class AdminPropertyPage extends StatefulWidget {
   @override
@@ -26,6 +26,9 @@ class _AdminPropertyPageState extends State<AdminPropertyPage> {
         Navigator.pushNamed(context, AppRouts.approvedProperty);
         break;
       case 2:
+        Navigator.pushNamed(context, AppRouts.soldProperty);
+        break;
+      case 3:
         Navigator.pushNamed(context, AppRouts.enquiriesPage);
         break;
     }
@@ -57,7 +60,13 @@ class _AdminPropertyPageState extends State<AdminPropertyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: "Pending Properties"),
+      appBar: AdminAppBar(
+        title: "Pending Properties",
+        index: 0,
+        onProfileTap: () {
+          Navigator.pushNamed(context, AppRouts.profile);
+        },
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection("AppProperties")
@@ -90,8 +99,7 @@ class _AdminPropertyPageState extends State<AdminPropertyPage> {
                 // color: Colors.white,
                 margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black26,
-                      width: 0.5),
+                  border: Border.all(color: Colors.black26, width: 0.5),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Column(
@@ -118,12 +126,14 @@ class _AdminPropertyPageState extends State<AdminPropertyPage> {
                         children: [
                           Text(
                             "Title: $title",
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                           SizedBox(height: 5),
                           Text(
                             "City: $city",
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 5),
                           Text(
@@ -143,22 +153,35 @@ class _AdminPropertyPageState extends State<AdminPropertyPage> {
                                     _updatePropertyStatus(docId, true);
                                   },
                                   icon: Icon(Icons.check, color: Colors.white),
-                                  label: Text("Approve", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                                  label: Text(
+                                    "Approve",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.green,
-                                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 18, vertical: 12),
                                   ),
                                 ),
-                                SizedBox(width: 10), // Add space between buttons
+                                SizedBox(
+                                    width: 10), // Add space between buttons
                                 ElevatedButton.icon(
                                   onPressed: () {
                                     _updatePropertyStatus(docId, false);
                                   },
                                   icon: Icon(Icons.close, color: Colors.white),
-                                  label: Text("Reject",style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                                  label: Text(
+                                    "Reject",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,
-                                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 12),
                                   ),
                                 ),
                               ],

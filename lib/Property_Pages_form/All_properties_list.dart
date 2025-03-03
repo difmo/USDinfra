@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../Components/property_card.dart';
 import '../Customs/CustomAppBar.dart';
-import '../authentication/dummy.dart';
 import 'Properties_detail_page.dart';
 
 class AllProperties extends StatefulWidget {
@@ -20,16 +19,15 @@ class _AllPropertiesState extends State<AllProperties> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
-        title:
-          'All Properties',
+        title: 'All Properties',
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream:
-            FirebaseFirestore.instance
-                .collection('AppProperties')
-                .where('isDeleted', isEqualTo: false)
-                .where('isApproved', isEqualTo: true)
-                .snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('AppProperties')
+            .where('isDeleted', isEqualTo: false)
+            .where('isPurchesed', isEqualTo: false)
+            .where('isApproved', isEqualTo: true)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -48,17 +46,22 @@ class _AllPropertiesState extends State<AllProperties> {
             itemCount: properties.length,
             itemBuilder: (context, index) {
               var property = properties[index].data() as Map<String, dynamic>;
-              final Timestamp? createdAtTimestamp = property['createdAt'] as Timestamp?;
-              final DateTime createdAtDate = createdAtTimestamp?.toDate() ?? DateTime.now();
-              final int daysAgo = DateTime.now().difference(createdAtDate).inDays;
-              final String createdAtString = daysAgo > 0 ? '$daysAgo days' : 'Today';
+              final Timestamp? createdAtTimestamp =
+                  property['createdAt'] as Timestamp?;
+              final DateTime createdAtDate =
+                  createdAtTimestamp?.toDate() ?? DateTime.now();
+              final int daysAgo =
+                  DateTime.now().difference(createdAtDate).inDays;
+              final String createdAtString =
+                  daysAgo > 0 ? '$daysAgo days' : 'Today';
 
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PropertyDetailPage(docId: properties[index].id),
+                      builder: (context) =>
+                          PropertyDetailPage(docId: properties[index].id),
                     ),
                   );
                 },

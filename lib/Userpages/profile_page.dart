@@ -251,7 +251,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(22),
                     ),
@@ -270,26 +271,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   automaticallyImplyLeading: false,
-      //   title: Text(
-      //     'Profile Page',
-      //     style: TextStyle(color: Colors.white),
-      //   ),
-      //   backgroundColor: AppColors.secondry,
-      //   actions: [
-      //     IconButton(
-      //       icon: Icon(
-      //         Icons.logout,
-      //         color: Colors.white,
-      //       ),
-      //       onPressed: () => _logout(context),
-      //     ),
-      //   ],
-      // ),
       body: Column(children: [
         Container(
           width: double.infinity,
+          height:
+              MediaQuery.of(context).size.height * 0.33, // 35% of screen height
           padding: EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 20),
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -320,7 +306,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20), // Spacing between title and profile picture
+              SizedBox(height: 20),
               Stack(
                 clipBehavior: Clip.none,
                 children: [
@@ -329,43 +315,44 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: ClipOval(
                       child: _selectedImage != null
                           ? Image.file(
-                        _selectedImage!,
-                        width: 150,
-                        height: 150,
-                        fit: BoxFit.cover,
-                      )
+                              _selectedImage!,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            )
                           : Image.network(
-                        'https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png',
-                        width: 150,
-                        height: 150,
-                        fit: BoxFit.cover,
-                      ),
+                              'https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png',
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ),
                   Positioned(
-                    bottom: -10,
-                    left: 10,
-                    right: 10,
-                    child: ElevatedButton(
-                      onPressed: () => _showImageSourceDialog(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        elevation: 2,
-                        shadowColor: AppColors.shadow,
+                    bottom: -18,
+                    right: 5,
+                    child: Container(
+                      // padding: EdgeInsets.only(left: 8, right: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30), 
+                        color: Colors.white, // Background color for contrast
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 4,
+                            spreadRadius: 2,
+                          ),
+                        ],
                       ),
-                      child: Text(
-                        "Edit Image",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
-                        ),
+                      child: IconButton(
+                        onPressed: () => _showImageSourceDialog(context),
+                        icon: Icon(Icons.edit, color: AppColors.primary),
                       ),
                     ),
                   )
                 ],
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 15),
               Text(
                 userData?['name'] ?? 'Guest',
                 style: TextStyle(
@@ -374,11 +361,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   color: Colors.white,
                 ),
               ),
-              SizedBox(height: 5),
             ],
           ),
         ),
-
         Expanded(
           child: isLoading
               ? Center(child: CircularProgressIndicator())
@@ -408,7 +393,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   hintText: 'Email',
                                   enable: isEditable,
                                   borderRadius: 25,
-
                                 ),
                               ],
                             ),
@@ -451,7 +435,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   hintText: 'Address Line 1',
                                   enable: isEditable,
                                   borderRadius: 25,
-
                                 ),
                               ],
                             ),
@@ -473,7 +456,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   hintText: 'Address Line 2',
                                   enable: isEditable,
                                   borderRadius: 25,
-
                                 ),
                               ],
                             ),

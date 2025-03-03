@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
 
 class CustomInputField extends StatefulWidget {
   final String hintText;
@@ -68,9 +67,11 @@ class _CustomInputFieldState extends State<CustomInputField> {
 
     bool isFieldEmpty = widget.controller.text.isEmpty;
 
-    if (widget.minLength != null && widget.controller.text.length < widget.minLength!) {
+    if (widget.minLength != null &&
+        widget.controller.text.length < widget.minLength!) {
       _currentErrorMessage = 'Minimum ${widget.minLength} characters required.';
-    } else if (widget.maxLength != null && widget.controller.text.length > widget.maxLength!) {
+    } else if (widget.maxLength != null &&
+        widget.controller.text.length > widget.maxLength!) {
       _currentErrorMessage = 'Maximum ${widget.maxLength} characters allowed.';
     } else {
       _currentErrorMessage = null; // Clear error if valid
@@ -78,14 +79,10 @@ class _CustomInputFieldState extends State<CustomInputField> {
 
     Color borderColor = widget.enable
         ? (widget.errorMessage != null && widget.errorMessage!.isNotEmpty
-        ? Colors.red
-        : isFieldEmpty
-        ? (_isFocused ? Colors.black : Colors.grey)
-        : Colors.black)
-        : Colors.grey.withOpacity(0.5); // Handle disabled state
-
-    Color iconColor = widget.enable
-        ? (_isFocused ? Colors.black : Colors.grey)
+            ? Colors.red
+            : isFieldEmpty
+                ? (_isFocused ? Colors.black : Colors.grey)
+                : Colors.black)
         : Colors.grey.withOpacity(0.5);
 
     return Column(
@@ -101,13 +98,14 @@ class _CustomInputFieldState extends State<CustomInputField> {
             enabled: widget.enable,
             focusNode: _focusNode,
             keyboardType: widget.inputType,
+            style: TextStyle(color: Colors.black87),
             maxLines: widget.maxLines,
             decoration: InputDecoration(
               prefixIcon: widget.prefixIcon != null
                   ? Icon(
-                widget.prefixIcon!.icon,
-                color: borderColor,
-              )
+                      widget.prefixIcon!.icon,
+                      color: borderColor,
+                    )
                   : null,
               hintText: widget.hintText,
               border: OutlineInputBorder(
@@ -115,7 +113,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
                 borderRadius: BorderRadius.circular(radius),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black, width: 2.0),
+                borderSide: BorderSide(color: Colors.black, width: 1.0),
                 borderRadius: BorderRadius.circular(radius),
               ),
               enabledBorder: OutlineInputBorder(
@@ -123,15 +121,20 @@ class _CustomInputFieldState extends State<CustomInputField> {
                 borderRadius: BorderRadius.circular(radius),
               ),
               suffixIcon: widget.suffixIcon,
-              contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
             onChanged: (value) {
               setState(() {
                 // Recalculate the error message based on the text length
-                if (widget.minLength != null && value.length < widget.minLength!) {
-                  _currentErrorMessage = 'Minimum ${widget.minLength} characters required.';
-                } else if (widget.maxLength != null && value.length > widget.maxLength!) {
-                  _currentErrorMessage = 'Maximum ${widget.maxLength} characters allowed.';
+                if (widget.minLength != null &&
+                    value.length < widget.minLength!) {
+                  _currentErrorMessage =
+                      'Minimum ${widget.minLength} characters required.';
+                } else if (widget.maxLength != null &&
+                    value.length > widget.maxLength!) {
+                  _currentErrorMessage =
+                      'Maximum ${widget.maxLength} characters allowed.';
                 } else {
                   _currentErrorMessage = null; // Clear error when valid
                 }
@@ -155,106 +158,3 @@ class _CustomInputFieldState extends State<CustomInputField> {
     );
   }
 }
-
-
-// class _CustomInputFieldState extends State<CustomInputField> {
-//   final FocusNode _focusNode = FocusNode();
-//   bool _isFocused = false;
-//   String? _currentErrorMessage;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _focusNode.addListener(() {
-//       setState(() {
-//         _isFocused = _focusNode.hasFocus;
-//       });
-//     });
-//   }
-//
-//   @override
-//   void dispose() {
-//     _focusNode.dispose();
-//     super.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     bool isFieldEmpty = widget.controller.text.isEmpty;
-//
-//     if (widget.controller.text.length < widget.minLength) {
-//       _currentErrorMessage = 'Minimum ${widget.minLength} characters required.';
-//     } else if (widget.controller.text.length > widget.maxLength) {
-//       _currentErrorMessage = 'Maximum ${widget.maxLength} characters allowed.';
-//     } else {
-//       _currentErrorMessage = null; // Clear error if valid
-//     }
-//
-//     Color borderColor = widget.enable
-//         ? (widget.errorMessage != null && widget.errorMessage!.isNotEmpty
-//         ? Colors.red
-//         : isFieldEmpty
-//         ? (_isFocused ? Colors.black : Colors.grey)
-//         : Colors.black) // Focused border color if not empty
-//         : Colors.grey.withOpacity(0.5);
-//
-//     Color iconColor = widget.enable
-//         ? (_isFocused ? Colors.black : Colors.grey)
-//         : Colors.grey.withOpacity(0.5);
-//
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         GestureDetector(
-//           onTap: widget.onTap,
-//           child: TextFormField(
-//             controller: widget.controller,
-//             obscureText: widget.obscureText,
-//             // onChanged: widget.onChanged,
-//             validator: widget.validator,
-//             maxLength: widget.maxLength,
-//             enabled: widget.enable,
-//             focusNode: _focusNode,
-//             keyboardType: widget.inputType,
-//             maxLines: widget.maxLines,
-//             decoration: InputDecoration(
-//               prefixIcon: widget.prefixIcon != null
-//                   ? Icon(
-//                 widget.prefixIcon!.icon,
-//                 color: borderColor,
-//               )
-//                   : null,
-//               hintText: widget.hintText,
-//               border: InputBorder.none,
-//               suffixIcon: widget.suffixIcon,
-//               contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-//             ),
-//             onChanged: (value) {
-//               setState(() {
-//                 if (value.length < widget.minLength) {
-//                   _currentErrorMessage = 'Minimum ${widget.minLength} characters required.';
-//                 } else if (value.length > widget.maxLength) {
-//                   _currentErrorMessage = 'Maximum ${widget.maxLength} characters allowed.';
-//                 } else {
-//                   _currentErrorMessage = null; // Clear error when valid
-//                 }
-//               });
-//               widget.onChanged?.call(value);
-//             },
-//           ),
-//         ),
-//         if (_currentErrorMessage != null)
-//           Padding(
-//             padding: const EdgeInsets.only(top: 4.0),
-//             child: Align(
-//               alignment: Alignment.bottomLeft,
-//               child: Text(
-//                 _currentErrorMessage!,
-//                 style: TextStyle(color: Colors.red, fontSize: 12),
-//               ),
-//             ),
-//           ),
-//       ],
-//     );
-//   }
-// }

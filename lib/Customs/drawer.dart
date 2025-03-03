@@ -27,10 +27,13 @@ class CustomDrawer extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return _buildShimmerHeader();
               }
-              if (!snapshot.hasData || snapshot.data == null || !snapshot.data!.exists) {
+              if (!snapshot.hasData ||
+                  snapshot.data == null ||
+                  !snapshot.data!.exists) {
                 return _buildDefaultHeader(false);
               }
-              var userData = snapshot.data!.data() as Map<String, dynamic>? ?? {};
+              var userData =
+                  snapshot.data!.data() as Map<String, dynamic>? ?? {};
               String role = userData['role'] ?? "user";
               return _buildUserHeader(userData);
             },
@@ -39,10 +42,13 @@ class CustomDrawer extends StatelessWidget {
             child: FutureBuilder<DocumentSnapshot?>(
               future: _fetchUserData(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData || snapshot.data == null || !snapshot.data!.exists) {
+                if (!snapshot.hasData ||
+                    snapshot.data == null ||
+                    !snapshot.data!.exists) {
                   return _buildDrawerList(context, role: "user");
                 }
-                var userData = snapshot.data!.data() as Map<String, dynamic>? ?? {};
+                var userData =
+                    snapshot.data!.data() as Map<String, dynamic>? ?? {};
                 String role = userData['role'] ?? "user";
                 return _buildDrawerList(context, role: role);
               },
@@ -67,24 +73,35 @@ class CustomDrawer extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 30.0),
       child: Column(
         children: [
-          _buildDrawerItem(Icons.dashboard, 'Dashboard', AppRouts.dashBoard, context),
-          _buildDrawerItem(Icons.person_outline, 'Profile', AppRouts.profile, context),
-          _buildDrawerItem(Icons.apartment, 'Published Properties', AppRouts.myPropertiesPage, context),
-          _buildDrawerItem(Icons.favorite_border_outlined, 'Favorite Properties', AppRouts.favoritePropertiesPage, context),
-          _buildDrawerItem(Icons.shopping_bag, 'Purchased Properties', AppRouts.properties, context),
-          _buildDrawerItem(Icons.info_outline, 'About Us', AppRouts.aboutus, context),
-          _buildDrawerItem(Icons.contact_mail_outlined, 'Contact Us', AppRouts.contactus, context),
-          _buildDrawerItem(Icons.lock_outline, 'Privacy Policy', AppRouts.privacy, context),
-          _buildDrawerItem(Icons.rule, 'Terms & Conditions', AppRouts.termconsition, context),
+          _buildDrawerItem(
+              Icons.dashboard, 'Dashboard', AppRouts.dashBoard, context),
+          _buildDrawerItem(
+              Icons.person_outline, 'Profile', AppRouts.profile, context),
+          _buildDrawerItem(Icons.apartment, 'Published Properties',
+              AppRouts.myPropertiesPage, context),
+          _buildDrawerItem(Icons.favorite_border_outlined,
+              'Favorite Properties', AppRouts.favoritePropertiesPage, context),
+          _buildDrawerItem(Icons.shopping_bag, 'Purchased Properties',
+              AppRouts.purchesedProperties, context),
+          _buildDrawerItem(
+              Icons.info_outline, 'About Us', AppRouts.aboutus, context),
+          _buildDrawerItem(Icons.contact_mail_outlined, 'Contact Us',
+              AppRouts.contactus, context),
+          _buildDrawerItem(
+              Icons.lock_outline, 'Privacy Policy', AppRouts.privacy, context),
+          _buildDrawerItem(Icons.rule, 'Terms & Conditions',
+              AppRouts.termconsition, context),
           if (role == "isAdmin")
-            _buildDrawerItem(Icons.admin_panel_settings_outlined, 'Admin', AppRouts.adminProperty, context),
-
-          Divider(color: Colors.grey[300], thickness: 1, indent: 20, endIndent: 20),
+            _buildDrawerItem(Icons.admin_panel_settings_outlined, 'Admin',
+                AppRouts.adminProperty, context),
+          Divider(
+              color: Colors.grey[300], thickness: 1, indent: 20, endIndent: 20),
           _buildLogoutItem(context),
         ],
       ),
     );
   }
+
   Widget _buildUserHeader(Map<String, dynamic>? userData) {
     return Container(
       width: double.infinity,
@@ -97,8 +114,7 @@ class CustomDrawer extends StatelessWidget {
             CircleAvatar(
               radius: 50,
               backgroundImage: NetworkImage(userData?['profileImage'] ??
-                  'https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png'
-              ),
+                  'https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png'),
               backgroundColor: Colors.white,
             ),
             const SizedBox(height: 10),
@@ -118,6 +134,7 @@ class CustomDrawer extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildDefaultHeader(bool _buildShimmerLoading) {
     return Container(
       width: double.infinity,
@@ -126,23 +143,23 @@ class CustomDrawer extends StatelessWidget {
       child: _buildShimmerLoading
           ? const Center(child: CircularProgressIndicator(color: Colors.white))
           : Column(
-        children: [
-          const CircleAvatar(
-            radius: 40,
-            backgroundImage: AssetImage('assets/profile.jpg'),
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            'Guest User',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-                fontWeight: FontWeight.bold),
-          ),
-          const Text('guest@example.com',
-              style: TextStyle(color: Colors.black, fontSize: 14)),
-        ],
-      ),
+              children: [
+                const CircleAvatar(
+                  radius: 40,
+                  backgroundImage: AssetImage('assets/profile.jpg'),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Guest User',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold),
+                ),
+                const Text('guest@example.com',
+                    style: TextStyle(color: Colors.black, fontSize: 14)),
+              ],
+            ),
     );
   }
 
@@ -196,7 +213,8 @@ class CustomDrawer extends StatelessWidget {
   Widget _buildDrawerItem(
       IconData icon, String title, String? route, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0), // Adjust padding as required
+      padding: const EdgeInsets.symmetric(
+          vertical: 8.0), // Adjust padding as required
       child: GestureDetector(
         onTap: () {
           Navigator.pop(context);
@@ -205,7 +223,8 @@ class CustomDrawer extends StatelessWidget {
           }
         },
         child: Container(
-          padding: const EdgeInsets.symmetric( horizontal: 16.0, vertical: 1), // Custom padding
+          padding: const EdgeInsets.symmetric(
+              horizontal: 16.0, vertical: 1), // Custom padding
           child: Row(
             children: [
               Icon(icon, color: Colors.grey[400], size: 26), // Icon on the left
@@ -213,7 +232,9 @@ class CustomDrawer extends StatelessWidget {
               Text(
                 title,
                 style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black87),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87),
               ),
             ],
           ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:usdinfra/Admin/sold_Property.dart';
+import 'package:usdinfra/Property_Pages_form/purchesedProperties.dart';
 import 'package:usdinfra/Userpages/AboutUsScreen.dart';
 import 'package:usdinfra/Userpages/ChatDetailScreen.dart';
 import 'package:usdinfra/Userpages/ChatScreen.dart';
@@ -7,20 +9,20 @@ import 'package:usdinfra/Userpages/PrivacyPolicyScreen.dart';
 import 'package:usdinfra/Userpages/TermsandConditions.dart';
 import 'package:usdinfra/Userpages/UpgradeServiceScreen.dart';
 import 'package:usdinfra/Userpages/dash_board.dart';
-import 'package:usdinfra/authentication/dummy.dart';
+// import 'package:usdinfra/authentication/dummy.dart';
 import 'package:usdinfra/authentication/welcome_screen.dart';
-import '../Admin/admin_bottom_nav.dart';
+// import '../Admin/admin_bottom_nav.dart';
 import '../Admin/admin_dashboard.dart';
 import '../Admin/approved_property.dart';
 import '../Admin/enquaries.dart';
-import '../Bottom/bottom_navigation.dart';
+// import '../Bottom/bottom_navigation.dart';
 import '../Property_Pages_form/Property_Form/Form_Page_2_Components/sell_residential.dart';
 import '../Property_Pages_form/Property_Form/form_page_1.dart';
 import '../Property_Pages_form/Property_Form/form_page_2.dart';
 import '../Property_Pages_form/favoriteProperties.dart';
 import '../Splash_screen.dart';
 import '../Property_Pages_form/All_properties_list.dart';
-import '../Userpages/notification.dart';
+// import '../Userpages/notification.dart';
 import '../Userpages/profile_page.dart';
 import '../Userpages/profile_setup.dart';
 import '../Userpages/user_property.dart';
@@ -43,7 +45,7 @@ class AppRouts {
   static const profile = '/profilepage';
   static const bottom = '/bottomnav';
   static const adminbottom = '/Adminbottomnav';
-
+  static const purchesedProperties = '/purchesed';
 
   // static const notification = '/NotificationPage';
   static const chat = '/chat';
@@ -61,6 +63,7 @@ class AppRouts {
   static const adminProperty = '/AdminBottomNavigationBar';
   static const approvedProperty = '/ApprovedPropertiesPage';
   static const enquiriesPage = '/AdminEnquiriesPage';
+  static const soldProperty = '/Sold';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -72,6 +75,8 @@ class AppRouts {
       //   return MaterialPageRoute(builder: (_) => AdminBottomNavigationBar());
       case splash:
         return MaterialPageRoute(builder: (_) => SplashScreen());
+      case purchesedProperties:
+        return MaterialPageRoute(builder: (_) => PurchesedPropertiesPage());
       case signup:
         return MaterialPageRoute(builder: (_) => SignupPage());
       case login:
@@ -126,8 +131,10 @@ class AppRouts {
         return MaterialPageRoute(builder: (_) => ResetPasswordScreen());
       case adminProperty:
         return MaterialPageRoute(builder: (_) => AdminPropertyPage());
- case approvedProperty:
+      case approvedProperty:
         return MaterialPageRoute(builder: (_) => ApprovedPropertiesPage());
+      case soldProperty:
+        return MaterialPageRoute(builder: (_) => SoldPropertiesPage());
       case enquiriesPage:
         return MaterialPageRoute(builder: (_) => AdminEnquiriesPage());
 

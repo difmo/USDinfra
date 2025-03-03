@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:lottie/lottie.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
@@ -25,67 +26,99 @@ class _LoginPageState extends State<LoginPage> {
   bool _ispasswordVisible = false;
 
   bool isValidEmail(String email) {
-    return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$").hasMatch(email);
+    return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+        .hasMatch(email);
   }
 
   Future<void> _login(BuildContext context) async {
-
     String email = controllers.emailController.text.trim();
     String password = controllers.passwordController.text;
 
-    if (email.isEmpty && password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('please fill in all fields'),
-        backgroundColor: AppColors.primary,
-      ));
-      return;
-    } else if (email.isEmpty){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Please enter your email address'),
-        backgroundColor: AppColors.primary,
-      ));
-      return;
-    }else if(!isValidEmail(email)) {
-      setState(() {
-        _isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Please enter a valid email address'),
-        backgroundColor: AppColors.primary,
-      ));
+    if (email.isEmpty || password.isEmpty) {
+      Fluttertoast.showToast(
+        msg: "Please fill in all fields",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
       return;
     }
-    else if (password.isEmpty){
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Please enter your password'),
-      ));
-      return;
-    }
-    setState(() {
-      _isLoading = true;
-    });
 
     try {
+      setState(() {
+        _isLoading = true;
+      });
+
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+
       if (userCredential.user != null) {
-        var userDoc = await FirebaseFirestore.instance
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
             .collection('AppUsers')
             .doc(userCredential.user!.uid)
             .get();
-        if (userDoc.exists) {
-          Navigator.pushNamed(context, AppRouts.dashBoard);
+
+        if (userDoc.exists && userDoc.data() != null) {
+          Map<String, dynamic>? userData =
+              userDoc.data() as Map<String, dynamic>?;
+
+          String role = userData?['role'] ?? 'user'; // Default to 'user'
+
+          if (role == "isAdmin") {
+            Fluttertoast.showToast(
+              msg: "Welcome Admin!",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0,
+            );
+            Navigator.pushNamed(context, AppRouts.adminProperty);
+          } else {
+            Fluttertoast.showToast(
+              msg: "Login Successful!",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0,
+            );
+            Navigator.pushNamed(context, AppRouts.dashBoard);
+          }
         } else {
-          Navigator.pushNamed(context, AppRouts.signup);
+          // 🔥 Show toast instead of a dialog
+          Fluttertoast.showToast(
+            msg: "User does not exist. Please sign up.",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+          );
         }
       }
-    } on FirebaseAuthException {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Please register'),
-        backgroundColor: AppColors.primary,
-      ));
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+        Fluttertoast.showToast(
+          msg: "User not found. Please register.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: "Error: ${e.message}",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+        );
+      }
     } finally {
       setState(() {
         _isLoading = false;
@@ -185,7 +218,8 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: 25,
                         prefixIcon: Icon(
                           Icons.lock_outline,
-                          color: AppColors.primary,size: 12,
+                          color: AppColors.primary,
+                          size: 12,
                         ),
                         controller: controllers.passwordController,
                         obscureText: true,
@@ -196,7 +230,8 @@ class _LoginPageState extends State<LoginPage> {
                         alignment: Alignment.bottomRight,
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, AppRouts.forgetpassemail);
+                            Navigator.pushNamed(
+                                context, AppRouts.forgetpassemail);
                           },
                           child: Text.rich(
                             TextSpan(

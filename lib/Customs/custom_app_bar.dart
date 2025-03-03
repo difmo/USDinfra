@@ -10,21 +10,26 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key, required this.scaffoldKey});
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight); // Define the height of the AppBar
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight); // Define the height of the AppBar
 
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
       preferredSize: preferredSize,
       child: AppBar(
-        backgroundColor: Colors.transparent, // Transparent background for gradient
+        backgroundColor:
+            Colors.transparent, // Transparent background for gradient
         elevation: 0, // Remove shadow
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [AppColors.primary, AppColors.secondry], // Custom gradient colors
+              colors: [
+                AppColors.primary,
+                AppColors.secondry
+              ], // Custom gradient colors
             ),
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(00),
@@ -53,10 +58,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: OutlinedButton(
               onPressed: () {
                 Navigator.pushNamed(context, AppRouts.propertyform1);
-                },
+              },
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: Colors.white),
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                padding: EdgeInsets.symmetric(horizontal: 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
@@ -67,7 +72,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 style: TextStyle(
                   color: Colors.white, // Text color
                   fontWeight: FontWeight.bold,
-                  fontSize: 11, // Adjust text size
+                  fontSize: 10, // Adjust text size
                 ),
               ),
             ),

@@ -44,27 +44,6 @@ class _PropertyCardState extends State<PropertyCard> {
     });
   }
 
-//   void _shareOnWhatsApp() async {
-//     final String shareMessage = '''
-// Property: ${widget.title}
-// Price: ${widget.expectedPrice}
-// Size: ${widget.plotArea}
-// Type: ${widget.propertyType}
-// Address: ${widget.address}
-// Status: ${widget.propertyStatus}
-// Features: ${widget.features.join(', ')}
-// ''';
-//
-//     final String url =
-//         'https://wa.me/?text=${Uri.encodeComponent(shareMessage)}';
-//
-//     if (await canLaunch(url)) {
-//       await launch(url);
-//     } else {
-//       throw 'Could not open WhatsApp';
-//     }
-//   }
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -73,70 +52,13 @@ class _PropertyCardState extends State<PropertyCard> {
       backgroundColor: Colors.white,
       body: Container(
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.black12,
-            width: 0.5),
+          border: Border.all(color: Colors.black12, width: 0.5),
           borderRadius: BorderRadius.circular(10),
         ),
         padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Row(
-                //   children: [
-                //     Container(
-                //       padding: const EdgeInsets.symmetric(
-                //           vertical: 4, horizontal: 8),
-                //       decoration: BoxDecoration(
-                //         color: Colors.green,
-                //         borderRadius: BorderRadius.circular(12),
-                //       ),
-                //       child: const Text(
-                //         'POPULAR PROJECT',
-                //         style: TextStyle(color: Colors.white, fontSize: 10),
-                //       ),
-                //     ),
-                //     const SizedBox(width: 8),
-                //     Container(
-                //       padding: const EdgeInsets.symmetric(
-                //           vertical: 4, horizontal: 8),
-                //       decoration: BoxDecoration(
-                //           color: Colors.orange,
-                //           borderRadius: BorderRadius.circular(12)),
-                //       child: const Text(
-                //         'NEWLY LAUNCHED',
-                //         style: TextStyle(color: Colors.white, fontSize: 10),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    // IconButton(
-                    //   icon: Image.asset(
-                    //     'assets/icons/share.png',
-                    //     width: 30,
-                    //     height: 30,
-                    //   ),
-                    //   onPressed: _shareOnWhatsApp,
-                    // ),
-                    // IconButton(
-                    //   icon: Icon(
-                    //     isFavorited
-                    //         ? CupertinoIcons.heart_fill
-                    //         : CupertinoIcons.heart,
-                    //     color: isFavorited ? Colors.red : Colors.black,
-                    //     size: 24,
-                    //   ),
-                    //   onPressed: _toggleFavorite,
-                    // ),
-                  ],
-                ),
-              ],
-            ),
             const SizedBox(height: 8),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,22 +146,6 @@ class _PropertyCardState extends State<PropertyCard> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-            //   children: widget.features
-            //       .map(
-            //         (feature) => Row(
-            //           children: [
-            //             const Icon(Icons.check_circle,
-            //                 color: Colors.green, size: 16),
-            //             const SizedBox(width: 4),
-            //             Text(feature),
-            //           ],
-            //         ),
-            //       )
-            //       .toList(),
-            // ),
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

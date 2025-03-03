@@ -48,6 +48,10 @@ class AdminBottomNavigationBar extends StatelessWidget {
             icon: Icon(Icons.approval_outlined),
             label: 'Approved',
           ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.sell_outlined),
+            label: 'Sold',
+          ),
           // BottomNavigationBarItem(
           //   icon: Container(
           //     padding: const EdgeInsets.all(8),
