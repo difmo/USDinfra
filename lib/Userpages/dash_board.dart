@@ -176,7 +176,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: screenHeight * 0.25,
+              height: screenHeight * 0.22,
               child: const Carousel(),
             ),
             Padding(
