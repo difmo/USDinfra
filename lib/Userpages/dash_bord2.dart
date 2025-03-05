@@ -1,7 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 
-class RatingSection extends StatelessWidget {
+class RatingSection extends StatefulWidget {
+  @override
+  _RatingSectionState createState() => _RatingSectionState();
+}
+
+class _RatingSectionState extends State<RatingSection> {
+  int _rating = 0;
+
+  void _updateRating(int index) {
+    setState(() {
+      // Toggle the rating: if clicked on the selected rating, remove it
+      if (_rating == index + 1) {
+        _rating = 0;  // Reset the rating
+      } else {
+        _rating = index + 1; // Set the rating
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -9,13 +27,13 @@ class RatingSection extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter, // Start gradient from top
-            end: Alignment.bottomCenter, // End gradient at bottom
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
             colors: [
-              Colors.deepOrangeAccent.withOpacity(0.2), // Lighter blue at the top
-              Colors.redAccent.withOpacity(0.2), // Darker blue at the bottom
+              Colors.deepOrangeAccent.withOpacity(0.2),
+              Colors.redAccent.withOpacity(0.2),
             ],
-          ), // Change background color here
+          ),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
@@ -49,7 +67,7 @@ class RatingSection extends StatelessWidget {
               SizedBox(height: 10),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white, // Background color for rating stars
+                  color: Colors.white,
                   border: Border.all(color: Colors.black12, width: 0.5),
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -60,10 +78,13 @@ class RatingSection extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: List.generate(
                         5,
-                        (index) => Icon(
-                          Icons.star_border,
-                          size: 30,
-                          color: Colors.grey,
+                        (index) => GestureDetector(
+                          onTap: () => _updateRating(index),
+                          child: Icon(
+                            index < _rating ? Icons.star : Icons.star_border,
+                            size: 30,
+                            color: Colors.amber,
+                          ),
                         ),
                       ),
                     ),
@@ -311,86 +332,91 @@ class BossPlanSection extends StatelessWidget {
 
 class PropertyOfferingsSection extends StatelessWidget {
   final List<Map<String, String>> offerings = [
-  {
-    "title": "Buy a home",
-    "subtitle": "Find your dream home",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCPbIuCb6AtjrZ1M9ARi6elvNiPkI1D6CtOtsN0e-4MxDsaymlo6c-wok&s"
-  },
-  {
-    "title": "Rent a home",
-    "subtitle": "Find a place to rent",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCPbIuCb6AtjrZ1M9ARi6elvNiPkI1D6CtOtsN0e-4MxDsaymlo6c-wok&s"
-  },
-  {
-    "title": "PG and co-living",
-    "subtitle": "Affordable shared living spaces",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCPbIuCb6AtjrZ1M9ARi6elvNiPkI1D6CtOtsN0e-4MxDsaymlo6c-wok&s"
-  },
-  {
-    "title": "Buy Plots/Land",
-    "subtitle": "Invest in property",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCPbIuCb6AtjrZ1M9ARi6elvNiPkI1D6CtOtsN0e-4MxDsaymlo6c-wok&s"
-  },
-  {
-    "title": "Buy a commercial property",
-    "subtitle": "Grow your business",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCPbIuCb6AtjrZ1M9ARi6elvNiPkI1D6CtOtsN0e-4MxDsaymlo6c-wok&s"
-  },
-  {
-    "title": "Lease a commercial property",
-    "subtitle": "Find office spaces to lease",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCPbIuCb6AtjrZ1M9ARi6elvNiPkI1D6CtOtsN0e-4MxDsaymlo6c-wok&s"
-  },
-];
+    {
+      "title": "Buy a home",
+      "subtitle": "Find your dream home",
+      "image":
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCPbIuCb6AtjrZ1M9ARi6elvNiPkI1D6CtOtsN0e-4MxDsaymlo6c-wok&s"
+    },
+    {
+      "title": "Rent a home",
+      "subtitle": "Find a place to rent",
+      "image":
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCPbIuCb6AtjrZ1M9ARi6elvNiPkI1D6CtOtsN0e-4MxDsaymlo6c-wok&s"
+    },
+    {
+      "title": "PG and co-living",
+      "subtitle": "Affordable shared living spaces",
+      "image":
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCPbIuCb6AtjrZ1M9ARi6elvNiPkI1D6CtOtsN0e-4MxDsaymlo6c-wok&s"
+    },
+    {
+      "title": "Buy Plots/Land",
+      "subtitle": "Invest in property",
+      "image":
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCPbIuCb6AtjrZ1M9ARi6elvNiPkI1D6CtOtsN0e-4MxDsaymlo6c-wok&s"
+    },
+    {
+      "title": "Buy a commercial property",
+      "subtitle": "Grow your business",
+      "image":
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCPbIuCb6AtjrZ1M9ARi6elvNiPkI1D6CtOtsN0e-4MxDsaymlo6c-wok&s"
+    },
+    {
+      "title": "Lease a commercial property",
+      "subtitle": "Find office spaces to lease",
+      "image":
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCPbIuCb6AtjrZ1M9ARi6elvNiPkI1D6CtOtsN0e-4MxDsaymlo6c-wok&s"
+    },
+  ];
 
   @override
- Widget build(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Check out our offerings",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 8),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: offerings.length,
-          itemBuilder: (context, index) {
-            return Container(
-              margin: EdgeInsets.only(bottom: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(11),
-              ),
-              child: ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    bottomLeft: Radius.circular(10),
-                  ),
-                  child: Image.network(
-                    offerings[index]['image']!,
-                    width: 90,
-                     // Fixed width
-                    fit: BoxFit.fill, // Ensure the image maintains aspect ratio
-                  ),
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Check out our offerings",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: offerings.length,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(11),
                 ),
-                title: Text(offerings[index]['title']!),
-                subtitle: Text(offerings[index]['subtitle']!),
-                trailing: Icon(Icons.arrow_forward_ios, size: 16),
-              ),
-            );
-          },
-        ),
-      ],
-    ),
-  );
-}
+                child: ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      bottomLeft: Radius.circular(10),
+                    ),
+                    child: Image.network(
+                      offerings[index]['image']!,
+                      width: 90,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  title: Text(offerings[index]['title']!),
+                  subtitle: Text(offerings[index]['subtitle']!),
+                  trailing: Icon(Icons.arrow_forward_ios, size: 16),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class PopularCitiesSection extends StatelessWidget {
