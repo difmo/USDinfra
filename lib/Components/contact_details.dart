@@ -16,7 +16,7 @@ class ContactDetailDialog extends StatelessWidget {
       backgroundColor: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
+        child: Column( 
           mainAxisSize: MainAxisSize.min,
           children: [
             // Title Text

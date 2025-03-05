@@ -39,6 +39,7 @@ dependencies:
   firebase_database:
   cloud_firestore:
   firebase_storage:
+  carousel_slider: 
 #  shared_preferences:
   #  share:
   share_plus:
@@ -74,6 +75,7 @@ flutter:
   assets:
     - assets/animations/logo.png
     #    - assets/logo.png
+    - assets/icons/
     - assets/icons/share.png
     - assets/icons/lock_icon.svg
     # - assets/logo.png

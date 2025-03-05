@@ -1,85 +1,87 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:usdinfra/conigs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
-
-import '../conigs/app_colors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
+  // final String title;
+  final bool showListPropertyButton;
 
-  const CustomAppBar({super.key, required this.scaffoldKey});
+  const CustomAppBar({
+    super.key,
+    required this.scaffoldKey,
+    // this.title = 'USD',
+    this.showListPropertyButton = true,
+  });
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(kToolbarHeight); // Define the height of the AppBar
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 10);
 
   @override
   Widget build(BuildContext context) {
-    return PreferredSize(
-      preferredSize: preferredSize,
-      child: AppBar(
-        backgroundColor:
-            Colors.transparent, // Transparent background for gradient
-        elevation: 0, // Remove shadow
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          height: 49,
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topLeft,
+               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
                 AppColors.primary,
-                AppColors.secondry
-              ], // Custom gradient colors
-            ),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(00),
-              bottomRight: Radius.circular(00),
-            ),
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.white),
-          onPressed: () {
-            scaffoldKey.currentState?.openDrawer(); // Open drawer
-          },
-        ),
-        title: const Text(
-          'USD',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 24, // Larger font size
-          ),
-        ),
-        actions: <Widget>[
-          // List Our Property Button (New)
-          Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: OutlinedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, AppRouts.propertyform1);
-              },
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: Colors.white),
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                // padding: EdgeInsets.symmetric(horizontal: 20, vertical:0), // Optional padding
+                AppColors.secondry,
+              ])
               ),
-              child: Text(
-                'List Your Property',
-                style: TextStyle(
-                  color: Colors.white, // Text color
-                  fontWeight: FontWeight.bold,
-                  fontSize: 10, // Adjust text size
-                ),
+        ),
+        Container(
+          height: kToolbarHeight,
+          color: Colors.white, // App bar color
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.menu, color: Colors.black),
+                onPressed: () => scaffoldKey.currentState?.openDrawer(),
               ),
-            ),
+              // Text(
+              //   title,
+              //   style: const TextStyle(
+              //     color: Colors.black,
+              //     fontWeight: FontWeight.bold,
+              //     fontSize: 24,
+              //   ),
+              // ),
+              Padding(
+                padding: const EdgeInsets.only(right: 10.0),
+                child: showListPropertyButton
+                    ? OutlinedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, AppRouts.propertyform1);
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Colors.black),
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: const Text(
+                          'List Your Property',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                          ),
+                        ),
+                      )
+                    : const SizedBox(
+                        width: 48),
+              ), // Placeholder to maintain spacing
+            ],
           ),
-          // Notifications Button
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

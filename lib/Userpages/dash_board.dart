@@ -5,6 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:usdinfra/Bottom/bottom_navigation.dart';
 import 'package:usdinfra/Customs/custom_app_bar.dart';
 import 'package:usdinfra/Property_Pages_form/Properties_detail_page.dart';
+import 'package:usdinfra/Userpages/dash_bord2.dart';
 import 'package:usdinfra/conigs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../Components/cerosoule.dart';
@@ -176,7 +177,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: screenHeight * 0.22,
+              height: screenHeight * 0.33,
               child: const Carousel(),
             ),
             Padding(
@@ -224,9 +225,11 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                   }
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return Align(
-                        alignment: Alignment.center,
-                        child: Text('No properties available'));
+                      alignment: Alignment.center,
+                      child: Text('No properties available'),
+                    );
                   }
+
                   final List<Future<Map<String, dynamic>>> futureProperties =
                       snapshot.data!.docs.map((doc) async {
                     final data = doc.data() as Map<String, dynamic>? ?? {};
@@ -240,6 +243,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                         subCollectionSnapshot.docs.map((subDoc) {
                       return subDoc.data();
                     }).toList();
+
                     final createdAtTimestamp = data['createdAt'] as Timestamp?;
                     final DateTime createdAtDate =
                         createdAtTimestamp?.toDate() ?? DateTime.now();
@@ -257,11 +261,8 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                       'propertyType': data['propertyType'] ?? '2 BHK Flat',
                       'address':
                           data['address'] ?? 'Sector 10 Greater Noida West',
-                      'createdAt': createdAtString, // Ensured non-null string
+                      'createdAt': createdAtString,
                       'title': data['title'] ?? 'Godrej Aristocrat',
-                      // 'features': (data['features'] is List)
-                      //     ? List<String>.from(data['features'])
-                      //     // : ['Lift', 'Parking', 'East Facing'],
                       'propertyStatus':
                           data['availabilityStatus'] ?? 'Ready to move',
                       'contactDetails': data['contactDetails'] ?? '8875673210',
@@ -288,78 +289,99 @@ class _HomeDashBoard extends State<HomeDashBoard> {
 
                       final properties = asyncSnapshot.data!;
 
-                      return Column(
-                        children: properties.asMap().entries.map((entry) {
-                          Map<String, dynamic> property = entry.value;
-                          bool isFavorite =
-                              favoriteProperties.contains(property['id']);
+                      return SingleChildScrollView(
+                        scrollDirection:
+                            Axis.horizontal, // Enable horizontal scrolling
+                        child: Row(
+                          children: properties.map((property) {
+                            bool isFavorite =
+                                favoriteProperties.contains(property['id']);
 
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      PropertyDetailPage(docId: property['id']),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              height: screenHeight * 0.30,
-                              margin: const EdgeInsets.only(bottom: 6),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    height: screenHeight * 0.28,
-                                    margin: const EdgeInsets.only(bottom: 6),
-                                    child: PropertyCard(
-                                      imageUrl: property['imageUrl'],
-                                      expectedPrice: property['expectedPrice'],
-                                      plotArea: property['plotArea'],
-                                      propertyType: property['propertyType'],
-                                      address: property['address'],
-                                      createdAt: property['createdAt'],
-                                      title: property['title'],
-                                      // features: property['features'],
-                                      propertyStatus:
-                                          property['propertyStatus'],
-                                      contactDetails:
-                                          property['contactDetails'],
-                                    ),
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PropertyDetailPage(
+                                        docId: property['id']),
                                   ),
-                                  Positioned(
-                                    top: 10,
-                                    right: 10,
-                                    child: IconButton(
-                                      icon: Icon(
-                                        isFavorite
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color: isFavorite
-                                            ? Colors.red
-                                            : Colors.grey,
+                                );
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                margin: const EdgeInsets.only(right: 8),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      height: screenHeight * 0.265,
+                                      child: PropertyCard(
+                                        imageUrl: property['imageUrl'],
+                                        expectedPrice:
+                                            property['expectedPrice'],
+                                        plotArea: property['plotArea'],
+                                        propertyType: property['propertyType'],
+                                        address: property['address'],
+                                        createdAt: property['createdAt'],
+                                        title: property['title'],
+                                        propertyStatus:
+                                            property['propertyStatus'],
+                                        contactDetails:
+                                            property['contactDetails'],
                                       ),
-                                      onPressed: () {
-                                        print(
-                                            "Property ID: ${property['id']}"); // Print the ID
-                                        _toggleFavorite(property[
-                                            'id']); // Toggle favorite status
-                                      },
                                     ),
-                                  ),
-                                  // ),
-                                ],
+                                    Positioned(
+                                      top: 10,
+                                      right: 10,
+                                      child: IconButton(
+                                        icon: Icon(
+                                          isFavorite
+                                              ? Icons.favorite
+                                              : Icons.favorite_border,
+                                          color: isFavorite
+                                              ? Colors.red
+                                              : Colors.grey,
+                                        ),
+                                        onPressed: () {
+                                          _toggleFavorite(property['id']);
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        }).toList(),
+                            );
+                          }).toList(),
+                        ),
                       );
                     },
                   );
                 },
               ),
             ),
-            const SizedBox(height: 80),
+            Container(
+              height: screenHeight * 0.25,
+              child: RatingSection(),
+            ),
+            Container(
+              height: screenHeight * 0.23,
+              child: PostPropertySection(),
+            ),
+            Container(
+              height: screenHeight * 0.28,
+              child: BossPlanSection(),
+            ),
+            Container(
+              height: screenHeight * 0.64,
+              child: PropertyOfferingsSection(),
+            ),
+            Container(
+              height: screenHeight * 0.2,
+              child: PopularCitiesSection(),
+            ),
+            Container(
+              height: screenHeight * 0.2,
+              child: FeedbackSection(),
+            ),
           ],
         ),
       ),

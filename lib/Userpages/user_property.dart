@@ -44,7 +44,7 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
     if (user == null) {
       return Scaffold(
         backgroundColor: Colors.white,
-        appBar: CustomAppBar(title: 'Published Properties'),
+        appBar: CustomAppBar(title: '   ties'),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -301,7 +301,7 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
     );
   }
 
-  void _deleteProperty(String propertyId) async {
+  void  _deleteProperty(String propertyId) async {
     await FirebaseFirestore.instance
         .collection('AppProperties')
         .doc(propertyId)
