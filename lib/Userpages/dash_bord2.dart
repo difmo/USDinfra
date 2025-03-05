@@ -11,11 +11,10 @@ class _RatingSectionState extends State<RatingSection> {
 
   void _updateRating(int index) {
     setState(() {
-      // Toggle the rating: if clicked on the selected rating, remove it
       if (_rating == index + 1) {
-        _rating = 0;  // Reset the rating
+        _rating = 0;  
       } else {
-        _rating = index + 1; // Set the rating
+        _rating = index + 1; 
       }
     });
   }
