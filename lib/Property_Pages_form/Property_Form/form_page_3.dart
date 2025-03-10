@@ -4,10 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
 import '../../Components/Choice_Chip.dart';
-import '../../conigs/app_colors.dart';
+import '../../configs/app_colors.dart';
 
 class AddPhotosDetailsPage extends StatefulWidget {
   final String docId; // 🔥 Pass this document ID when navigating
@@ -27,7 +28,11 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
   bool isApproved = false;
 
   final List<String> selectedRooms = [];
-  final List<String> furnishingOptions = ["Unfurnished", "Semi-Furnished", "Furnished"];
+  final List<String> furnishingOptions = [
+    "Unfurnished",
+    "Semi-Furnished",
+    "Furnished"
+  ];
   String selectedFurnishing = "Unfurnished";
   final List<String> photos = []; // 🔥 Store image URLs here
 
@@ -47,7 +52,10 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
       }
 
       // 🔥 Fetch User Details from Firestore
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('AppUsers').doc(user.uid).get();
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('AppUsers')
+          .doc(user.uid)
+          .get();
       if (!userDoc.exists) {
         print("User document not found in AppUsers collection.");
         return;
@@ -58,11 +66,15 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
 
       print("User Name: $name"); // Debugging purpose
 
-      await FirebaseFirestore.instance.collection('AppProperties').doc(widget.docId).update({
+      await FirebaseFirestore.instance
+          .collection('AppProperties')
+          .doc(widget.docId)
+          .update({
         // 'photos': photos,
-        'imageUrl': 'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
+        'imageUrl':
+            'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
         'sendViaWhatsApp': sendPhotosViaWhatsApp,
-        'isApproved':isApproved,
+        'isApproved': isApproved,
         'selectedRooms': selectedRooms,
         'furnishing': selectedFurnishing,
         'coveredParking': coveredParking,
@@ -72,10 +84,17 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Property details updated successfully!")),
+        SnackBar(
+            content: Text(
+          "Property details updated successfully!",
+          style: TextStyle(
+            fontFamily: AppFontFamily.primaryFont,
+          ),
+        )),
       );
 
-      Navigator.pushNamed(context, AppRouts.dashBoard); // 🔥 Go back after submission
+      Navigator.pushNamed(
+          context, AppRouts.dashBoard); // 🔥 Go back after submission
     } catch (e) {
       print("Error updating property: $e");
     } finally {
@@ -95,6 +114,7 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
       }
     });
   }
+
   Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: source);
@@ -115,7 +135,12 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
             borderRadius: BorderRadius.circular(12),
           ),
           backgroundColor: Colors.white,
-          title: Text("Choose Image Source"),
+          title: Text(
+            "Choose Image Source",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          ),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -125,7 +150,11 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                   _pickImage(ImageSource.camera);
                 },
                 icon: Icon(Icons.camera_alt, color: Colors.white),
-                label: Text("Camera", style: TextStyle(color: Colors.white)),
+                label: Text("Camera",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    )),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                 ),
@@ -136,7 +165,11 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                   _pickImage(ImageSource.gallery);
                 },
                 icon: Icon(Icons.photo, color: Colors.white),
-                label: Text("Gallery", style: TextStyle(color: Colors.white)),
+                label: Text("Gallery",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    )),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                 ),
@@ -153,7 +186,12 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Add Photos & Details'),
+        title: Text(
+          'Add Photos & Details',
+          style: TextStyle(
+            fontFamily: AppFontFamily.primaryFont,
+          ),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -169,9 +207,19 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("STEP 3 OF 3", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                  Text("STEP 3 OF 3",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                        fontFamily: AppFontFamily.primaryFont,
+                      )),
                   const SizedBox(height: 8),
-                  const Text("Add property photos (Optional)", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text("Add property photos (Optional)",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppFontFamily.primaryFont,
+                      )),
                   const SizedBox(height: 8),
 
                   // 🔥 Image Upload Box
@@ -196,24 +244,42 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(Icons.camera_alt, size: 40, color: Colors.grey),
-                              SizedBox(height: 8),
-                              Text("+ Add at least 5 photos", style: TextStyle(fontWeight: FontWeight.bold)),
-                              Text("Click from camera or browse to upload", style: TextStyle(color: Colors.grey)),
+                            children: [
+                              const Icon(Icons.camera_alt,
+                                  size: 40, color: Colors.grey),
+                              const SizedBox(height: 8),
+                              Text("+ Add at least 5 photos",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppFontFamily.primaryFont,
+                                  )),
+                              Text("Click from camera or browse to upload",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontFamily: AppFontFamily.primaryFont,
+                                  )),
                             ],
                           ),
                         ),
-                      )
-
-                  ),
+                      )),
 
                   const SizedBox(height: 8),
-                  const Text("Upload up to 50 photos of max size 10 MB in PNG, JPG, JPEG format.", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                  Text(
+                      "Upload up to 50 photos of max size 10 MB in PNG, JPG, JPEG format.",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                        fontFamily: AppFontFamily.primaryFont,
+                      )),
 
                   // 🔥 WhatsApp Checkbox
                   CheckboxListTile(
-                    title: const Text("I will send photos over WhatsApp"),
+                    title: Text(
+                      "I will send photos over WhatsApp",
+                      style: TextStyle(
+                        fontFamily: AppFontFamily.primaryFont,
+                      ),
+                    ),
                     value: sendPhotosViaWhatsApp,
                     onChanged: (bool? value) {
                       setState(() {
@@ -222,30 +288,42 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                     },
                   ),
 
-                  const Text("With your registered number 91-9454310605", style: TextStyle(color: Colors.grey)),
+                  Text("With your registered number 91-9454310605",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontFamily: AppFontFamily.primaryFont,
+                      )),
 
                   const SizedBox(height: 16),
 
                   // 🔥 Other Rooms Selection
-                  const Text("Other rooms (Optional)", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Other rooms (Optional)",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppFontFamily.primaryFont,
+                      )),
                   Wrap(
                     spacing: 8,
-                    children: ["Pooja Room", "Study Room", "Servant Room", "Others"]
-                        .map((option) => ChoiceChipOption(
-                      label: option,
-                      isSelected: selectedRooms.contains(option),
-                      onSelected: (selected) {
-                        // Toggle selection when a room is selected or unselected
-                        onSelectRoom(option);
-                      },
-                    ))
-                        .toList(),
+                    children:
+                        ["Pooja Room", "Study Room", "Servant Room", "Others"]
+                            .map((option) => ChoiceChipOption(
+                                  label: option,
+                                  isSelected: selectedRooms.contains(option),
+                                  onSelected: (selected) {
+                                    onSelectRoom(option);
+                                  },
+                                ))
+                            .toList(),
                   ),
 
                   const SizedBox(height: 16),
 
                   // 🔥 Furnishing Selection
-                  const Text("Furnishing (Optional)", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Furnishing (Optional)",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppFontFamily.primaryFont,
+                      )),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: furnishingOptions.map((option) {
@@ -266,19 +344,39 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                   const SizedBox(height: 16),
 
                   // 🔥 Parking Section
-                  const Text("Reserved Parking (Optional)", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Reserved Parking (Optional)",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppFontFamily.primaryFont,
+                      )),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("Covered Parking"),
+                      Text(
+                        "Covered Parking",
+                        style: TextStyle(
+                          fontFamily: AppFontFamily.primaryFont,
+                        ),
+                      ),
                       Row(
                         children: [
-                          _buildCounterButton(() => setState(() => coveredParking--), Icons.remove, coveredParking > 0),
+                          _buildCounterButton(
+                              () => setState(() => coveredParking--),
+                              Icons.remove,
+                              coveredParking > 0),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Text("$coveredParking", style: const TextStyle(fontSize: 18)),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Text("$coveredParking",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: AppFontFamily.primaryFont,
+                                )),
                           ),
-                          _buildCounterButton(() => setState(() => coveredParking++), Icons.add, true),
+                          _buildCounterButton(
+                              () => setState(() => coveredParking++),
+                              Icons.add,
+                              true),
                         ],
                       ),
                     ],
@@ -287,15 +385,31 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("Open Parking"),
+                      Text(
+                        "Open Parking",
+                        style: TextStyle(
+                          fontFamily: AppFontFamily.primaryFont,
+                        ),
+                      ),
                       Row(
                         children: [
-                          _buildCounterButton(() => setState(() => openParking--), Icons.remove, openParking > 0),
+                          _buildCounterButton(
+                              () => setState(() => openParking--),
+                              Icons.remove,
+                              openParking > 0),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Text("$openParking", style: const TextStyle(fontSize: 18)),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Text("$openParking",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: AppFontFamily.primaryFont,
+                                )),
                           ),
-                          _buildCounterButton(() => setState(() => openParking++), Icons.add, true),
+                          _buildCounterButton(
+                              () => setState(() => openParking++),
+                              Icons.add,
+                              true),
                         ],
                       ),
                     ],
@@ -312,32 +426,43 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                         elevation: 3,
                         shadowColor: Colors.grey,
                         padding: EdgeInsets.symmetric(vertical: 10),
-                        textStyle:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        textStyle: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                         backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ), // Make sure to call the saveToFirestore function
 
-                      child: const Text("Save Property",
+                      child: Text(
+                        "Save Property",
                         style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold                        ),),
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: AppFontFamily.primaryFont,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-            if (isLoading) const Center(child: CircularProgressIndicator()), // 🔥 Show loader while saving
+            if (isLoading)
+              const Center(
+                  child:
+                      CircularProgressIndicator()), // 🔥 Show loader while saving
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCounterButton(VoidCallback onPressed, IconData icon, bool enabled) {
-    return IconButton(icon: Icon(icon), onPressed: enabled ? onPressed : null, color: enabled ? AppColors.primary : Colors.grey);
+  Widget _buildCounterButton(
+      VoidCallback onPressed, IconData icon, bool enabled) {
+    return IconButton(
+        icon: Icon(icon),
+        onPressed: enabled ? onPressed : null,
+        color: enabled ? AppColors.primary : Colors.grey);
   }
 }

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import '../Customs/CustomAppBar.dart';
 import '../Customs/custom_textfield.dart';
 import '../authentication/login_screen.dart';
@@ -127,7 +129,13 @@ class _ProfilePageState extends State<ProfilePage> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Profile updated successfully")),
+          SnackBar(
+              content: Text(
+            "Profile updated successfully",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          )),
         );
       }
     } catch (e) {
@@ -158,7 +166,12 @@ class _ProfilePageState extends State<ProfilePage> {
             borderRadius: BorderRadius.circular(12),
           ),
           backgroundColor: Colors.white,
-          title: Text("Choose Image Source"),
+          title: Text(
+            "Choose Image Source",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          ),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -168,7 +181,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   _pickImage(ImageSource.camera);
                 },
                 icon: Icon(Icons.camera_alt, color: Colors.white),
-                label: Text("Camera", style: TextStyle(color: Colors.white)),
+                label: Text("Camera",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    )),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                 ),
@@ -179,7 +196,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   _pickImage(ImageSource.gallery);
                 },
                 icon: Icon(Icons.photo, color: Colors.white),
-                label: Text("Gallery", style: TextStyle(color: Colors.white)),
+                label: Text("Gallery",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    )),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                 ),
@@ -195,12 +216,27 @@ class _ProfilePageState extends State<ProfilePage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text("Log Out"),
-        content: Text("Are you sure you want to log out?"),
+        title: Text(
+          "Log Out",
+          style: TextStyle(
+            fontFamily: AppFontFamily.primaryFont,
+          ),
+        ),
+        content: Text(
+          "Are you sure you want to log out?",
+          style: TextStyle(
+            fontFamily: AppFontFamily.primaryFont,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: Text("Cancel"),
+            child: Text(
+              "Cancel",
+              style: TextStyle(
+                fontFamily: AppFontFamily.primaryFont,
+              ),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -209,7 +245,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 MaterialPageRoute(builder: (context) => LoginPage()),
               );
             },
-            child: Text("Log Out"),
+            child: Text(
+              "Log Out",
+              style: TextStyle(
+                fontFamily: AppFontFamily.primaryFont,
+              ),
+            ),
           ),
         ],
       ),
@@ -235,12 +276,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   color: Colors.grey,
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'You need to log in to view your Profile.',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
+                    fontFamily: AppFontFamily.primaryFont,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -257,9 +299,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       borderRadius: BorderRadius.circular(22),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Log In',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
                   ),
                 ),
               ],
@@ -298,6 +344,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
+                      fontFamily: AppFontFamily.primaryFont,
                     ),
                   ),
                   IconButton(
@@ -334,7 +381,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Container(
                       // padding: EdgeInsets.only(left: 8, right: 8),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30), 
+                        borderRadius: BorderRadius.circular(30),
                         color: Colors.white, // Background color for contrast
                         boxShadow: [
                           BoxShadow(
@@ -384,6 +431,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
+                                    fontFamily: AppFontFamily.primaryFont,
+
                                     // color: Colors.primary,
                                   ),
                                 ),
@@ -405,6 +454,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
+                                    fontFamily: AppFontFamily.primaryFont,
+
                                     // color: AppColors.primary,
                                   ),
                                 ),
@@ -426,6 +477,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
+                                    fontFamily: AppFontFamily.primaryFont,
+
                                     // color: AppColors.primary,
                                   ),
                                 ),
@@ -447,6 +500,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
+                                    fontFamily: AppFontFamily.primaryFont,
+
                                     // color: AppColors.primary,
                                   ),
                                 ),
@@ -475,7 +530,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   AlwaysStoppedAnimation<Color>(
                                                       AppColors.primary),
                                             )
-                                          : Text("Save Changes"),
+                                          : Text(
+                                              "Save Changes",
+                                              style: TextStyle(
+                                                fontFamily:
+                                                    AppFontFamily.primaryFont,
+                                              ),
+                                            ),
                                     ),
                                   )
                                 : SizedBox(
@@ -490,7 +551,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                         backgroundColor: AppColors.primary,
                                         foregroundColor: Colors.white,
                                       ),
-                                      child: Text("Edit Profile"),
+                                      child: Text(
+                                        "Edit Profile",
+                                        style: TextStyle(
+                                          fontFamily: AppFontFamily.primaryFont,
+                                        ),
+                                      ),
                                     ),
                                   ),
                           ],
@@ -499,6 +565,42 @@ class _ProfilePageState extends State<ProfilePage> {
                     ])),
         ),
       ]),
+    );
+  }
+
+  Widget _buildShimmerHeader() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
+      decoration: BoxDecoration(color: Colors.grey[100]),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Column(
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              width: 120,
+              height: 20,
+              color: Colors.white,
+            ),
+            const SizedBox(height: 5),
+            Container(
+              width: 150,
+              height: 20,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

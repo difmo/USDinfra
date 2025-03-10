@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
 class CustomInputField extends StatefulWidget {
   final String hintText;
@@ -98,7 +99,10 @@ class _CustomInputFieldState extends State<CustomInputField> {
             enabled: widget.enable,
             focusNode: _focusNode,
             keyboardType: widget.inputType,
-            style: TextStyle(color: Colors.black87),
+            style: TextStyle(
+              color: Colors.black87,
+              fontFamily: AppFontFamily.primaryFont,
+            ),
             maxLines: widget.maxLines,
             decoration: InputDecoration(
               prefixIcon: widget.prefixIcon != null

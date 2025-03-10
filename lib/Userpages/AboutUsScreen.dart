@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:usdinfra/Customs/CustomAppBar.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
 class AboutUsScreen extends StatelessWidget {
   const AboutUsScreen({super.key});
@@ -38,13 +39,14 @@ class AboutUsScreen extends StatelessWidget {
           width: double.infinity,
           color: Colors.black.withOpacity(0.5),
           alignment: Alignment.center,
-          child: const Text(
+          child: Text(
             "USD Unique - Building the Future",
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
               fontWeight: FontWeight.bold,
+              fontFamily: AppFontFamily.primaryFont,
             ),
           ),
         ),
@@ -57,19 +59,24 @@ class AboutUsScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          const Text(
+          Text(
             "Who We Are",
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
               color: Colors.black,
+              fontFamily: AppFontFamily.primaryFont,
             ),
           ),
           const SizedBox(height: 10),
           Text(
             "USD Unique is a leading construction company specializing in modern, sustainable, and high-quality infrastructure projects. With years of expertise, we deliver top-notch residential, commercial, and industrial projects that redefine excellence.",
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16, color: Colors.grey[800]),
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[800],
+              fontFamily: AppFontFamily.primaryFont,
+            ),
           ),
         ],
       ),
@@ -90,34 +97,44 @@ class AboutUsScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
         children: [
-          const Text(
+          Text(
             "Our Mission",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.white,
+              fontFamily: AppFontFamily.primaryFont,
             ),
           ),
           const SizedBox(height: 10),
           Text(
             "To construct sustainable, innovative, and high-quality infrastructure that enhances communities and businesses.",
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16, color: Colors.white70),
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white70,
+              fontFamily: AppFontFamily.primaryFont,
+            ),
           ),
           const SizedBox(height: 20),
-          const Text(
+          Text(
             "Our Vision",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.white,
+              fontFamily: AppFontFamily.primaryFont,
             ),
           ),
           const SizedBox(height: 10),
           Text(
             "To be the most trusted and preferred construction partner, delivering excellence and innovation in every project.",
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16, color: Colors.white70),
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white70,
+              fontFamily: AppFontFamily.primaryFont,
+            ),
           ),
         ],
       ),
@@ -155,9 +172,13 @@ class AboutUsScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          const Text(
+          Text(
             "Our Core Values",
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              fontFamily: AppFontFamily.primaryFont,
+            ),
           ),
           const SizedBox(height: 10),
           Column(
@@ -175,10 +196,18 @@ class AboutUsScreen extends StatelessWidget {
                   ),
                   title: Text(
                     value['title'],
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 18),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
                   ),
-                  subtitle: Text(value['desc']),
+                  subtitle: Text(
+                    value['desc'],
+                    style: TextStyle(
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
+                  ),
                 ),
               );
             }).toList(),
@@ -193,9 +222,13 @@ class AboutUsScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          const Text(
+          Text(
             "Get in Touch",
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              fontFamily: AppFontFamily.primaryFont,
+            ),
           ),
           const SizedBox(height: 10),
           Card(
@@ -205,19 +238,49 @@ class AboutUsScreen extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
-                  leading: const Icon(Icons.phone, color: Colors.blue),
-                  title: const Text("+91 800 427 5740"),
-                  subtitle: const Text("Call us for inquiries"),
+                  leading: Icon(Icons.phone, color: Colors.blue),
+                  title: Text(
+                    "+91 800 427 5740",
+                    style: TextStyle(
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
+                  ),
+                  subtitle: Text(
+                    "Call us for inquiries",
+                    style: TextStyle(
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
+                  ),
                 ),
                 ListTile(
-                  leading: const Icon(Icons.email, color: Colors.red),
-                  title: const Text("info@usdunique.com"),
-                  subtitle: const Text("Email us for more details"),
+                  leading: Icon(Icons.email, color: Colors.red),
+                  title: Text(
+                    "info@usdunique.com",
+                    style: TextStyle(
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
+                  ),
+                  subtitle: Text(
+                    "Email us for more details",
+                    style: TextStyle(
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
+                  ),
                 ),
                 ListTile(
-                  leading: const Icon(Icons.location_on, color: Colors.green),
-                  title: const Text("USD Unique, Delhi, India"),
-                  subtitle: const Text("Visit our corporate office"),
+                  leading: Icon(Icons.location_on, color: Colors.green),
+                  title: Text(
+                    "USD Unique, Delhi, India",
+                    style: TextStyle(
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
+                  ),
+                  subtitle: Text(
+                    "Visit our corporate office",
+                    style: TextStyle(
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
+                  ),
                 ),
               ],
             ),

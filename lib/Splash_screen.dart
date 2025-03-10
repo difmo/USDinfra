@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
@@ -33,23 +34,28 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset("assets/animations/logo.png", width: 150, height: 150),
-            const SizedBox(height: 20),
-            const Text(
+            Image.asset(
+              "assets/animations/logo.png",
+              //  width: 250, height: 250
+            ),
+            // const SizedBox(height: 20),
+            Text(
               "USD Unique",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: AppColors.primary,
+                fontFamily: GoogleFonts.inter().fontFamily,
               ),
             ),
             const SizedBox(height: 10),
-            const Text(
-              "Building Your Dreams, One Brick at a Time.",
+             Text(
+              "Your Gateway to Unique Properties & Builders.",
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey,
                 fontStyle: FontStyle.italic,
+                fontFamily: GoogleFonts.inter().fontFamily,
               ),
               textAlign: TextAlign.center,
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -35,6 +36,15 @@ class CustomBottomNavigationBar extends StatelessWidget {
         unselectedItemColor: Colors.black,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
+        selectedLabelStyle: TextStyle(
+          fontFamily: AppFontFamily.primaryFont,
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontFamily: AppFontFamily.primaryFont,
+          fontSize: 12,
+        ),
         items: [
           const BottomNavigationBarItem(
             icon: Icon(Icons.home),

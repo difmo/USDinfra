@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
-import '../conigs/app_colors.dart';
+import '../configs/app_colors.dart';
 
 class ContactDetailDialog extends StatelessWidget {
   final String phoneNumber;
@@ -11,12 +12,13 @@ class ContactDetailDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)), // Rounded corners
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0)), // Rounded corners
       elevation: 5,
       backgroundColor: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column( 
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Title Text
@@ -26,6 +28,7 @@ class ContactDetailDialog extends StatelessWidget {
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: AppColors.primary,
+                fontFamily: AppFontFamily.primaryFont,
               ),
             ),
             SizedBox(height: 20),
@@ -47,7 +50,13 @@ class ContactDetailDialog extends StatelessWidget {
                     Clipboard.setData(ClipboardData(text: phoneNumber));
                     // Show a Snackbar to indicate the number was copied
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Phone number copied to clipboard!")),
+                      SnackBar(
+                          content: Text(
+                        "Phone number copied to clipboard!",
+                        style: TextStyle(
+                          fontFamily: AppFontFamily.primaryFont,
+                        ),
+                      )),
                     );
                   },
                 ),
@@ -68,8 +77,7 @@ class ContactDetailDialog extends StatelessWidget {
                 ),
                 child: Text(
                   'Close',
-                  style: TextStyle(fontSize: 16
-                  ,color: Colors.white),
+                  style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),
             ),

@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
 import '../Customs/CustomAppBar.dart';
-import 'Properties_detail_page.dart';
+import 'properties_detail_page.dart';
 
 class PurchesedPropertiesPage extends StatefulWidget {
   const PurchesedPropertiesPage({super.key});
@@ -59,12 +60,13 @@ class _PurchesedPropertiesPageState extends State<PurchesedPropertiesPage> {
                   color: Colors.grey,
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'You need to log in to view your purchased properties.',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
+                    fontFamily: AppFontFamily.primaryFont,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -81,9 +83,13 @@ class _PurchesedPropertiesPageState extends State<PurchesedPropertiesPage> {
                       borderRadius: BorderRadius.circular(22),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Log In',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
                   ),
                 ),
               ],
@@ -162,12 +168,13 @@ class _PurchesedPropertiesPageState extends State<PurchesedPropertiesPage> {
             height: 150,
           ),
           const SizedBox(height: 20),
-          const Text(
+          Text(
             'No Purchased Properties Yet!',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.black87,
+              fontFamily: AppFontFamily.primaryFont,
             ),
           ),
           const SizedBox(height: 10),
@@ -208,11 +215,19 @@ class _PurchesedPropertiesPageState extends State<PurchesedPropertiesPage> {
           ),
           title: Text(
             propertyData['title'] ?? 'Unknown Property',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              fontFamily: AppFontFamily.primaryFont,
+            ),
           ),
           subtitle: Text(
             propertyData['expectedPrice'] ?? 'Price not available',
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+              fontFamily: AppFontFamily.primaryFont,
+            ),
           ),
         ),
       ),

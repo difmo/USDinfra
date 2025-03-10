@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
 import '../../../Components/Choice_Chip.dart';
 import '../../../Components/Error_message.dart';
@@ -24,9 +25,11 @@ class PropertyCategoryColumn extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+         Text(
           'Select Property Category',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,
+          fontFamily: AppFontFamily.primaryFont,
+),
         ),
         const SizedBox(height: 10),
         Wrap(

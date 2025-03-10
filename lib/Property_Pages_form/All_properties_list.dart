@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import '../Components/property_card.dart';
 import '../Customs/CustomAppBar.dart';
-import 'Properties_detail_page.dart';
+import 'properties_detail_page.dart';
 
 class AllProperties extends StatefulWidget {
   const AllProperties({super.key});
@@ -33,10 +34,22 @@ class _AllPropertiesState extends State<AllProperties> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+                child: Text(
+              'Error: ${snapshot.error}',
+              style: TextStyle(
+                fontFamily: AppFontFamily.primaryFont,
+              ),
+            ));
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No Properties Found'));
+            return Center(
+                child: Text(
+              'No Properties Found',
+              style: TextStyle(
+                fontFamily: AppFontFamily.primaryFont,
+              ),
+            ));
           }
 
           var properties = snapshot.data!.docs;

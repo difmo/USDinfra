@@ -9,6 +9,8 @@ import 'package:usdinfra/Userpages/PrivacyPolicyScreen.dart';
 import 'package:usdinfra/Userpages/TermsandConditions.dart';
 import 'package:usdinfra/Userpages/UpgradeServiceScreen.dart';
 import 'package:usdinfra/Userpages/dash_board.dart';
+import 'package:usdinfra/Userpages/notification_page.dart';
+import 'package:usdinfra/Userpages/searchScreen.dart';
 // import 'package:usdinfra/authentication/dummy.dart';
 import 'package:usdinfra/authentication/welcome_screen.dart';
 // import '../Admin/admin_bottom_nav.dart';
@@ -22,7 +24,6 @@ import '../Property_Pages_form/Property_Form/form_page_2.dart';
 import '../Property_Pages_form/favoriteProperties.dart';
 import '../Splash_screen.dart';
 import '../Property_Pages_form/All_properties_list.dart';
-// import '../Userpages/notification.dart';
 import '../Userpages/profile_page.dart';
 import '../Userpages/profile_setup.dart';
 import '../Userpages/user_property.dart';
@@ -47,7 +48,7 @@ class AppRouts {
   static const adminbottom = '/Adminbottomnav';
   static const purchesedProperties = '/purchesed';
 
-  // static const notification = '/NotificationPage';
+  static const notification = '/NotificationPage';
   static const chat = '/chat';
   static const chatdetails = '/chatdetails';
   static const upgardeservice = '/upgardeservice';
@@ -64,6 +65,7 @@ class AppRouts {
   static const approvedProperty = '/ApprovedPropertiesPage';
   static const enquiriesPage = '/AdminEnquiriesPage';
   static const soldProperty = '/Sold';
+  static const Search = '/search';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -108,8 +110,8 @@ class AppRouts {
 
       case profile:
         return MaterialPageRoute(builder: (_) => ProfilePage());
-      // case notification:
-      // return MaterialPageRoute(builder: (_) => NotificationPage());
+      case notification:
+        return MaterialPageRoute(builder: (_) => NotificationScreen());
       case aboutus:
         return MaterialPageRoute(builder: (_) => AboutUsScreen());
       case contactus:
@@ -137,6 +139,8 @@ class AppRouts {
         return MaterialPageRoute(builder: (_) => SoldPropertiesPage());
       case enquiriesPage:
         return MaterialPageRoute(builder: (_) => AdminEnquiriesPage());
+      case Search:
+        return MaterialPageRoute(builder: (_) => SearchScreen());
 
       default:
         return MaterialPageRoute(builder: (_) => SplashScreen());

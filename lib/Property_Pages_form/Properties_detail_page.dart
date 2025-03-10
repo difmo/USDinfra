@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:usdinfra/Customs/CustomAppBar.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
 class PropertyDetailPage extends StatefulWidget {
   final String docId;
@@ -59,27 +60,33 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
       body: isLoading
           ? _shimmerLoading()
           : hasError || propertyData == null
-          ? const Center(child: Text("Property not found"))
-          : Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _imageSection(),
-                  _propertyInfoSection(),
-                  _propertyDetailSection(),
-                  _descriptionSection(),
-                  _addressSection(),
-                  _contactSellerSection(),
-                ],
-              ),
-            ),
-          ),
-          _bottomPurchaseSection(),
-        ],
-      ),
+              ? Center(
+                  child: Text(
+                  "Property not found",
+                  style: TextStyle(
+                    fontFamily: AppFontFamily.primaryFont,
+                  ),
+                ))
+              : Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _imageSection(),
+                            _propertyInfoSection(),
+                            _descriptionSection(),
+                            _propertyDetailSection(),
+                            _addressSection(),
+                            _contactSellerSection(),
+                          ],
+                        ),
+                      ),
+                    ),
+                    _bottomPurchaseSection(),
+                  ],
+                ),
     );
   }
 
@@ -90,9 +97,13 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "Address",
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              fontFamily: AppFontFamily.primaryFont,
+            ),
           ),
           const SizedBox(height: 8),
           _infoRow("City", propertyData?['city'] ?? "N/A"),
@@ -117,22 +128,25 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                 String address = "$subLocality, $locality, $city";
                 if (address.isNotEmpty) {
                   final url = 'https://www.google.com/maps/search/?q=$address';
-                  launch(url);  // Make sure to import url_launcher and set it up.
+                  launch(
+                      url); // Make sure to import url_launcher and set it up.
                 }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.secondry,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 elevation: 4,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 "View on Map",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
+                  fontFamily: AppFontFamily.primaryFont,
                 ),
               ),
             ),
@@ -193,10 +207,11 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
             ),
             child: Text(
               "Rs. ${propertyData?['expectedPrice'] ?? "N/A"}",
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
+                fontFamily: AppFontFamily.primaryFont,
               ),
             ),
           ),
@@ -213,16 +228,18 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
         children: [
           Text(
             propertyData?['title'] ?? "No Title",
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: Colors.black87,
+              fontFamily: AppFontFamily.primaryFont,
             ),
           ),
           const SizedBox(height: 10),
           _infoRow("Plot Area", propertyData?['plotArea'] ?? "N/A"),
           _infoRow("Total Floors", propertyData?['totalFloors'] ?? "N/A"),
-          _infoRow("Availability", propertyData?['availabilityStatus'] ?? "N/A"),
+          _infoRow(
+              "Availability", propertyData?['availabilityStatus'] ?? "N/A"),
           _infoRow("Ownership", propertyData?['ownershipType'] ?? "N/A"),
         ],
       ),
@@ -242,7 +259,8 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
           const SizedBox(height: 10),
           _infoRow("Property For", propertyData?['lookingTo'] ?? "N/A"),
           _infoRow("Property Type", propertyData?['propertyType'] ?? "N/A"),
-          _infoRow("Property Category", propertyData?['propertyCategory'] ?? "N/A"),
+          _infoRow(
+              "Property Category", propertyData?['propertyCategory'] ?? "N/A"),
         ],
       ),
     );
@@ -288,7 +306,8 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
 
   Widget _bottomPurchaseSection() {
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0),
+      padding: const EdgeInsets.only(
+          left: 16.0, right: 16.0, bottom: 16.0, top: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -326,16 +345,21 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
         children: [
           Text(
             "$label: ",
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
               color: Colors.black87,
+              fontFamily: AppFontFamily.primaryFont,
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(fontSize: 16, color: Colors.black87),
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+                fontFamily: AppFontFamily.primaryFont,
+              ),
             ),
           ),
         ],

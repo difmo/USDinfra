@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '../conigs/app_colors.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import 'package:usdinfra/configs/font_family.dart';
+import '../configs/app_colors.dart';
 import 'contact_details.dart';
 
 class PropertyCard extends StatefulWidget {
@@ -12,10 +14,8 @@ class PropertyCard extends StatefulWidget {
   final String address;
   final String createdAt;
   final String title;
-
-  // final List<String> features;
   final String propertyStatus;
-  final contactDetails;
+  final String contactDetails; // Ensure it's a valid phone number
 
   const PropertyCard({
     super.key,
@@ -26,7 +26,6 @@ class PropertyCard extends StatefulWidget {
     required this.address,
     required this.createdAt,
     required this.title,
-    // required this.features,
     required this.propertyStatus,
     required this.contactDetails,
   });
@@ -42,6 +41,25 @@ class _PropertyCardState extends State<PropertyCard> {
     setState(() {
       isFavorited = !isFavorited;
     });
+  }
+
+  void _callOwner() async {
+    String phoneNumber =
+        widget.contactDetails.trim(); // Remove spaces from the start and end
+    phoneNumber =
+        phoneNumber.replaceAll(' ', ''); // Remove all spaces inside the number
+
+    final Uri phoneUri = Uri.parse("tel:$phoneNumber");
+    print("Attempting to launch: $phoneUri"); // Debugging
+
+    if (await canLaunchUrlString(phoneUri.toString())) {
+      await launchUrl(phoneUri, mode: LaunchMode.externalApplication);
+    } else {
+      print("canLaunchUrlString() returned false."); // Debugging
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not launch dialer')),
+      );
+    }
   }
 
   @override
@@ -88,8 +106,11 @@ class _PropertyCardState extends State<PropertyCard> {
                         ),
                         child: Text(
                           'Updated ${widget.createdAt} ago',
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 11),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontFamily: AppFontFamily.primaryFont,
+                          ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
@@ -104,31 +125,35 @@ class _PropertyCardState extends State<PropertyCard> {
                     children: [
                       Text(
                         widget.expectedPrice,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          fontFamily: AppFontFamily.primaryFont,
                         ),
                       ),
                       Text(
                         '${widget.plotArea} - ${widget.propertyType}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
+                          fontFamily: AppFontFamily.primaryFont,
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         widget.title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
+                          fontFamily: AppFontFamily.primaryFont,
                         ),
                       ),
                       Text(
                         widget.address,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
+                          fontFamily: AppFontFamily.primaryFont,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -137,7 +162,12 @@ class _PropertyCardState extends State<PropertyCard> {
                           Icon(Icons.check_circle,
                               color: Colors.green, size: 16),
                           const SizedBox(width: 4),
-                          Text(widget.propertyStatus),
+                          Text(
+                            widget.propertyStatus,
+                            style: TextStyle(
+                              fontFamily: AppFontFamily.primaryFont,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 12),
@@ -167,8 +197,11 @@ class _PropertyCardState extends State<PropertyCard> {
                       shape: WidgetStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ))),
-                  child: const Text('Get Phone No.',
-                      style: TextStyle(color: AppColors.primary)),
+                  child: Text('Get Phone No.',
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontFamily: AppFontFamily.primaryFont,
+                      )),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -177,19 +210,13 @@ class _PropertyCardState extends State<PropertyCard> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  onPressed: () => {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return ContactDetailDialog(
-                          phoneNumber: widget.contactDetails,
-                        );
-                      },
-                    )
-                  },
-                  child: const Text(
+                  onPressed: _callOwner, // Calls the owner directly
+                  child: Text(
                     'Contact Owner',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
                   ),
                 ),
               ],

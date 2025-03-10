@@ -6,7 +6,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:lottie/lottie.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
 import '../Controllers/authentication_controller.dart';
@@ -152,6 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: AppColors.primary,
+                      fontFamily: AppFontFamily.primaryFont,
                     ),
                   ),
                 ),
@@ -161,6 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey[600],
+                    fontFamily: AppFontFamily.primaryFont,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -176,6 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: Colors.black,
+                          fontFamily: AppFontFamily.primaryFont,
                         ),
                       ),
                       SizedBox(height: 8),
@@ -210,6 +214,7 @@ class _LoginPageState extends State<LoginPage> {
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: Colors.black,
+                          fontFamily: AppFontFamily.primaryFont,
                         ),
                       ),
                       SizedBox(height: 8),
@@ -243,6 +248,7 @@ class _LoginPageState extends State<LoginPage> {
                                   style: TextStyle(
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.bold,
+                                    fontFamily: AppFontFamily.primaryFont,
                                   ),
                                 ),
                               ],
@@ -269,6 +275,7 @@ class _LoginPageState extends State<LoginPage> {
                       textStyle: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
+                        fontFamily: AppFontFamily.primaryFont,
                       ),
                     ),
                     child: _isLoading
@@ -278,7 +285,10 @@ class _LoginPageState extends State<LoginPage> {
                           )
                         : Text(
                             'Log In',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: AppFontFamily.primaryFont,
+                            ),
                           ),
                   ),
                 ),
@@ -290,13 +300,17 @@ class _LoginPageState extends State<LoginPage> {
                   child: Text.rich(
                     TextSpan(
                       text: "Don't have an account? ",
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontFamily: AppFontFamily.primaryFont,
+                      ),
                       children: [
                         TextSpan(
                           text: "Sign Up",
                           style: TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.bold,
+                            fontFamily: AppFontFamily.primaryFont,
                           ),
                         ),
                       ],

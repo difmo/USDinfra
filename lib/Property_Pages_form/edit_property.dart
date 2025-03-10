@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
 import '../Controllers/authentication_controller.dart';
 import '../Customs/CustomAppBar.dart';
@@ -105,7 +106,6 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
     }
   }
 
-
   Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: source);
@@ -125,7 +125,12 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
             borderRadius: BorderRadius.circular(12),
           ),
           backgroundColor: Colors.white,
-          title: Text("Choose Image Source"),
+          title: Text(
+            "Choose Image Source",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          ),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -135,7 +140,11 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                   _pickImage(ImageSource.camera);
                 },
                 icon: Icon(Icons.camera_alt, color: Colors.white),
-                label: Text("Camera", style: TextStyle(color: Colors.white)),
+                label: Text("Camera",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    )),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                 ),
@@ -146,7 +155,11 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                   _pickImage(ImageSource.gallery);
                 },
                 icon: Icon(Icons.photo, color: Colors.white),
-                label: Text("Gallery", style: TextStyle(color: Colors.white)),
+                label: Text("Gallery",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    )),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                 ),
@@ -212,13 +225,25 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
             .doc(widget.docId)
             .update(updatedData);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Property updated successfully!")),
+          SnackBar(
+              content: Text(
+            "Property updated successfully!",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          )),
         );
         Navigator.pop(context, updatedData);
       } catch (e) {
         print('Error updating property data: $e');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error updating property")),
+          SnackBar(
+              content: Text(
+            "Error updating property",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          )),
         );
       }
     }
@@ -243,10 +268,11 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Property Image',
+              Text('Property Image',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
+                    fontFamily: AppFontFamily.primaryFont,
                   )),
               const SizedBox(height: 8),
               Stack(
@@ -258,29 +284,31 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                       width: double.infinity,
                       height: 200,
                     )
-                  else
-                    if (imageUrl != null)
-                      Image.network(
-                        imageUrl!,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 200,
-                      ),
+                  else if (imageUrl != null)
+                    Image.network(
+                      imageUrl!,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: 200,
+                    ),
                   Positioned(
                     right: 5,
                     bottom: 5,
                     child: ElevatedButton.icon(
                       onPressed: () => _showImageSourceDialog(context),
                       icon: const Icon(Icons.add_a_photo, color: Colors.white),
-                      label: const Text("Change Image",
-                          style: TextStyle(color: Colors.white)),
+                      label: Text("Change Image",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: AppFontFamily.primaryFont,
+                          )),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 5),
                       ),
                     ),
-                  ), 
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -333,18 +361,23 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                 },
               ),
               const SizedBox(height: 16),
-              const Text('Expected Price',
+              Text('Expected Price',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
+                    fontFamily: AppFontFamily.primaryFont,
                   )),
               SizedBox(height: 8),
               CustomInputField(
                   controller: controllers.expectedPriceController,
                   hintText: 'Expected Price'),
               const SizedBox(height: 16),
-              const Text('Property Details',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text('Property Details',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppFontFamily.primaryFont,
+                  )),
               SizedBox(height: 8),
               CustomInputField(
                 controller: controllers.descriptionController,
@@ -360,8 +393,12 @@ class _EditPropertyPageState extends State<EditPropertyPage> {
                     backgroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  child: const Text('Save Changes',
-                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                  child: Text('Save Changes',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: AppFontFamily.primaryFont,
+                      )),
                 ),
               ),
             ],

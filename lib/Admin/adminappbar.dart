@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
 class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -47,10 +48,11 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
             alignment: Alignment.centerLeft, // 🔥 Title aligned to left
             child: Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
+                fontFamily: AppFontFamily.primaryFont,
               ),
             ),
           ),

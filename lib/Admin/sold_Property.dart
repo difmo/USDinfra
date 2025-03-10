@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:usdinfra/Admin/adminappbar.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
 class SoldPropertiesPage extends StatefulWidget {
@@ -38,7 +39,13 @@ class _SoldPropertiesPageState extends State<SoldPropertiesPage> {
             return Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text("No properties sold yet."));
+            return Center(
+                child: Text(
+              "No properties sold yet.",
+              style: TextStyle(
+                fontFamily: AppFontFamily.primaryFont,
+              ),
+            ));
           }
 
           var properties = snapshot.data!.docs;
@@ -127,6 +134,7 @@ class _SoldPropertiesPageState extends State<SoldPropertiesPage> {
                                     fontSize: screenWidth *
                                         0.04, // 🔥 Responsive font
                                     color: Colors.black87,
+                                    fontFamily: AppFontFamily.primaryFont,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -144,6 +152,7 @@ class _SoldPropertiesPageState extends State<SoldPropertiesPage> {
                                         style: TextStyle(
                                           fontSize: screenWidth * 0.035,
                                           color: Colors.grey[700],
+                                          fontFamily: AppFontFamily.primaryFont,
                                         ),
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -157,6 +166,7 @@ class _SoldPropertiesPageState extends State<SoldPropertiesPage> {
                                     fontSize: screenWidth * 0.04,
                                     color: Colors.green,
                                     fontWeight: FontWeight.bold,
+                                    fontFamily: AppFontFamily.primaryFont,
                                   ),
                                 ),
                               ],

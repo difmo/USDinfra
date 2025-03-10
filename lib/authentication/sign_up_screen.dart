@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import '../Controllers/authentication_controller.dart';
 import '../Customs/custom_textfield.dart';
 import '../routes/app_routes.dart';
@@ -201,9 +202,11 @@ class _SignupPageState extends State<SignupPage> {
                 Text(
                   'Create a new account',
                   style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                    fontFamily: AppFontFamily.primaryFont,
+                  ),
                 ),
                 SizedBox(height: 20),
                 buildInputField('Name', controllers.nameController,
@@ -269,9 +272,11 @@ class _SignupPageState extends State<SignupPage> {
         children: [
           Text(label,
               style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black)),
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+                fontFamily: AppFontFamily.primaryFont,
+              )),
           SizedBox(height: 8),
           CustomInputField(
             borderRadius: 25,
@@ -302,9 +307,11 @@ class _SignupPageState extends State<SignupPage> {
         children: [
           Text(label,
               style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black)),
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+                fontFamily: AppFontFamily.primaryFont,
+              )),
           SizedBox(height: 8),
           CustomInputField(
             borderRadius: 25,
@@ -343,7 +350,11 @@ class _SignupPageState extends State<SignupPage> {
             elevation: 3,
             shadowColor: Colors.grey,
             padding: EdgeInsets.symmetric(vertical: 10),
-            textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            textStyle: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              fontFamily: AppFontFamily.primaryFont,
+            ),
             backgroundColor: AppColors.primary,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -351,7 +362,8 @@ class _SignupPageState extends State<SignupPage> {
           child: _isLoading
               ? CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary))
-              : Text('Signup', style: TextStyle(color: Colors.white)),
+              : Text('Signup', style: TextStyle(color: Colors.white,
+              fontFamily: AppFontFamily.primaryFont)),
         ),
       ),
     );

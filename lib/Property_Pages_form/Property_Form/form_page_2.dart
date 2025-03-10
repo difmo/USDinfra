@@ -2,9 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:usdinfra/Components/Choice_Chip.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import '../../Controllers/authentication_controller.dart';
 import '../../Customs/form_input_field.dart';
-import '../../conigs/app_colors.dart';
+import '../../configs/app_colors.dart';
 import 'form_page_3.dart';
 
 class PropertyForm2 extends StatefulWidget {
@@ -34,7 +35,13 @@ class _PropertyForm2State extends State<PropertyForm2> {
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('User is not logged in.')),
+          SnackBar(
+              content: Text(
+            'User is not logged in.',
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          )),
         );
         return;
       }
@@ -64,7 +71,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
         'isDeleted': isDeleted,
         'propertyType': widget.formData['propertyType'],
         'propertyCategory': widget.formData['propertyCategory'],
-        'contactDetails': widget.formData['contactDetails'],
+        'contactDetails': '+91${widget.formData['contactDetails']}',
         'locality': controllers.localityController.text,
         'subLocality': controllers.subLocalityController.text,
         'apartment/Society': controllers.apartmentController.text,
@@ -82,7 +89,13 @@ class _PropertyForm2State extends State<PropertyForm2> {
       String docId = newPropertyRef.id; // Get the generated document ID
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Property saved successfully!')),
+        SnackBar(
+            content: Text(
+          'Property saved successfully!',
+          style: TextStyle(
+            fontFamily: AppFontFamily.primaryFont,
+          ),
+        )),
       );
 
       Navigator.push(
@@ -139,24 +152,33 @@ class _PropertyForm2State extends State<PropertyForm2> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Add Property Details',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+                fontFamily: AppFontFamily.primaryFont,
+              ),
             ),
             const SizedBox(height: 4),
-            const Text(
+            Text(
               'STEP 2 OF 3',
-              style: TextStyle(color: Colors.grey, fontSize: 14),
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14,
+                fontFamily: AppFontFamily.primaryFont,
+              ),
             ),
             SizedBox(height: 20),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Title',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
+                    fontFamily: AppFontFamily.primaryFont,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -176,6 +198,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
+                      fontFamily: AppFontFamily.primaryFont,
                     )),
                 SizedBox(height: 8),
                 FormTextField(
@@ -191,6 +214,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
+                  fontFamily: AppFontFamily.primaryFont,
                 )),
             SizedBox(height: 20),
             Padding(
@@ -202,6 +226,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        fontFamily: AppFontFamily.primaryFont,
                       )),
                   SizedBox(height: 8),
                   FormTextField(
@@ -222,6 +247,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        fontFamily: AppFontFamily.primaryFont,
                       )),
                   SizedBox(height: 8),
                   FormTextField(
@@ -241,6 +267,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        fontFamily: AppFontFamily.primaryFont,
                       )),
                   SizedBox(height: 8),
                   FormTextField(
@@ -260,6 +287,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        fontFamily: AppFontFamily.primaryFont,
                       )),
                   SizedBox(height: 8),
                   FormTextField(
@@ -274,6 +302,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
+                  fontFamily: AppFontFamily.primaryFont,
                 )),
             Row(
               children: [
@@ -288,6 +317,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
+                              fontFamily: AppFontFamily.primaryFont,
                             )),
                         SizedBox(height: 8),
                         FormTextField(
@@ -310,6 +340,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        fontFamily: AppFontFamily.primaryFont,
                       )),
                   SizedBox(height: 8),
                   FormTextField(
@@ -321,7 +352,11 @@ class _PropertyForm2State extends State<PropertyForm2> {
             ),
             SizedBox(height: 20),
             Text('Availability Status',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: AppFontFamily.primaryFont,
+                )),
             Wrap(
               spacing: 10,
               children: ['Ready to move', 'Under construction']
@@ -342,6 +377,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
+                  fontFamily: AppFontFamily.primaryFont,
                 )),
             Wrap(
               spacing: 10,
@@ -372,6 +408,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        fontFamily: AppFontFamily.primaryFont,
                       )),
                   SizedBox(height: 8),
                   FormTextField(
@@ -393,7 +430,12 @@ class _PropertyForm2State extends State<PropertyForm2> {
                     });
                   },
                 ),
-                const Text('All inclusive price'),
+                Text(
+                  'All inclusive price',
+                  style: TextStyle(
+                    fontFamily: AppFontFamily.primaryFont,
+                  ),
+                ),
               ],
             ),
             Row(
@@ -406,7 +448,12 @@ class _PropertyForm2State extends State<PropertyForm2> {
                     });
                   },
                 ),
-                const Text('Tax and Govt. charges excluded'),
+                Text(
+                  'Tax and Govt. charges excluded',
+                  style: TextStyle(
+                    fontFamily: AppFontFamily.primaryFont,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 30),
@@ -433,9 +480,11 @@ class _PropertyForm2State extends State<PropertyForm2> {
                     : Text(
                         'Post and Continue',
                         style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: AppFontFamily.primaryFont,
+                        ),
                       ),
               ),
             )

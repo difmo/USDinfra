@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
 class HomePage extends StatelessWidget {
@@ -11,103 +13,108 @@ class HomePage extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Column(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 40),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                /// **LOGO SECTION**
+                Hero(
+                  tag: "app_logo",
+                  child: Image.asset(
+                    "assets/animations/logo.png",
+                    width: 280,
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                /// **WELCOME TEXT**
+                Text(
+                  "Welcome to USDunique",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                    fontFamily: GoogleFonts.inter().fontFamily,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+
+                /// **DESCRIPTION**
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Text(
+                    "Explore top-rated properties & real estate projects.\n"
+                    "Connect with trusted builders & sellers.\n"
+                    "Find your dream home or the perfect investment.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[700],
+                      fontFamily: GoogleFonts.inter().fontFamily,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 40),
+
+                /// **START BUTTON**
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRouts.dashBoard);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      elevation: 5,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    child: Text(
+                      'Start your journey today!',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: GoogleFonts.inter().fontFamily,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                /// **LOG IN LINK**
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, AppRouts.login);
+                  },
+                  child: Text.rich(
+                    TextSpan(
+                      text: "Already have an account? ",
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 16,
+                        fontFamily: AppFontFamily.primaryFont,
+                      ),
                       children: [
-                        Image.asset("assets/animations/logo.png",
-                          width: 300,
-                          height: 300,
-                        ),
-                        // Lottie.asset(
-                        //   'assets/animations/welcome.json',
-                        //   width: 390,
-                        //   height: 400,
-                        //   fit: BoxFit.fill,
-                        //   repeat: false,
-                        // ),
-                        Text(
-                          "Welcome",
+                        TextSpan(
+                          text: "Log In",
                           style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primary),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          "Create an account and access our awesome services",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey[600],
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: AppFontFamily.primaryFont,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, AppRouts.dashBoard);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              elevation: 3, // Add elevation here
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              textStyle: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            child: Text(
-                              'Getting Started',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(context, AppRouts.login);
-                          },
-                          child: Text.rich(
-                            TextSpan(
-                              text: "Already have an account? ",
-                              style: TextStyle(color: Colors.grey),
-                              children: [
-                                TextSpan(
-                                  text: "Log In",
-                                  style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

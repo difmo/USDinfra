@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import '../../Controllers/authentication_controller.dart';
 import '../../Customs/CustomAppBar.dart';
 import 'Form_page_1_components/Contact_Details.dart';
@@ -44,18 +45,54 @@ class _PropertyFormState extends State<PropertyForm1> {
 
   List<String> getPropertyCategories() {
     if (lookingTo == 'Sell' && propertyType == 'Commercial') {
-      return ['Office', 'Retail', 'Storage', 'Plot/Land', 'Industry', 'Hospitality', 'Other'];
+      return [
+        'Office',
+        'Retail',
+        'Storage',
+        'Plot/Land',
+        'Industry',
+        'Hospitality',
+        'Other'
+      ];
     } else if (lookingTo == 'Sell' && propertyType == 'Residential') {
-      return ['Apartment', 'Independent House/Villa', 'Independent/Builder Floor',
-        'Plot/Land', '1RK/Studio Apartment', 'Serviced Apartment', 'Farmhouse', 'Other'];
+      return [
+        'Apartment',
+        'Independent House/Villa',
+        'Independent/Builder Floor',
+        'Plot/Land',
+        '1RK/Studio Apartment',
+        'Serviced Apartment',
+        'Farmhouse',
+        'Other'
+      ];
     } else if (lookingTo == 'Rent / Lease' && propertyType == 'Residential') {
-      return ['Apartment', 'Independent House/Villa', 'Independent/Builder Floor',
-        '1RK/Studio Apartment', 'Serviced Apartment', 'Farmhouse', 'Other'];
+      return [
+        'Apartment',
+        'Independent House/Villa',
+        'Independent/Builder Floor',
+        '1RK/Studio Apartment',
+        'Serviced Apartment',
+        'Farmhouse',
+        'Other'
+      ];
     } else if (lookingTo == 'Rent / Lease' && propertyType == 'Commercial') {
-      return ['Office', 'Retail', 'Storage', 'Plot/Land', 'Industry', 'Hospitality', 'Other'];
+      return [
+        'Office',
+        'Retail',
+        'Storage',
+        'Plot/Land',
+        'Industry',
+        'Hospitality',
+        'Other'
+      ];
     } else if (lookingTo == 'Paying Guest' && propertyType == 'Residential') {
-      return ['Apartment', 'Independent House/Villa', 'Independent/Builder Floor',
-        '1RK/Studio Apartment', 'Serviced Apartment'];
+      return [
+        'Apartment',
+        'Independent House/Villa',
+        'Independent/Builder Floor',
+        '1RK/Studio Apartment',
+        'Serviced Apartment'
+      ];
     } else {
       return [];
     }
@@ -76,12 +113,16 @@ class _PropertyFormState extends State<PropertyForm1> {
 
   void _validateAndSubmit() {
     setState(() {
-      _lookingToError = lookingTo == null ? 'Please select what you\'re looking to do' : null;
-      _propertyTypeError = propertyType == null ? 'Please select a property type' : null;
-      _propertyCategoryError = propertyCategory == null ? 'Please select a property category' : null;
+      _lookingToError =
+          lookingTo == null ? 'Please select what you\'re looking to do' : null;
+      _propertyTypeError =
+          propertyType == null ? 'Please select a property type' : null;
+      _propertyCategoryError =
+          propertyCategory == null ? 'Please select a property category' : null;
     });
 
-    contactDetailsError = _validateContactDetails(controllers.contactController.text);
+    contactDetailsError =
+        _validateContactDetails(controllers.contactController.text);
 
     if (_formKey.currentState!.validate() &&
         lookingTo != null &&
@@ -125,12 +166,13 @@ class _PropertyFormState extends State<PropertyForm1> {
                   color: Colors.grey,
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'You need to login to list your properties.',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
+                    fontFamily: AppFontFamily.primaryFont,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -141,14 +183,19 @@ class _PropertyFormState extends State<PropertyForm1> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(22),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Log In',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
                   ),
                 ),
               ],
@@ -175,14 +222,23 @@ class _PropertyFormState extends State<PropertyForm1> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Add Basic Details',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                    fontFamily: AppFontFamily.primaryFont,
+                  ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                Text(
                   'STEP 1 OF 3',
-                  style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppFontFamily.primaryFont,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 // Looking to property
@@ -223,13 +279,11 @@ class _PropertyFormState extends State<PropertyForm1> {
                   propertyCategoryError: _propertyCategoryError,
                 ),
                 const SizedBox(height: 20),
-                // Contact Details
                 ContactDetailsColumn(
                   controller: controllers.contactController,
                   validator: _validateContactDetails,
                 ),
                 const SizedBox(height: 30),
-                // Next button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -243,12 +297,13 @@ class _PropertyFormState extends State<PropertyForm1> {
                       elevation: 2,
                       shadowColor: AppColors.shadow,
                     ),
-                    child: const Text(
+                    child: Text(
                       'Next',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
+                        fontFamily: AppFontFamily.primaryFont,
                       ),
                     ),
                   ),

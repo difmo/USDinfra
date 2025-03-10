@@ -174,7 +174,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../Controllers/authentication_controller.dart';
 import '../../Customs/custom_textfield.dart';
-import '../../conigs/app_colors.dart';
+import '../../configs/app_colors.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String? email; // Assuming the email is passed when navigating to the ResetPasswordScreen

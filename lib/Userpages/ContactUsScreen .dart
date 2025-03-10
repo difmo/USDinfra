@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:usdinfra/Customs/CustomAppBar.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
 import '../Controllers/authentication_controller.dart';
 
@@ -42,13 +43,14 @@ class ContactUsScreen extends StatelessWidget {
           width: double.infinity,
           color: Colors.black.withOpacity(0.5),
           alignment: Alignment.center,
-          child: const Text(
+          child: Text(
             "Get in Touch with USD Unique",
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
               fontWeight: FontWeight.bold,
+              fontFamily: AppFontFamily.primaryFont,
             ),
           ),
         ),
@@ -82,9 +84,13 @@ class ContactUsScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          const Text(
+          Text(
             "Contact Details",
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              fontFamily: AppFontFamily.primaryFont,
+            ),
           ),
           const SizedBox(height: 10),
           Column(
@@ -101,8 +107,16 @@ class ContactUsScreen extends StatelessWidget {
                     child: Icon(item['icon'], color: item['color']),
                   ),
                   title: Text(item['title'],
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text(item['subtitle']),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppFontFamily.primaryFont,
+                      )),
+                  subtitle: Text(
+                    item['subtitle'],
+                    style: TextStyle(
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
+                  ),
                 ),
               );
             }).toList(),
@@ -126,7 +140,13 @@ class ContactUsScreen extends StatelessWidget {
     ) async {
       if (name.isEmpty || email.isEmpty || mobile.isEmpty || message.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("All fields are required!")),
+          SnackBar(
+              content: Text(
+            "All fields are required!",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          )),
         );
         return;
       }
@@ -143,11 +163,23 @@ class ContactUsScreen extends StatelessWidget {
         mobileController.clear();
         messageController.clear();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Message sent successfully!")),
+          SnackBar(
+              content: Text(
+            "Message sent successfully!",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          )),
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error: $e")),
+          SnackBar(
+              content: Text(
+            "Error: $e",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          )),
         );
       }
     }
@@ -156,14 +188,21 @@ class ContactUsScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          const Text(
+          Text(
             "Send Us a Message",
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              fontFamily: AppFontFamily.primaryFont,
+            ),
           ),
           const SizedBox(height: 10),
-          _customTextField("Full Name", controllers.nameController, inputType: TextInputType.text),
-          _customTextField("Email Address", controllers.emailController, inputType: TextInputType.emailAddress),
-          _customTextField("Mobile Number", controllers.mobileController, inputType: TextInputType.phone),
+          _customTextField("Full Name", controllers.nameController,
+              inputType: TextInputType.text),
+          _customTextField("Email Address", controllers.emailController,
+              inputType: TextInputType.emailAddress),
+          _customTextField("Mobile Number", controllers.mobileController,
+              inputType: TextInputType.phone),
           _customTextField("Your Message", controllers.messageController,
               maxLines: 5, inputType: TextInputType.text),
           const SizedBox(height: 20),
@@ -185,9 +224,12 @@ class ContactUsScreen extends StatelessWidget {
               backgroundColor: AppColors.primary,
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
             ),
-            child: const Text(
+            child: Text(
               "Send Message",
-              style: TextStyle(color: AppColors.white),
+              style: TextStyle(
+                color: AppColors.white,
+                fontFamily: AppFontFamily.primaryFont,
+              ),
             ),
           ),
         ],
@@ -195,10 +237,12 @@ class ContactUsScreen extends StatelessWidget {
     );
   }
 
-  Widget _customTextField(String hint, TextEditingController controller,
-      {int maxLines = 1,
-        TextInputType inputType = TextInputType.text,
-      }) {
+  Widget _customTextField(
+    String hint,
+    TextEditingController controller, {
+    int maxLines = 1,
+    TextInputType inputType = TextInputType.text,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: TextField(
@@ -224,9 +268,13 @@ class ContactUsScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          const Text(
+          Text(
             "Our Location",
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              fontFamily: AppFontFamily.primaryFont,
+            ),
           ),
           const SizedBox(height: 10),
           ClipRRect(

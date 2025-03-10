@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:usdinfra/Admin/adminappbar.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
 class ApprovedPropertiesPage extends StatefulWidget {
@@ -17,7 +18,12 @@ class _ApprovedPropertiesPageState extends State<ApprovedPropertiesPage> {
         .update({"isApproved": false}).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Property Approval Revoked!"),
+          content: Text(
+            "Property Approval Revoked!",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          ),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -25,7 +31,12 @@ class _ApprovedPropertiesPageState extends State<ApprovedPropertiesPage> {
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Failed to update property: $error"),
+          content: Text(
+            "Failed to update property: $error",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          ),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -57,7 +68,13 @@ class _ApprovedPropertiesPageState extends State<ApprovedPropertiesPage> {
             return Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text("No properties approved yet."));
+            return Center(
+                child: Text(
+              "No properties approved yet.",
+              style: TextStyle(
+                fontFamily: AppFontFamily.primaryFont,
+              ),
+            ));
           }
 
           var properties = snapshot.data!.docs;
@@ -112,21 +129,27 @@ class _ApprovedPropertiesPageState extends State<ApprovedPropertiesPage> {
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 18,
+                                  fontFamily: AppFontFamily.primaryFont,
                                 ),
                               ),
                               SizedBox(height: 8),
                               Text(
                                 "City: $city",
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: AppFontFamily.primaryFont,
+                                ),
                               ),
                               SizedBox(height: 8),
                               Text(
                                 "Price: $expectedPrice",
                                 style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold),
+                                  fontSize: 18,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppFontFamily.primaryFont,
+                                ),
                               ),
                               SizedBox(height: 16),
                             ],
@@ -143,8 +166,10 @@ class _ApprovedPropertiesPageState extends State<ApprovedPropertiesPage> {
                                 label: Text(
                                   "Revoke Approval",
                                   style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: AppFontFamily.primaryFont,
+                                  ),
                                 ),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.redAccent,

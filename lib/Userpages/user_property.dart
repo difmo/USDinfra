@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import '../Customs/CustomAppBar.dart';
 import '../Property_Pages_form/edit_property.dart';
-import '../conigs/app_colors.dart';
+import '../configs/app_colors.dart';
 
 class MyPropertiesPage extends StatefulWidget {
   @override
@@ -44,7 +45,9 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
     if (user == null) {
       return Scaffold(
         backgroundColor: Colors.white,
-        appBar: CustomAppBar(title: '   ties'),
+        appBar: CustomAppBar(
+          title: 'Published Properties',
+        ),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -58,12 +61,13 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                   color: Colors.grey,
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'You need to login to view your published properties.',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
+                    fontFamily: AppFontFamily.primaryFont,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -74,14 +78,19 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(22),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Log In',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
                   ),
                 ),
               ],
@@ -102,10 +111,22 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
             return Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Center(child: Text("Error loading properties"));
+            return Center(
+                child: Text(
+              "Error loading properties",
+              style: TextStyle(
+                fontFamily: AppFontFamily.primaryFont,
+              ),
+            ));
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text("No properties listed yet."));
+            return Center(
+                child: Text(
+              "No properties listed yet.",
+              style: TextStyle(
+                fontFamily: AppFontFamily.primaryFont,
+              ),
+            ));
           }
 
           var properties = snapshot.data!.docs;
@@ -119,7 +140,7 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
               // Fetch values safely
               String imageUrl = property['imageUrl'] ??
                   'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=';
-              String city =  property['city'] ?? "No City";
+              String city = property['city'] ?? "No City";
               String locality = property['locality'] ?? "Unknown Location";
               String expectedPrice = "${property['expectedPrice'] ?? 0}";
 
@@ -142,8 +163,7 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black12,
-                      width: 0.5),
+                  border: Border.all(color: Colors.black12, width: 0.5),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Column(
@@ -152,7 +172,8 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                       children: [
                         // Property Image
                         ClipRRect(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(10)),
                           child: Image.network(
                             imageUrl,
                             height: 180,
@@ -168,21 +189,26 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                           top: 10,
                           right: 10,
                           child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 5),
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.3), // Semi-transparent black
-                              borderRadius: BorderRadius.circular(20), // Rounded corners
+                              color: Colors.black
+                                  .withOpacity(0.3), // Semi-transparent black
+                              borderRadius:
+                                  BorderRadius.circular(20), // Rounded corners
                             ),
                             child: Row(
                               children: [
                                 // Edit Icon
                                 IconButton(
-                                  icon: Icon(Icons.edit, color: AppColors.secondry),
+                                  icon: Icon(Icons.edit,
+                                      color: AppColors.secondry),
                                   onPressed: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => EditPropertyPage(docId: docId),
+                                        builder: (context) =>
+                                            EditPropertyPage(docId: docId),
                                       ),
                                     );
                                   },
@@ -190,9 +216,11 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
 
                                 // Delete Icon
                                 IconButton(
-                                  icon: Icon(Icons.delete, color: AppColors.primary),
+                                  icon: Icon(Icons.delete,
+                                      color: AppColors.primary),
                                   onPressed: () {
-                                    _showDeleteConfirmationDialog(context, property.id);
+                                    _showDeleteConfirmationDialog(
+                                        context, property.id);
                                   },
                                 ),
                               ],
@@ -213,6 +241,7 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
+                                  fontFamily: AppFontFamily.primaryFont,
                                 ),
                               ),
                               Text(
@@ -220,6 +249,7 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                                 style: TextStyle(
                                   fontSize: 18,
                                   // fontWeight: FontWeight.bold,
+                                  fontFamily: AppFontFamily.primaryFont,
                                 ),
                               ),
                             ],
@@ -233,11 +263,15 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
+                                  fontFamily: AppFontFamily.primaryFont,
                                 ),
                               ),
                               Text(
                                 locality,
-                                style: TextStyle(fontSize: 18),
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: AppFontFamily.primaryFont,
+                                ),
                               ),
                             ],
                           ),
@@ -249,15 +283,18 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                    color: Colors.green
+                                  color: Colors.green,
+                                  fontFamily: AppFontFamily.primaryFont,
                                 ),
                               ),
                               Text(
                                 expectedPrice,
                                 style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.green),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.green,
+                                  fontFamily: AppFontFamily.primaryFont,
+                                ),
                               ),
                             ],
                           ),
@@ -269,7 +306,10 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                               Text(
                                 "Status: ",
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppFontFamily.primaryFont,
+                                ),
                               ),
                               Container(
                                 padding: EdgeInsets.symmetric(
@@ -282,7 +322,10 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                                 child: Text(
                                   statusText,
                                   style: TextStyle(
-                                      fontSize: 14, color: statusColor),
+                                    fontSize: 14,
+                                    color: statusColor,
+                                    fontFamily: AppFontFamily.primaryFont,
+                                  ),
                                 ),
                               ),
                             ],
@@ -301,45 +344,55 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
     );
   }
 
-  void  _deleteProperty(String propertyId) async {
+  void _deleteProperty(String propertyId) async {
     await FirebaseFirestore.instance
         .collection('AppProperties')
         .doc(propertyId)
         .update({
       'isDeleted': true,
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Property deleted successfully!")));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+      "Property deleted successfully!",
+      style: TextStyle(
+        fontFamily: AppFontFamily.primaryFont,
+      ),
+    )));
   }
+
   void _showDeleteConfirmationDialog(BuildContext context, String propertyId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text("Confirm Delete"),
-          content: Text("Are you sure you want to delete this property?"),
+          title: Text("Confirm Delete",
+        style: TextStyle(fontFamily: AppFontFamily.primaryFont,),),
+          content: Text("Are you sure you want to delete this property?",
+          style: TextStyle(fontFamily: AppFontFamily.primaryFont,),),
           actions: [
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the popup
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.secondry
-              ),
-              child: Text("Cancel", style: TextStyle(color: Colors.white,
-                  fontWeight: FontWeight.bold)),
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: AppColors.secondry),
+              child: Text("Cancel",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold,
+                      fontFamily: AppFontFamily.primaryFont,)),
             ),
             ElevatedButton(
               onPressed: () {
                 _deleteProperty(propertyId); // Call delete function
                 Navigator.of(context).pop(); // Close the popup after deletion
               },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary
-              ),
-              child: Text("Delete", style: TextStyle(color: Colors.white,
-              fontWeight: FontWeight.bold)),
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+              child: Text("Delete",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold,
+                      fontFamily: AppFontFamily.primaryFont,)),
             ),
           ],
         );

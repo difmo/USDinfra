@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:usdinfra/Bottom/bottom_navigation.dart';
 import 'package:usdinfra/Customs/custom_app_bar.dart';
-import 'package:usdinfra/Property_Pages_form/Properties_detail_page.dart';
+import 'package:usdinfra/Property_Pages_form/properties_detail_page.dart';
 import 'package:usdinfra/Userpages/dash_bord2.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../Components/cerosoule.dart';
 import '../Components/property_card.dart';
@@ -177,7 +178,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: screenHeight * 0.33,
+              height: screenHeight * 0.334,
               child: const Carousel(),
             ),
             Padding(
@@ -185,12 +186,15 @@ class _HomeDashBoard extends State<HomeDashBoard> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Padding(
+                   Padding(
                     padding: EdgeInsets.only(left: 9),
                     child: Text(
                       'Properties',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppFontFamily.primaryFont,
+                      ),
                     ),
                   ),
                   TextButton(
@@ -200,8 +204,10 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                     child: Text(
                       'View All',
                       style: TextStyle(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold),
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppFontFamily.primaryFont,
+                      ),
                     ),
                   ),
                 ],
@@ -279,12 +285,22 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                       }
                       if (asyncSnapshot.hasError) {
                         return Center(
-                            child: Text('Error: ${asyncSnapshot.error}'));
+                            child: Text(
+                          'Error: ${asyncSnapshot.error}',
+                          style: TextStyle(
+                            fontFamily: AppFontFamily.primaryFont,
+                          ),
+                        ));
                       }
                       if (!asyncSnapshot.hasData ||
                           asyncSnapshot.data!.isEmpty) {
-                        return const Center(
-                            child: Text('No properties available'));
+                        return Center(
+                            child: Text(
+                          'No properties available',
+                          style: TextStyle(
+                            fontFamily: AppFontFamily.primaryFont,
+                          ),
+                        ));
                       }
 
                       final properties = asyncSnapshot.data!;
@@ -313,7 +329,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                                 child: Stack(
                                   children: [
                                     Container(
-                                      height: screenHeight * 0.265,
+                                      height: screenHeight * 0.28,
                                       child: PropertyCard(
                                         imageUrl: property['imageUrl'],
                                         expectedPrice:
@@ -359,27 +375,27 @@ class _HomeDashBoard extends State<HomeDashBoard> {
               ),
             ),
             Container(
-              height: screenHeight * 0.25,
+              height: screenHeight * 0.26,
               child: RatingSection(),
             ),
             Container(
-              height: screenHeight * 0.23,
+              height: screenHeight * 0.24,
               child: PostPropertySection(),
             ),
             Container(
-              height: screenHeight * 0.28,
+              height: screenHeight * 0.3,
               child: BossPlanSection(),
             ),
             Container(
-              height: screenHeight * 0.64,
+              height: screenHeight * 0.6,
               child: PropertyOfferingsSection(),
             ),
             Container(
-              height: screenHeight * 0.2,
+              height: screenHeight * 0.24,
               child: PopularCitiesSection(),
             ),
             Container(
-              height: screenHeight * 0.2,
+              height: screenHeight * 0.27,
               child: FeedbackSection(),
             ),
           ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:usdinfra/Admin/adminappbar.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
 class AdminEnquiriesPage extends StatefulWidget {
@@ -50,7 +51,12 @@ class _AdminEnquiriesPageState extends State<AdminEnquiriesPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text("Inquiry deleted successfully!"),
+            content: Text(
+              "Inquiry deleted successfully!",
+              style: TextStyle(
+                fontFamily: AppFontFamily.primaryFont,
+              ),
+            ),
             backgroundColor: Colors.red),
       );
     } catch (error) {
@@ -134,7 +140,13 @@ class _AdminEnquiriesPageState extends State<AdminEnquiriesPage> {
           //   },
           // )
           //     : enquiriesList.isEmpty
-          ? Center(child: Text("No enquiries available"))
+          ? Center(
+              child: Text(
+              "No enquiries available",
+              style: TextStyle(
+                fontFamily: AppFontFamily.primaryFont,
+              ),
+            ))
           : ListView.builder(
               itemCount: enquiriesList.length,
               itemBuilder: (context, index) {
@@ -171,7 +183,10 @@ class _AdminEnquiriesPageState extends State<AdminEnquiriesPage> {
                               Text(
                                 "Name: $name",
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: AppFontFamily.primaryFont,
+                                ),
                               ),
                               IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
@@ -180,20 +195,37 @@ class _AdminEnquiriesPageState extends State<AdminEnquiriesPage> {
                             ],
                           ),
                           SizedBox(height: 5),
-                          Text("Email: $email", style: TextStyle(fontSize: 14)),
+                          Text("Email: $email",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: AppFontFamily.primaryFont,
+                              )),
                           Text("Phone: $mobile",
-                              style: TextStyle(fontSize: 14)),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: AppFontFamily.primaryFont,
+                              )),
                           SizedBox(height: 10),
                           Text("Message:",
                               style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold)),
-                          Text(message, style: TextStyle(fontSize: 14)),
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: AppFontFamily.primaryFont,
+                              )),
+                          Text(message,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: AppFontFamily.primaryFont,
+                              )),
                           SizedBox(height: 10),
                           Align(
                             alignment: Alignment.bottomRight,
                             child: Text("Date: $formattedDate",
                                 style: TextStyle(
-                                    fontSize: 12, color: Colors.grey)),
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                  fontFamily: AppFontFamily.primaryFont,
+                                )),
                           ),
                         ],
                       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import '../../../Customs/form_input_field.dart';
 
 class ContactDetailsColumn extends StatelessWidget {
@@ -16,9 +17,11 @@ class ContactDetailsColumn extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+         Text(
           'Your contact details',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,
+          fontFamily: AppFontFamily.primaryFont,
+),
         ),
         const SizedBox(height: 10),
         FormTextField(

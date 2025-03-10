@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:usdinfra/Customs/CustomAppBar.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
 class UpgradeServiceScreen extends StatefulWidget {
   const UpgradeServiceScreen({super.key});
@@ -46,7 +47,13 @@ class _UpgradeServiceScreenState extends State<UpgradeServiceScreen> {
   void upgradeAccount() {
     if (selectedServiceIndex == -1) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select a service to upgrade.")),
+        SnackBar(
+            content: Text(
+          "Please select a service to upgrade.",
+          style: TextStyle(
+            fontFamily: AppFontFamily.primaryFont,
+          ),
+        )),
       );
       return;
     }
@@ -55,13 +62,27 @@ class _UpgradeServiceScreenState extends State<UpgradeServiceScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Upgrade to Premium"),
+        title: Text(
+          "Upgrade to Premium",
+          style: TextStyle(
+            fontFamily: AppFontFamily.primaryFont,
+          ),
+        ),
         content: Text(
-            "Are you sure you want to upgrade to '${selectedService["title"]}' for ${selectedService["price"]}?"),
+          "Are you sure you want to upgrade to '${selectedService["title"]}' for ${selectedService["price"]}?",
+          style: TextStyle(
+            fontFamily: AppFontFamily.primaryFont,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+            child: Text(
+              "Cancel",
+              style: TextStyle(
+                fontFamily: AppFontFamily.primaryFont,
+              ),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -74,13 +95,20 @@ class _UpgradeServiceScreenState extends State<UpgradeServiceScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                      "Successfully upgraded to ${selectedService["title"]}!"),
+                    "Successfully upgraded to ${selectedService["title"]}!",
+                    style: TextStyle(
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
+                  ),
                 ),
               );
             },
-            child: const Text(
+            child: Text(
               "Upgrade Now",
-              style: TextStyle(color: AppColors.white),
+              style: TextStyle(
+                color: AppColors.white,
+                fontFamily: AppFontFamily.primaryFont,
+              ),
             ),
           ),
         ],
@@ -99,9 +127,13 @@ class _UpgradeServiceScreenState extends State<UpgradeServiceScreen> {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
-            const Text(
+            Text(
               "Select a construction service to upgrade",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: AppFontFamily.primaryFont,
+              ),
             ),
             const SizedBox(height: 10),
             Expanded(
@@ -161,6 +193,7 @@ class _UpgradeServiceScreenState extends State<UpgradeServiceScreen> {
                                     color: service["isPremium"]
                                         ? Colors.black
                                         : Colors.green,
+                                    fontFamily: AppFontFamily.primaryFont,
                                   ),
                                 ),
                                 Text(
@@ -168,6 +201,7 @@ class _UpgradeServiceScreenState extends State<UpgradeServiceScreen> {
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey[600],
+                                    fontFamily: AppFontFamily.primaryFont,
                                   ),
                                 ),
                               ],
@@ -181,6 +215,7 @@ class _UpgradeServiceScreenState extends State<UpgradeServiceScreen> {
                               color: service["isPremium"]
                                   ? Colors.redAccent
                                   : Colors.green,
+                              fontFamily: AppFontFamily.primaryFont,
                             ),
                           ),
                         ],
@@ -201,7 +236,10 @@ class _UpgradeServiceScreenState extends State<UpgradeServiceScreen> {
               ),
               child: Text(
                 "Upgrade Now",
-                style: TextStyle(color: AppColors.white),
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontFamily: AppFontFamily.primaryFont,
+                ),
               ),
             ),
             const SizedBox(height: 20),

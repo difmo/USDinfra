@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
 import '../../Controllers/authentication_controller.dart';
 import '../../Customs/custom_textfield.dart';
-import '../../conigs/app_colors.dart';
+import '../../configs/app_colors.dart';
 
 class ForgotPasswordEmailScreen extends StatefulWidget {
   @override
@@ -28,7 +29,8 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
   Future<void> _fetchUserEmail() async {
     User? user = _auth.currentUser;
     if (user != null) {
-      DocumentSnapshot userDoc = await _firestore.collection('AppUsers').doc(user.uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('AppUsers').doc(user.uid).get();
       if (userDoc.exists) {
         setState(() {
           _emailController.text = userDoc['email'] ?? '';
@@ -42,7 +44,13 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
 
     if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter your email address')),
+        SnackBar(
+            content: Text(
+          'Please enter your email address',
+          style: TextStyle(
+            fontFamily: AppFontFamily.primaryFont,
+          ),
+        )),
       );
       return;
     }
@@ -57,7 +65,13 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
     } else {
       await _auth.sendPasswordResetEmail(email: email);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Password reset email sent')),
+        SnackBar(
+            content: Text(
+          'Password reset email sent',
+          style: TextStyle(
+            fontFamily: AppFontFamily.primaryFont,
+          ),
+        )),
       );
     }
   }
@@ -68,17 +82,37 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text('Email Not Found'),
-          content: Text('The email address you entered does not exist. Would you like to register?'),
+          title: Text(
+            'Email Not Found',
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          ),
+          content: Text(
+            'The email address you entered does not exist. Would you like to register?',
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  fontFamily: AppFontFamily.primaryFont,
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Register'),
+              child: Text(
+                'Register',
+                style: TextStyle(
+                  fontFamily: AppFontFamily.primaryFont,
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.pushNamed(context, AppRouts.signup);
@@ -108,7 +142,11 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
             Text(
               'Enter the email address associated with your account.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.black54),
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black54,
+                fontFamily: AppFontFamily.primaryFont,
+              ),
             ),
             SizedBox(height: 20),
             CustomInputField(
@@ -141,7 +179,11 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
                 ),
                 child: Text(
                   'Reset Password',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontFamily: AppFontFamily.primaryFont,
+                  ),
                 ),
               ),
             ),
@@ -149,14 +191,23 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Don't have an account? "),
+                Text(
+                  "Don't have an account? ",
+                  style: TextStyle(
+                    fontFamily: AppFontFamily.primaryFont,
+                  ),
+                ),
                 GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, AppRouts.signup);
                   },
                   child: Text(
                     'Sign up',
-                    style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
                   ),
                 ),
               ],
@@ -165,14 +216,23 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Already have an account? "),
+                Text(
+                  "Already have an account? ",
+                  style: TextStyle(
+                    fontFamily: AppFontFamily.primaryFont,
+                  ),
+                ),
                 GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, AppRouts.login);
                   },
                   child: Text(
                     'Login',
-                    style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
                   ),
                 ),
               ],

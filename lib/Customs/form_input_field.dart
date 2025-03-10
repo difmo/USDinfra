@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
 class FormTextField extends StatefulWidget {
   final String hint;
@@ -42,20 +43,28 @@ class _FormTextFieldState extends State<FormTextField> {
         maxLength: widget.maxLength, // Limits the maximum length
         keyboardType: widget.inputType,
         maxLines: widget.maxLines,
+        style: TextStyle(
+          fontFamily: AppFontFamily.primaryFont,
+        ),
         decoration: InputDecoration(
           hintText: widget.hint,
-          errorText: errorMessage.isNotEmpty ? errorMessage : null, // Display error if any
+          errorText: errorMessage.isNotEmpty
+              ? errorMessage
+              : null, // Display error if any
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(radius), // Apply the optional border radius
+            borderRadius: BorderRadius.circular(
+                radius), // Apply the optional border radius
             borderSide: const BorderSide(color: Colors.grey),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(radius), // Apply the optional border radius
+            borderRadius: BorderRadius.circular(
+                radius), // Apply the optional border radius
             borderSide: const BorderSide(color: Colors.black),
           ),
           filled: true,
           fillColor: Colors.white, // Set background color to white
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         ),
         onChanged: (value) {
           setState(() {
@@ -67,9 +76,11 @@ class _FormTextFieldState extends State<FormTextField> {
             } else {
               // Default validation logic for min/max length
               if (value.length < widget.minLength!) {
-                errorMessage = 'Minimum ${widget.minLength} characters required.';
+                errorMessage =
+                    'Minimum ${widget.minLength} characters required.';
               } else if (value.length > widget.maxLength!) {
-                errorMessage = 'Maximum ${widget.maxLength} characters allowed.';
+                errorMessage =
+                    'Maximum ${widget.maxLength} characters allowed.';
               } else {
                 errorMessage = ''; // Clear error when valid
               }

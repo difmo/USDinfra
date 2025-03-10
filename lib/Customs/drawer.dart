@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../authentication/login_screen.dart'; // Import Login Page
 
@@ -120,14 +121,20 @@ class CustomDrawer extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               userData?['name'] ?? 'Unknown User',
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: AppFontFamily.primaryFont,
+              ),
             ),
             Text(
               userData?['email'] ?? 'No Email',
-              style: const TextStyle(color: Colors.black, fontSize: 14),
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                fontFamily: AppFontFamily.primaryFont,
+              ),
             ),
           ],
         ),
@@ -149,15 +156,21 @@ class CustomDrawer extends StatelessWidget {
                   backgroundImage: AssetImage('assets/profile.jpg'),
                 ),
                 const SizedBox(height: 10),
-                const Text(
+                Text(
                   'Guest User',
                   style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppFontFamily.primaryFont,
+                  ),
                 ),
-                const Text('guest@example.com',
-                    style: TextStyle(color: Colors.black, fontSize: 14)),
+                Text('guest@example.com',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontFamily: AppFontFamily.primaryFont,
+                    )),
               ],
             ),
     );
@@ -203,9 +216,13 @@ class CustomDrawer extends StatelessWidget {
   Widget _buildLogoutItem(BuildContext context) {
     return ListTile(
       leading: const Icon(Icons.logout, color: Colors.red, size: 26),
-      title: const Text("Logout",
+      title: Text("Logout",
           style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.w500, color: Colors.red)),
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.red,
+            fontFamily: AppFontFamily.primaryFont,
+          )),
       onTap: () => _logout(context),
     );
   }
@@ -231,10 +248,12 @@ class CustomDrawer extends StatelessWidget {
               const SizedBox(width: 20), // Spacing between icon and title
               Text(
                 title,
-                style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                  fontFamily: AppFontFamily.primaryFont,
+                ),
               ),
             ],
           ),

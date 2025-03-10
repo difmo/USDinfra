@@ -5,7 +5,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:usdinfra/Controllers/authentication_controller.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../Customs/custom_textfield.dart';
 
@@ -43,7 +44,12 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
             borderRadius: BorderRadius.circular(12),
           ),
           backgroundColor: Colors.white,
-          title: Text("Choose Image Source"),
+          title: Text(
+            "Choose Image Source",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          ),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -53,7 +59,11 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                   _pickImage(ImageSource.camera);
                 },
                 icon: Icon(Icons.camera_alt, color: Colors.white),
-                label: Text("Camera", style: TextStyle(color: Colors.white)),
+                label: Text("Camera",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    )),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                 ),
@@ -64,7 +74,11 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                   _pickImage(ImageSource.gallery);
                 },
                 icon: Icon(Icons.photo, color: Colors.white),
-                label: Text("Gallery", style: TextStyle(color: Colors.white)),
+                label: Text("Gallery",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    )),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                 ),
@@ -108,7 +122,12 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
     } catch (e) {
       print('Error saving user data: $e');
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('An error occurred while saving data'),
+        content: Text(
+          'An error occurred while saving data',
+          style: TextStyle(
+            fontFamily: AppFontFamily.primaryFont,
+          ),
+        ),
         backgroundColor: AppColors.primary,
       ));
     } finally {
@@ -166,6 +185,7 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: AppColors.primary,
+                              fontFamily: AppFontFamily.primaryFont,
                             ),
                           ),
                         ),
@@ -182,6 +202,7 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: AppColors.primary,
+                      fontFamily: AppFontFamily.primaryFont,
                     ),
                   ),
                   SizedBox(height: 8),
@@ -202,6 +223,7 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: AppColors.primary,
+                      fontFamily: AppFontFamily.primaryFont,
                     ),
                   ),
                   SizedBox(height: 8),
@@ -237,7 +259,10 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                         )
                       : Text(
                           'Save & Next',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: AppFontFamily.primaryFont,
+                          ),
                         ),
                 ),
               ),

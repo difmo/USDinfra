@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:usdinfra/configs/font_family.dart';
+import 'package:usdinfra/routes/app_routes.dart';
 
 class Carousel extends StatefulWidget {
   const Carousel({super.key});
@@ -16,13 +18,12 @@ class _CarouselExampleState extends State<Carousel> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding:
-              const EdgeInsets.only(left: 16.0, right: 16, top: 5, bottom: 5),
-          child: GestureDetector(
-            onTap: () {
-              print("Search container tapped!");
-            },
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, AppRouts.Search);
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
@@ -37,7 +38,7 @@ class _CarouselExampleState extends State<Carousel> {
                 ],
               ),
               child: Row(
-                children: const [
+                children:  [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     child: Icon(Icons.search, color: Colors.grey),
@@ -47,6 +48,7 @@ class _CarouselExampleState extends State<Carousel> {
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 16,
+                      fontFamily: AppFontFamily.primaryFont,
                     ),
                   ),
                 ],

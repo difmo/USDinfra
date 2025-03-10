@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:usdinfra/Admin/adminappbar.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import '../routes/app_routes.dart';
 import 'admin_bottom_nav.dart';
 
@@ -47,7 +48,12 @@ class _AdminPropertyPageState extends State<AdminPropertyPage> {
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Failed to update property: $error"),
+          content: Text(
+            "Failed to update property: $error",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          ),
           backgroundColor: Colors.red,
         ),
       );
@@ -76,7 +82,13 @@ class _AdminPropertyPageState extends State<AdminPropertyPage> {
             return Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text("No properties pending approval"));
+            return Center(
+                child: Text(
+              "No properties pending approval",
+              style: TextStyle(
+                fontFamily: AppFontFamily.primaryFont,
+              ),
+            ));
           }
 
           var properties = snapshot.data!.docs;
@@ -125,18 +137,28 @@ class _AdminPropertyPageState extends State<AdminPropertyPage> {
                           Text(
                             "Title: $title",
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              fontFamily: AppFontFamily.primaryFont,
+                            ),
                           ),
                           SizedBox(height: 5),
                           Text(
                             "City: $city",
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: AppFontFamily.primaryFont,
+                            ),
                           ),
                           SizedBox(height: 5),
                           Text(
                             "Price: $expectedPrice",
-                            style: TextStyle(fontSize: 16, color: Colors.green),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.green,
+                              fontFamily: AppFontFamily.primaryFont,
+                            ),
                           ),
                           SizedBox(height: 10),
 
@@ -154,8 +176,10 @@ class _AdminPropertyPageState extends State<AdminPropertyPage> {
                                   label: Text(
                                     "Approve",
                                     style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: AppFontFamily.primaryFont,
+                                    ),
                                   ),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.green,
@@ -173,8 +197,10 @@ class _AdminPropertyPageState extends State<AdminPropertyPage> {
                                   label: Text(
                                     "Reject",
                                     style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: AppFontFamily.primaryFont,
+                                    ),
                                   ),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,

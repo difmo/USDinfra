@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
 import '../../../Components/Choice_Chip.dart';
 import '../../../Components/Error_message.dart';
@@ -23,9 +24,11 @@ class LookingToColumn extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+         Text(
           "You're looking to?",
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold,
+          fontFamily: AppFontFamily.primaryFont,
+),
         ),
         const SizedBox(height: 10),
         Row(
@@ -34,6 +37,7 @@ class LookingToColumn extends StatelessWidget {
               .map((option) => ChoiceChipOption(
             label: option,
             isSelected: lookingTo == option,
+            labelStyle:TextStyle(fontFamily: AppFontFamily.primaryFont),
             onSelected: (selected) {
               onSelectLookingTo(selected ? option : null);
             },
