@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:usdinfra/Customs/CustomAppBar.dart';
+// import 'package:usdinfra/Customs/CustomAppBar.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:usdinfra/configs/font_family.dart';
@@ -109,13 +109,6 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
           _infoRow("City", propertyData?['city'] ?? "N/A"),
           _infoRow("Locality", propertyData?['locality'] ?? "N/A"),
           _infoRow("Sub Locality", propertyData?['subLocality'] ?? "N/A"),
-
-          // Text(
-          //   "${propertyData?['subLocality'] ?? 'N/A'}, "
-          //       "${propertyData?['locality'] ?? 'N/A'}, "
-          //       "${propertyData?['city'] ?? 'N/A'}",
-          //   style: const TextStyle(fontSize: 16, color: Colors.black54),
-          // ),
           const SizedBox(height: 10),
           // Optional: You can display a Google Maps link or a map preview here.
           Align(

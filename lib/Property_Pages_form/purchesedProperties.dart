@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:usdinfra/Components/property_card.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
 
@@ -37,13 +38,15 @@ class _PurchesedPropertiesPageState extends State<PurchesedPropertiesPage> {
 
       setState(() {
         purchesedPropertyIds =
-            List<String>.from(data?['favoriteProperties'] ?? []);
+            List<String>.from(data?['purchesedProperties'] ?? []);
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+
     if (user == null) {
       return Scaffold(
         appBar: CustomAppBar(title: 'Purchased  Properties'),
@@ -99,6 +102,7 @@ class _PurchesedPropertiesPageState extends State<PurchesedPropertiesPage> {
       );
     }
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(title: 'Purchesed Properties'),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance
@@ -126,12 +130,25 @@ class _PurchesedPropertiesPageState extends State<PurchesedPropertiesPage> {
               var property = favoriteProperties[index];
               var propertyData = property.data() as Map<String, dynamic>;
 
-              return _buildPropertyCard(propertyData, property.id);
+              return _buildPropertyCard(
+                  propertyData, property.id, screenHeight);
             },
           );
         },
       ),
     );
+  }
+
+  String _formatTimestamp(dynamic timestamp) {
+    if (timestamp is Timestamp) {
+      DateTime date = timestamp.toDate();
+      DateTime now = DateTime.now();
+
+      int differenceInDays = now.difference(date).inDays;
+
+      return '$differenceInDays days ';
+    }
+    return 'Date unknown';
   }
 
   /// **Shimmer Loading Effect**
@@ -183,53 +200,39 @@ class _PurchesedPropertiesPageState extends State<PurchesedPropertiesPage> {
     );
   }
 
-  /// **Property Card**
-  Widget _buildPropertyCard(
-      Map<String, dynamic> propertyData, String propertyId) {
-    return InkWell(
+  Widget _buildPropertyCard(Map<String, dynamic> propertyData,
+      String propertyId, double screenHeight) {
+    return GestureDetector(
       onTap: () {
-        // Handle the card click action, e.g., navigate to details page
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PropertyDetailPage(
-              docId: propertyId,
-            ),
-          ),
-        );
+            context,
+            MaterialPageRoute(
+                builder: (context) => PropertyDetailPage(docId: propertyId)));
       },
-      child: Card(
-        elevation: 4,
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: ListTile(
-          contentPadding: const EdgeInsets.all(10),
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              propertyData['imageUrl'] ?? 'https://via.placeholder.com/150',
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
-            ),
-          ),
-          title: Text(
-            propertyData['title'] ?? 'Unknown Property',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              fontFamily: AppFontFamily.primaryFont,
-            ),
-          ),
-          subtitle: Text(
-            propertyData['expectedPrice'] ?? 'Price not available',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
-              fontFamily: AppFontFamily.primaryFont,
-            ),
-          ),
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Property Card
+          SizedBox(
+              height: screenHeight * 0.23,
+              child: Stack(
+                children: [
+                  PropertyCard(
+                    imageUrl: propertyData['imageUrl'] ?? '',
+                    expectedPrice: propertyData['expectedPrice'] ?? '',
+                    plotArea: propertyData['plotArea'] ?? '',
+                    propertyType: propertyData['propertyType'] ?? '',
+                    city: propertyData['city'] ?? '',
+                    createdAt: _formatTimestamp(propertyData['createdAt']),
+                    title: propertyData['title'] ?? '',
+                    propertyStatus: propertyData['availabilityStatus'] ?? '',
+                    contactDetails: propertyData['contactDetails'] ?? '',
+                    showButtons: false,
+                  ),
+                ],
+              )),
+          const SizedBox(height: 10),
+        ],
       ),
     );
   }

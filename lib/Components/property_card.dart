@@ -11,11 +11,12 @@ class PropertyCard extends StatefulWidget {
   final String expectedPrice;
   final String plotArea;
   final String propertyType;
-  final String address;
+  final String city;
   final String createdAt;
   final String title;
   final String propertyStatus;
-  final String contactDetails; // Ensure it's a valid phone number
+  final String contactDetails;
+  final bool showButtons;
 
   const PropertyCard({
     super.key,
@@ -23,11 +24,12 @@ class PropertyCard extends StatefulWidget {
     required this.expectedPrice,
     required this.plotArea,
     required this.propertyType,
-    required this.address,
+    required this.city,
     required this.createdAt,
     required this.title,
     required this.propertyStatus,
     required this.contactDetails,
+    this.showButtons = true,
   });
 
   @override
@@ -149,7 +151,7 @@ class _PropertyCardState extends State<PropertyCard> {
                         ),
                       ),
                       Text(
-                        widget.address,
+                        widget.city,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
@@ -177,50 +179,51 @@ class _PropertyCardState extends State<PropertyCard> {
               ],
             ),
             const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                OutlinedButton(
-                  onPressed: () => {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return ContactDetailDialog(
-                          phoneNumber: widget.contactDetails,
-                        );
-                      },
-                    )
-                  },
-                  style: ButtonStyle(
-                      side: WidgetStateProperty.all(
-                          BorderSide(color: AppColors.primary, width: 2)),
-                      shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ))),
-                  child: Text('Get Phone No.',
+            if (widget.showButtons)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  OutlinedButton(
+                    onPressed: () => {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return ContactDetailDialog(
+                            phoneNumber: widget.contactDetails,
+                          );
+                        },
+                      )
+                    },
+                    style: ButtonStyle(
+                        side: WidgetStateProperty.all(
+                            BorderSide(color: AppColors.primary, width: 2)),
+                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ))),
+                    child: Text('Get Phone No.',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontFamily: AppFontFamily.primaryFont,
+                        )),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    onPressed: _callOwner, // Calls the owner directly
+                    child: Text(
+                      'Contact Owner',
                       style: TextStyle(
-                        color: AppColors.primary,
+                        color: Colors.white,
                         fontFamily: AppFontFamily.primaryFont,
-                      )),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      ),
                     ),
                   ),
-                  onPressed: _callOwner, // Calls the owner directly
-                  child: Text(
-                    'Contact Owner',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: AppFontFamily.primaryFont,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
           ],
         ),
       ),

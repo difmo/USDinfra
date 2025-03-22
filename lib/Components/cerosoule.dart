@@ -16,49 +16,13 @@ class _CarouselExampleState extends State<Carousel> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, AppRouts.Search);
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 5,
-                    spreadRadius: 1,
-                  ),
-                ],
-              ),
-              child: Row(
-                children:  [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    child: Icon(Icons.search, color: Colors.grey),
-                  ),
-                  Text(
-                    'Search',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16,
-                      fontFamily: AppFontFamily.primaryFont,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ClipRRect(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Stack(
+        clipBehavior: Clip.none, // Allows the search bar to overflow the image
+        children: [
+          // Image
+          ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Image.network(
               'https://www.indiafilings.com/learn/wp-content/uploads/2015/10/Real-Estate-Agent-Business-India.jpg',
@@ -67,8 +31,49 @@ class _CarouselExampleState extends State<Carousel> {
               width: double.infinity,
             ),
           ),
-        )
-      ],
+
+          // Search Bar (Positioned at bottom center of the image)
+          Positioned(
+            left: 16,
+            right: 16,
+            bottom: 5, // Moves half of the search bar outside the image
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, AppRouts.Search);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 5,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                child: Row(
+                  children: [
+                    Icon(Icons.search, color: Colors.grey),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Search',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                        fontFamily: AppFontFamily.primaryFont,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

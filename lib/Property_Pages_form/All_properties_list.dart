@@ -88,7 +88,7 @@ class _AllPropertiesState extends State<AllProperties> {
                         property['expectedPrice']?.toString() ?? 'N/A',
                     plotArea: property['plotArea']?.toString() ?? 'N/A',
                     propertyType: property['propertyType'] ?? 'Unknown',
-                    address: property['address'] ?? 'Address not available',
+                    city: property['city'] ?? 'Address not available',
                     createdAt: createdAtString,
                     title: property['title'] ?? 'No Title',
                     // features: property['features'] ?? [],

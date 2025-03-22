@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:usdinfra/configs/font_family.dart';
 
 class CustomInputField extends StatefulWidget {
-  final String hintText;
+  final String? hintText;
   final Icon? prefixIcon;
   final TextEditingController controller;
   final bool obscureText;
@@ -17,10 +17,13 @@ class CustomInputField extends StatefulWidget {
   final int? maxLength;
   final double? borderRadius;
   final TextInputType inputType;
+  final Color? prefixIconEnabledColor;
+  final Color? prefixIconDisabledColor;
+  final Color? disabledBorderColor;
 
   const CustomInputField({
     super.key,
-    required this.hintText,
+    this.hintText,
     this.prefixIcon,
     required this.controller,
     this.obscureText = false,
@@ -35,6 +38,9 @@ class CustomInputField extends StatefulWidget {
     this.enable = true,
     this.borderRadius,
     this.inputType = TextInputType.text,
+    this.prefixIconEnabledColor,
+    this.prefixIconDisabledColor,
+    this.disabledBorderColor,
   });
 
   @override
@@ -65,9 +71,9 @@ class _CustomInputFieldState extends State<CustomInputField> {
   @override
   Widget build(BuildContext context) {
     double radius = widget.borderRadius ?? 8.0;
-
     bool isFieldEmpty = widget.controller.text.isEmpty;
 
+    // Validation logic
     if (widget.minLength != null &&
         widget.controller.text.length < widget.minLength!) {
       _currentErrorMessage = 'Minimum ${widget.minLength} characters required.';
@@ -75,16 +81,24 @@ class _CustomInputFieldState extends State<CustomInputField> {
         widget.controller.text.length > widget.maxLength!) {
       _currentErrorMessage = 'Maximum ${widget.maxLength} characters allowed.';
     } else {
-      _currentErrorMessage = null; // Clear error if valid
+      _currentErrorMessage = null;
     }
 
+    // Border color logic
     Color borderColor = widget.enable
         ? (widget.errorMessage != null && widget.errorMessage!.isNotEmpty
             ? Colors.red
             : isFieldEmpty
                 ? (_isFocused ? Colors.black : Colors.grey)
-                : Colors.black)
+                : Colors.grey)
         : Colors.grey.withOpacity(0.5);
+    Color disabledBorderColor =
+        widget.disabledBorderColor ?? Colors.grey.withOpacity(0.5);
+
+    // Prefix Icon Color logic
+    Color prefixIconColor = widget.enable
+        ? (widget.prefixIconEnabledColor ?? Colors.black)
+        : (widget.prefixIconDisabledColor ?? Colors.grey);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +122,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
               prefixIcon: widget.prefixIcon != null
                   ? Icon(
                       widget.prefixIcon!.icon,
-                      color: borderColor,
+                      color: prefixIconColor,
                     )
                   : null,
               hintText: widget.hintText,
@@ -117,11 +131,15 @@ class _CustomInputFieldState extends State<CustomInputField> {
                 borderRadius: BorderRadius.circular(radius),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black, width: 1.0),
+                borderSide: BorderSide(color: Color(0xFF133763), width: 1.0),
                 borderRadius: BorderRadius.circular(radius),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: borderColor, width: 1.0),
+                borderRadius: BorderRadius.circular(radius),
+              ),
+               disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: disabledBorderColor, width: 1.0),
                 borderRadius: BorderRadius.circular(radius),
               ),
               suffixIcon: widget.suffixIcon,
@@ -130,7 +148,6 @@ class _CustomInputFieldState extends State<CustomInputField> {
             ),
             onChanged: (value) {
               setState(() {
-                // Recalculate the error message based on the text length
                 if (widget.minLength != null &&
                     value.length < widget.minLength!) {
                   _currentErrorMessage =
@@ -140,7 +157,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
                   _currentErrorMessage =
                       'Maximum ${widget.maxLength} characters allowed.';
                 } else {
-                  _currentErrorMessage = null; // Clear error when valid
+                  _currentErrorMessage = null;
                 }
               });
               widget.onChanged?.call(value);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:usdinfra/Userpages/offering_properties.dart';
+import 'package:usdinfra/Userpages/offering_page.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';

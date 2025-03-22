@@ -98,9 +98,8 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
     try {
       String imageUrl = '';
       if (_selectedImage != null) {
-        final storageRef = _storage
-            .ref()
-            .child('profile_images/${DateTime.now().millisecondsSinceEpoch}');
+        final storageRef = _storage.ref().child(
+            'profile_images/${FirebaseAuth.instance.currentUser!.uid}.jpg');
         final uploadTask = storageRef.putFile(_selectedImage!);
         final taskSnapshot = await uploadTask.whenComplete(() {});
         imageUrl = await taskSnapshot.ref.getDownloadURL();
@@ -111,12 +110,9 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
         await _firestore.collection('AppProfileSetup').doc(user.uid).set({
           'addressLine1': controllers.addressLine1Controller.text,
           'addressLine2': controllers.addressLine2Controller.text,
-          'profileImageUrl':
-              'https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png',
-          // 'profileImageUrl': imageUrl, // Saving the image URL
-        });
-
-        // Navigate to dashboard or the next screen
+          'profileImageUrl': imageUrl,
+          'timestamp': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
         Navigator.pushNamed(context, AppRouts.dashBoard);
       }
     } catch (e) {
@@ -201,7 +197,7 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.primary,
+                      color: Colors.black,
                       fontFamily: AppFontFamily.primaryFont,
                     ),
                   ),
@@ -222,7 +218,7 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.primary,
+                      color: Colors.black,
                       fontFamily: AppFontFamily.primaryFont,
                     ),
                   ),

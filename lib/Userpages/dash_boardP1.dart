@@ -5,7 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:usdinfra/Bottom/bottom_navigation.dart';
 import 'package:usdinfra/Customs/custom_app_bar.dart';
 import 'package:usdinfra/Property_Pages_form/properties_detail_page.dart';
-import 'package:usdinfra/Userpages/dash_bord2.dart';
+import 'package:usdinfra/Userpages/dash_bordP2.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
@@ -177,8 +177,9 @@ class _HomeDashBoard extends State<HomeDashBoard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 10,),
             Container(
-              height: screenHeight * 0.334,
+              height: screenHeight * 0.28,
               child: const Carousel(),
             ),
             Padding(
@@ -265,8 +266,8 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                       'expectedPrice': data['expectedPrice'] ?? '₹ 80 Lac',
                       'plotArea': data['plotArea'] ?? '1850 Sqft',
                       'propertyType': data['propertyType'] ?? '2 BHK Flat',
-                      'address':
-                          data['address'] ?? 'Sector 10 Greater Noida West',
+                      'city':
+                          data['city'] ?? 'Sector 10 Greater Noida West',
                       'createdAt': createdAtString,
                       'title': data['title'] ?? 'Godrej Aristocrat',
                       'propertyStatus':
@@ -336,7 +337,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                                             property['expectedPrice'],
                                         plotArea: property['plotArea'],
                                         propertyType: property['propertyType'],
-                                        address: property['address'],
+                                        city: property['city'],
                                         createdAt: property['createdAt'],
                                         title: property['title'],
                                         propertyStatus:

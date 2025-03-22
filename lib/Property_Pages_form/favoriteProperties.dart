@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:usdinfra/Components/property_card.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
 
@@ -58,106 +59,31 @@ class _FavoritePropertiesPageState extends State<FavoritePropertiesPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+
     if (user == null) {
       return Scaffold(
-        appBar: CustomAppBar(title: 'Favorite Properties'),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.lock_outline,
-                  size: 80,
-                  color: Colors.grey,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'You need to log in to view your favorite properties.',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                    fontFamily: AppFontFamily.primaryFont,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/login');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(22),
-                    ),
-                  ),
-                  child: Text(
-                    'Log In',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontFamily: AppFontFamily.primaryFont,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+        appBar: const CustomAppBar(
+          title: 'Favorite Properties',
         ),
+        body: _buildLoginPrompt(),
       );
     }
 
-    // The rest of the code for fetching favorites and displaying them.
-    // return Scaffold(
-    //   appBar: CustomAppBar(title: 'Favorite Properties'),
-    //   body: FutureBuilder<QuerySnapshot>(
-    //     future: FirebaseFirestore.instance
-    //         .collection('AppProperties')
-    //         .where(FieldPath.documentId,
-    //         whereIn: favoritePropertyIds.isEmpty
-    //             ? ['dummy']
-    //             : favoritePropertyIds)
-    //         .get(),
-    //     builder: (context, snapshot) {
-    //       if (snapshot.connectionState == ConnectionState.waiting) {
-    //         return _buildShimmerLoading();
-    //       }
-    //
-    //       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-    //         return _buildEmptyState();
-    //       }
-    //
-    //       var favoriteProperties = snapshot.data!.docs;
-    //
-    //       return ListView.builder(
-    //         padding: const EdgeInsets.all(10),
-    //         itemCount: favoriteProperties.length,
-    //         itemBuilder: (context, index) {
-    //           var property = favoriteProperties[index];
-    //           var propertyData = property.data() as Map<String, dynamic>;
-    //
-    //           return _buildPropertyCard(propertyData, property.id);
-    //         },
-    //       );
-    //     },
-    //   ),
-    // );
+    if (favoritePropertyIds.isEmpty) {
+      return Scaffold(
+        appBar: const CustomAppBar(title: 'Favorite Properties'),
+        body: _buildEmptyState(),
+      );
+    }
 
     return Scaffold(
-      appBar: CustomAppBar(title: 'Favorite Properties'),
+      backgroundColor: Colors.white,
+      appBar: const CustomAppBar(title: 'Favorite Properties'),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance
             .collection('AppProperties')
-            .where(FieldPath.documentId,
-                whereIn: favoritePropertyIds.isEmpty
-                    ? ['dummy']
-                    : favoritePropertyIds)
+            .where(FieldPath.documentId, whereIn: favoritePropertyIds)
             .get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -175,12 +101,64 @@ class _FavoritePropertiesPageState extends State<FavoritePropertiesPage> {
             itemCount: favoriteProperties.length,
             itemBuilder: (context, index) {
               var property = favoriteProperties[index];
-              var propertyData = property.data() as Map<String, dynamic>;
+              var property1 = property.data() as Map<String, dynamic>;
 
-              return _buildPropertyCard(propertyData, property.id);
+              return _buildPropertyCard(property1, property.id, screenHeight);
             },
           );
         },
+      ),
+    );
+  }
+
+  /// **Login Prompt if Not Logged In**
+  Widget _buildLoginPrompt() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.lock_outline,
+              size: 80,
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'You need to log in to view your favorite properties.',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+                fontFamily: AppFontFamily.primaryFont,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/login');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(22),
+                ),
+              ),
+              child: Text(
+                'Log In',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontFamily: AppFontFamily.primaryFont,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -207,51 +185,40 @@ class _FavoritePropertiesPageState extends State<FavoritePropertiesPage> {
     );
   }
 
-  /// **Empty State with Illustration & CTA**
+  String _formatTimestamp(dynamic timestamp) {
+    if (timestamp is Timestamp) {
+      DateTime date = timestamp.toDate();
+      DateTime now = DateTime.now();
+
+      int differenceInDays = now.difference(date).inDays;
+
+      return '$differenceInDays days ';
+    }
+    return 'Date unknown';
+  }
+
+  /// **Empty State**
   Widget _buildEmptyState() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.network(
-            'https://cdn-icons-png.flaticon.com/512/4076/4076432.png', // Change to an appropriate illustration
+            'https://cdn-icons-png.flaticon.com/512/4076/4076432.png',
             width: 150,
             height: 150,
           ),
           const SizedBox(height: 20),
-           Text(
+          Text(
             'No Favorite Properties Yet!',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.black87,
-                                                  fontFamily: AppFontFamily.primaryFont,
-
+              fontFamily: AppFontFamily.primaryFont,
             ),
           ),
-          const SizedBox(height: 10),
-          // const Text(
-          //   'Browse and save properties you like.',
-          //   textAlign: TextAlign.center,
-          //   style: TextStyle(fontSize: 16, color: Colors.grey),
-          // ),
-          // const SizedBox(height: 20),
-          // ElevatedButton(
-          //   onPressed: () {
-          //     Navigator.pushNamed(context, '/properties'); // Replace with the actual navigation route
-          //   },
-          //   style: ElevatedButton.styleFrom(
-          //     backgroundColor: Colors.blue,
-          //     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(8),
-          //     ),
-          //   ),
-          //   child: const Text(
-          //     'Browse Properties',
-          //     style: TextStyle(fontSize: 16, color: Colors.white),
-          //   ),
-          // ),
+          const SizedBox(height: 10)
         ],
       ),
     );
@@ -259,12 +226,11 @@ class _FavoritePropertiesPageState extends State<FavoritePropertiesPage> {
 
   /// **Property Card**
   Widget _buildPropertyCard(
-      Map<String, dynamic> propertyData, String propertyId) {
-    return InkWell(
+      Map<String, dynamic> property, String propertyId, double screenHeight) {
+    return GestureDetector(
       onTap: () {
-        // Handle the card click action, e.g., navigate to details page
         Navigator.push(
-          context,
+           context,
           MaterialPageRoute(
             builder: (context) => PropertyDetailPage(
               docId: propertyId,
@@ -272,40 +238,42 @@ class _FavoritePropertiesPageState extends State<FavoritePropertiesPage> {
           ),
         );
       },
-      child: Card(
-        elevation: 4,
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: ListTile(
-          contentPadding: const EdgeInsets.all(10),
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              propertyData['imageUrl'] ?? 'https://via.placeholder.com/150',
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
-            ),
-          ),
-          title: Text(
-            propertyData['title'] ?? 'Unknown Property',
-            style:  TextStyle(fontSize: 16, fontWeight: FontWeight.bold,
-                                                fontFamily: AppFontFamily.primaryFont,
-),
-          ),
-          subtitle: Text(
-            propertyData['expectedPrice'] ?? 'Price not available',
-            style: TextStyle(fontSize: 14, color: Colors.grey,
-                                                fontFamily: AppFontFamily.primaryFont,
-),
-          ),
-          trailing: IconButton(
-            icon: const Icon(Icons.favorite, color: Colors.red),
-            onPressed: () {
-              removeFavorite(propertyId);
-            },
-          ),
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Property Card
+          SizedBox(
+              height: screenHeight * 0.28, // Responsive height
+              child: Stack(
+                children: [
+                  // Property Card (Main Content)
+                  PropertyCard(
+                    imageUrl: property['imageUrl'] ?? '',
+                    expectedPrice: property['expectedPrice'] ?? '',
+                    plotArea: property['plotArea'] ?? '',
+                    propertyType: property['propertyType'] ?? '',
+                    city: property['city'] ?? '',
+                    createdAt: _formatTimestamp(property['createdAt']),
+                    title: property['title'] ?? '',
+                    propertyStatus: property['availabilityStatus'] ?? '',
+                    contactDetails: property['contactDetails'] ?? '',
+                  ),
+
+                  // Favorite Button (Positioned on Top Right)
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: IconButton(
+                      icon: const Icon(Icons.favorite, color: Colors.red),
+                      onPressed: () {
+                        removeFavorite(propertyId);
+                      },
+                    ),
+                  ),
+                ],
+              )),
+          const SizedBox(height: 10),
+        ],
       ),
     );
   }

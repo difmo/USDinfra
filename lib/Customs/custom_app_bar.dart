@@ -6,11 +6,15 @@ import 'package:usdinfra/routes/app_routes.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
   final bool showListPropertyButton;
+  final bool showFreeBadge;
+  final int notificationCount;
 
   const CustomAppBar({
     super.key,
     required this.scaffoldKey,
     this.showListPropertyButton = true,
+    this.showFreeBadge = true,
+    this.notificationCount = 0,
   });
 
   @override
@@ -18,14 +22,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    final Size screenSize = MediaQuery.of(context).size;
+    final double screenRatio = screenSize.width / screenSize.height;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Colored gradient bar at the top
         Container(
-          height: kToolbarHeight * 0.85,
+          height: screenSize.height * 0.03,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -34,57 +38,124 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
         ),
-        // Main app bar
         Container(
           height: kToolbarHeight,
           color: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.001),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Menu Button
-              IconButton(
-                icon: Image.asset(
-                  'assets/icons/menu_icon.png',
-                  height: screenWidth * 0.08,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Image.asset(
+                    'assets/icons/menu_icon.png',
+                    height: screenSize.width * 0.07,
+                  ),
+                  onPressed: () => scaffoldKey.currentState?.openDrawer(),
                 ),
-                onPressed: () => scaffoldKey.currentState?.openDrawer(),
-              ),
-              Row(
-                children: [
-                  if (showListPropertyButton)
-                    Padding(
-                      padding: EdgeInsets.only(left: screenWidth * 0.02),
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, AppRouts.propertyform1);
-                        },
-                        child: Text(
-                          'Post Property',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: screenWidth * 0.035,
-                            fontFamily: AppFontFamily.primaryFont,
-                          ),
+                Row(
+                  children: [
+                    if (showListPropertyButton)
+                      Padding(
+                        padding: EdgeInsets.only(left: screenSize.width * 0.02),
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, AppRouts.propertyform1);
+                              },
+                              child: Text(
+                                'Post Property',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: screenSize.width * 0.04,
+                                  fontFamily: AppFontFamily.primaryFont,
+                                ),
+                              ),
+                            ),
+                            if (showFreeBadge)
+                              _buildTextBadge("FREE", screenSize),
+                          ],
                         ),
                       ),
+                    SizedBox(width: screenSize.width * 0.08),
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, AppRouts.notification);
+                          },
+                          icon: Icon(
+                            Icons.notifications_none_outlined,
+                            size: screenSize.width * 0.06,
+                            color: Colors.black,
+                          ),
+                        ),
+                        if (notificationCount >= 0)
+                          _buildNumericBadge(notificationCount, screenSize),
+                      ],
                     ),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, AppRouts.notification);
-                    },
-                    icon: Icon(
-                      Icons.notifications_none_outlined,
-                      size: screenWidth * 0.07, // Responsive icon size
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildTextBadge(String text, Size screenSize) {
+    return Positioned(
+      right: screenSize.width * -0.06,
+      top: screenSize.width * 0.035,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: screenSize.width * 0.015,
+            vertical: screenSize.width * 0.005),
+        decoration: BoxDecoration(
+          color: Colors.green,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: screenSize.width * 0.02,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNumericBadge(int count, Size screenSize) {
+    return Positioned(
+      right: 8,
+      top: 5,
+      child: Container(
+        width: screenSize.width * 0.05,
+        height: screenSize.width * 0.05,
+        decoration: const BoxDecoration(
+          color: Colors.red,
+          shape: BoxShape.circle,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          count > 9 ? '9+' : '$count',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: screenSize.width * 0.03,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }
