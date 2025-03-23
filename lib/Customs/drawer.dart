@@ -7,8 +7,21 @@ import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../authentication/login_screen.dart'; // Import Login Page
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
+
+  @override
+  _CustomDrawerState createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
+  late Future<Map<String, dynamic>?> _userDataFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _userDataFuture = _fetchUserData(); // Fetch user data once
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,51 +35,60 @@ class CustomDrawer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          FutureBuilder<DocumentSnapshot?>(
-            future: _fetchUserData(),
+          FutureBuilder<Map<String, dynamic>?>(
+            future: _userDataFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return _buildShimmerHeader();
               }
-              if (!snapshot.hasData ||
-                  snapshot.data == null ||
-                  !snapshot.data!.exists) {
+              if (!snapshot.hasData || snapshot.data == null) {
                 return _buildDefaultHeader(false);
               }
-              var userData =
-                  snapshot.data!.data() as Map<String, dynamic>? ?? {};
-              String role = userData['role'] ?? "user";
-              return _buildUserHeader(userData);
+              return _buildUserHeader(snapshot.data!);
             },
           ),
           Expanded(
-            child: FutureBuilder<DocumentSnapshot?>(
-              future: _fetchUserData(),
+            child: FutureBuilder<Map<String, dynamic>?>(
+              future: _userDataFuture,
               builder: (context, snapshot) {
-                if (!snapshot.hasData ||
-                    snapshot.data == null ||
-                    !snapshot.data!.exists) {
-                  return _buildDrawerList(context, role: "user");
-                }
-                var userData =
-                    snapshot.data!.data() as Map<String, dynamic>? ?? {};
-                String role = userData['role'] ?? "user";
+                String role = (snapshot.hasData && snapshot.data != null)
+                    ? snapshot.data!['role'] ?? "user"
+                    : "user";
                 return _buildDrawerList(context, role: role);
               },
             ),
           ),
-          // Expanded(
-          //   child: _buildDrawerList(context, role: 'role'),
-          // ),
         ],
       ),
     );
   }
 
-  Future<DocumentSnapshot?> _fetchUserData() async {
+  Future<Map<String, dynamic>?> _fetchUserData() async {
     String? uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return null;
-    return FirebaseFirestore.instance.collection('AppUsers').doc(uid).get();
+
+    try {
+      // Fetch user data from both collections concurrently
+      List<DocumentSnapshot> results = await Future.wait([
+        FirebaseFirestore.instance.collection('AppUsers').doc(uid).get(),
+        FirebaseFirestore.instance.collection('AppProfileSetup').doc(uid).get(),
+      ]);
+
+      // Extract data
+      Map<String, dynamic> userData =
+          (results[0].data() as Map<String, dynamic>?) ?? {};
+      Map<String, dynamic> profileData =
+          (results[1].data() as Map<String, dynamic>?) ?? {};
+
+      // Merge data (profileData takes priority)
+      return {
+        ...userData,
+        ...profileData,
+      };
+    } catch (e) {
+      print("Error fetching user data: $e");
+      return null;
+    }
   }
 
   Widget _buildDrawerList(BuildContext context, {required String role}) {
@@ -104,6 +126,10 @@ class CustomDrawer extends StatelessWidget {
   }
 
   Widget _buildUserHeader(Map<String, dynamic>? userData) {
+    String name = userData?['name'] ?? 'Guest User';
+    String email = userData?['email'] ?? 'guest@example.com';
+    String? profileImageUrl = userData?['profileImageUrl'];
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
@@ -114,13 +140,26 @@ class CustomDrawer extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundImage: NetworkImage(userData?['profileImage'] ??
-                  'https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-person-icon.png'),
               backgroundColor: Colors.white,
+              backgroundImage:
+                  profileImageUrl != null && profileImageUrl.isNotEmpty
+                      ? NetworkImage(profileImageUrl)
+                      : null,
+              child: profileImageUrl == null || profileImageUrl.isEmpty
+                  ? Text(
+                      name[0].toUpperCase(), // Show first letter in uppercase
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                        fontFamily: AppFontFamily.primaryFont,
+                      ),
+                    )
+                  : null,
             ),
             const SizedBox(height: 10),
             Text(
-              userData?['name'] ?? 'Unknown User',
+              name,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 18,
@@ -129,7 +168,7 @@ class CustomDrawer extends StatelessWidget {
               ),
             ),
             Text(
-              userData?['email'] ?? 'No Email',
+              email,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 14,

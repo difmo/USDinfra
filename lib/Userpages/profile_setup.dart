@@ -153,32 +153,37 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                           child: _selectedImage != null
                               ? Image.file(
                                   _selectedImage!,
-                                  width: 150,
-                                  height: 150,
+                                  width: 130,
+                                  height: 130,
                                   fit: BoxFit.cover,
                                 )
                               : Image.network(
                                   'https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png',
-                                  width: 150,
-                                  height: 150,
+                                  width: 130,
+                                  height: 130,
                                   fit: BoxFit.cover,
                                 ),
                         ),
                       ),
                       SizedBox(height: 8),
                       Positioned(
-                        bottom: -10,
+                        bottom: -12,
+                        left: 14,
                         child: ElevatedButton(
                           onPressed: () => _showImageSourceDialog(context),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
                             elevation: 2,
+                            padding: EdgeInsets.symmetric( horizontal: 10),
                             shadowColor: AppColors.shadow,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                           child: Text(
                             "Upload Image",
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold,
                               color: AppColors.primary,
                               fontFamily: AppFontFamily.primaryFont,
