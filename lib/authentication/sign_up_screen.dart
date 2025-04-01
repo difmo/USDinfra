@@ -31,7 +31,7 @@ class _SignupPageState extends State<SignupPage> {
 
   Future<String> generateUserId() async {
     String currentYear = DateTime.now().year.toString().substring(2);
-    String userPrefix = "USDINFRA$currentYear";
+    String userPrefix = "USDUNIQUE$currentYear";
     String userId = "${userPrefix}00001";
 
     try {

@@ -93,96 +93,89 @@ class _ApprovedPropertiesPageState extends State<ApprovedPropertiesPage> {
                   property["imageUrl"] ?? "https://via.placeholder.com/150";
 
               return Container(
-                // color: Colors.white,
                 margin: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black12, width: 0.5),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Column(
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Image Section
                     ClipRRect(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(15)),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        bottomLeft: Radius.circular(15),
+                      ),
                       child: Image.network(
                         imageUrl,
                         height: 200,
-                        width: double.infinity,
+                        width: 150, // Fixed width for a consistent layout
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) =>
                             Icon(Icons.broken_image, size: 60),
                       ),
                     ),
-                    // ✅ Property Title Overlay
 
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Row(
-                        // crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Title: $title",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18,
-                                  fontFamily: AppFontFamily.primaryFont,
-                                ),
+                    // Property Info Section
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Title: $title",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
+                                fontFamily: AppFontFamily.primaryFont,
                               ),
-                              SizedBox(height: 8),
-                              Text(
-                                "City: $city",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: AppFontFamily.primaryFont,
-                                ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              "City: $city",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: AppFontFamily.primaryFont,
                               ),
-                              SizedBox(height: 8),
-                              Text(
-                                "Price: $expectedPrice",
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              "Price: $expectedPrice",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: AppFontFamily.primaryFont,
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                _rejectProperty(docId);
+                              },
+                              icon: Icon(Icons.cancel, color: Colors.white),
+                              label: Text(
+                                "Revoke Approval",
                                 style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.green,
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: AppFontFamily.primaryFont,
                                 ),
                               ),
-                              SizedBox(height: 16),
-                            ],
-                          ),
-                          SizedBox(width: screenWidth * 0.18),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton.icon(
-                                onPressed: () {
-                                  _rejectProperty(docId);
-                                },
-                                icon: Icon(Icons.cancel, color: Colors.white),
-                                label: Text(
-                                  "Revoke Approval",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: AppFontFamily.primaryFont,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.redAccent,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 2),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                  ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.redAccent,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 8),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25),
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

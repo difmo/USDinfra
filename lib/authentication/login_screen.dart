@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
               textColor: Colors.white,
               fontSize: 16.0,
             );
-            Navigator.pushNamed(context, AppRouts.adminProperty);
+            Navigator.pushReplacementNamed(context, AppRouts.adminProperty);
           } else {
             Fluttertoast.showToast(
               msg: "Login Successful!",
