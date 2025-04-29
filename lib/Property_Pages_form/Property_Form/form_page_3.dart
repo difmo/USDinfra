@@ -1,17 +1,16 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
-
-import '../../Components/Choice_Chip.dart';
 import '../../configs/app_colors.dart';
+import 'form_page_3_components/image_upload.dart';
+import 'form_page_3_components/option_chip.dart';
 
 class AddPhotosDetailsPage extends StatefulWidget {
-  final String docId; // 🔥 Pass this document ID when navigating
+  final String docId;
 
   const AddPhotosDetailsPage({Key? key, required this.docId}) : super(key: key);
 
@@ -20,63 +19,117 @@ class AddPhotosDetailsPage extends StatefulWidget {
 }
 
 class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
-  File? _selectedImage;
   bool sendPhotosViaWhatsApp = false;
   int coveredParking = 0;
   int openParking = 0;
   bool isLoading = false;
   bool isApproved = false;
 
-  final List<String> selectedRooms = [];
-  final List<String> furnishingOptions = [
-    "Unfurnished",
-    "Semi-Furnished",
-    "Furnished"
-  ];
-  String selectedFurnishing = "Unfurnished";
-  final List<String> photos = []; // 🔥 Store image URLs here
+  final List<String> selectedAmenities = [];
+  List<String> selectedRooms = [];
+  List<String> selectedDirection =[];
+  List<String> selectedFoodcourt = [];
+  final List<String> furnishingOptions = [];
+  List<File> selectedImages = [];
+  List<String> uploadedImageUrls = [];
+
+  Future<List<String>> uploadImagesToFirebase(
+      List<File> images, String docId) async {
+    List<String> uploadedImageUrls = [];
+
+    for (int i = 0; i < images.length; i++) {
+      final image = images[i];
+      final fileName =
+          'property_${DateTime.now().millisecondsSinceEpoch}_$i.jpg';
+
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('property_images')
+          .child(docId)
+          .child(fileName);
+
+      final uploadTask = ref.putFile(image);
+      final snapshot = await uploadTask.whenComplete(() => null);
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+
+      uploadedImageUrls.add(downloadUrl);
+    }
+
+    return uploadedImageUrls;
+  }
 
   Future<void> saveToProperties() async {
     setState(() {
-      isLoading = true; // Show loader
+      isLoading = true;
     });
 
+    // ✅ Basic Validations
+    if (selectedImages.isEmpty) {
+      setState(() => isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select at least one image.')),
+      );
+      return;
+    }
+
+    if (selectedDirection.isEmpty) {
+      setState(() => isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Please select property facing direction.')),
+      );
+      return;
+    }
+
     try {
-      // 🔥 Get Current User
+      // 🔥 Get current user
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
+        setState(() => isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('User is not logged in.')),
+          const SnackBar(content: Text('User not logged in.')),
         );
         return;
       }
 
-      // 🔥 Fetch User Details from Firestore
+      // 🔥 Get user info
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('AppUsers')
           .doc(user.uid)
           .get();
+
       if (!userDoc.exists) {
-        print("User document not found in AppUsers collection.");
+        setState(() => isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User details not found.')),
+        );
         return;
       }
 
-      String userId = userDoc['userId'] ?? "";
-      String name = userDoc['name'] ?? "Unknown User";
+      String userId = userDoc['userId'] ?? '';
+      String name = userDoc['name'] ?? 'Unknown User';
 
-      print("User Name: $name"); // Debugging purpose
+      // ✅ Upload Images and get URLs
+      List<String> uploadedImageUrls =
+          await uploadImagesToFirebase(selectedImages, widget.docId);
 
+      // ✅ Save all details to Firestore
       await FirebaseFirestore.instance
           .collection('AppProperties')
           .doc(widget.docId)
           .update({
-        // 'photos': photos,
-        'imageUrl':
-            'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
+        'imageUrl': uploadedImageUrls.isNotEmpty
+            ? uploadedImageUrls
+            : [
+                'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok='
+              ],
         'sendViaWhatsApp': sendPhotosViaWhatsApp,
         'isApproved': isApproved,
+        'facing': selectedDirection,
         'selectedRooms': selectedRooms,
-        'furnishing': selectedFurnishing,
+        'amenities': selectedAmenities,
+        'furnishing': furnishingOptions,
+        'foodcourt': selectedFoodcourt,
         'coveredParking': coveredParking,
         'openParking': openParking,
         'createdBy': userId,
@@ -84,101 +137,30 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-          "Property details updated successfully!",
-          style: TextStyle(
-            fontFamily: AppFontFamily.primaryFont,
-          ),
-        )),
+        const SnackBar(content: Text("Property details updated successfully!")),
       );
 
-      Navigator.pushNamed(
-          context, AppRouts.dashBoard); // 🔥 Go back after submission
+      Navigator.pushNamed(context, AppRouts.dashBoard);
     } catch (e) {
       print("Error updating property: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
     } finally {
       setState(() {
-        isLoading = false; // Hide loader
+        isLoading = false;
       });
     }
   }
 
-  // Function to handle the selection/deselection of rooms
   void onSelectRoom(String room) {
     setState(() {
       if (selectedRooms.contains(room)) {
-        selectedRooms.remove(room); // Deselect the room
+        selectedRooms.remove(room);
       } else {
-        selectedRooms.add(room); // Select the room
+        selectedRooms.add(room);
       }
     });
-  }
-
-  Future<void> _pickImage(ImageSource source) async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source);
-
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path);
-      });
-    }
-  }
-
-  void _showImageSourceDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          backgroundColor: Colors.white,
-          title: Text(
-            "Choose Image Source",
-            style: TextStyle(
-              fontFamily: AppFontFamily.primaryFont,
-            ),
-          ),
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.camera);
-                },
-                icon: Icon(Icons.camera_alt, color: Colors.white),
-                label: Text("Camera",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: AppFontFamily.primaryFont,
-                    )),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                ),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.gallery);
-                },
-                icon: Icon(Icons.photo, color: Colors.white),
-                label: Text("Gallery",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: AppFontFamily.primaryFont,
-                    )),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 
   @override
@@ -188,9 +170,7 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
       appBar: AppBar(
         title: Text(
           'Add Photos & Details',
-          style: TextStyle(
-            fontFamily: AppFontFamily.primaryFont,
-          ),
+          style: TextStyle(fontFamily: AppFontFamily.primaryFont),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -221,203 +201,142 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                         fontFamily: AppFontFamily.primaryFont,
                       )),
                   const SizedBox(height: 8),
-
-                  // 🔥 Image Upload Box
-                  GestureDetector(
-                      onTap: () {
-                        // Implement Image Picker Logic
-                      },
-                      child: GestureDetector(
-                        onTap: () => _showImageSourceDialog(context),
-
-                        // onTap: () {
-                        //
-                        //     print("Container clicked. Open photo picker.");
-                        //  },
-                        child: Container(
-                          height: 150,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.grey.shade100,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.camera_alt,
-                                  size: 40, color: Colors.grey),
-                              const SizedBox(height: 8),
-                              Text("+ Add at least 5 photos",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: AppFontFamily.primaryFont,
-                                  )),
-                              Text("Click from camera or browse to upload",
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontFamily: AppFontFamily.primaryFont,
-                                  )),
-                            ],
-                          ),
-                        ),
-                      )),
-
-                  const SizedBox(height: 8),
-                  Text(
-                      "Upload up to 50 photos of max size 10 MB in PNG, JPG, JPEG format.",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                        fontFamily: AppFontFamily.primaryFont,
-                      )),
-
-                  // 🔥 WhatsApp Checkbox
-                  CheckboxListTile(
-                    title: Text(
-                      "I will send photos over WhatsApp",
-                      style: TextStyle(
-                        fontFamily: AppFontFamily.primaryFont,
-                      ),
-                    ),
-                    value: sendPhotosViaWhatsApp,
-                    onChanged: (bool? value) {
+                  MultiImageUploadBox(
+                    onImagesSelected: (List<File> images) {
                       setState(() {
-                        sendPhotosViaWhatsApp = value!;
+                        selectedImages = images;
                       });
                     },
                   ),
-
-                  Text("With your registered number 91-9454310605",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontFamily: AppFontFamily.primaryFont,
-                      )),
-
-                  const SizedBox(height: 16),
-
-                  // 🔥 Other Rooms Selection
-                  Text("Other rooms (Optional)",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: AppFontFamily.primaryFont,
-                      )),
-                  Wrap(
-                    spacing: 8,
-                    children:
-                        ["Pooja Room", "Study Room", "Servant Room", "Others"]
-                            .map((option) => ChoiceChipOption(
-                                  label: option,
-                                  isSelected: selectedRooms.contains(option),
-                                  onSelected: (selected) {
-                                    onSelectRoom(option);
-                                  },
-                                ))
-                            .toList(),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // 🔥 Furnishing Selection
-                  Text("Furnishing (Optional)",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: AppFontFamily.primaryFont,
-                      )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: furnishingOptions.map((option) {
-                      return ChoiceChipOption(
-                        label: option,
-                        isSelected: selectedFurnishing == option,
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              selectedFurnishing = option;
-                            });
-                          }
-                        },
-                      );
-                    }).toList(),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // 🔥 Parking Section
-                  Text("Reserved Parking (Optional)",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: AppFontFamily.primaryFont,
-                      )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Covered Parking",
-                        style: TextStyle(
-                          fontFamily: AppFontFamily.primaryFont,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          _buildCounterButton(
-                              () => setState(() => coveredParking--),
-                              Icons.remove,
-                              coveredParking > 0),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Text("$coveredParking",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: AppFontFamily.primaryFont,
-                                )),
-                          ),
-                          _buildCounterButton(
-                              () => setState(() => coveredParking++),
-                              Icons.add,
-                              true),
-                        ],
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Open Parking",
-                        style: TextStyle(
-                          fontFamily: AppFontFamily.primaryFont,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          _buildCounterButton(
-                              () => setState(() => openParking--),
-                              Icons.remove,
-                              openParking > 0),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Text("$openParking",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: AppFontFamily.primaryFont,
-                                )),
-                          ),
-                          _buildCounterButton(
-                              () => setState(() => openParking++),
-                              Icons.add,
-                              true),
-                        ],
-                      ),
-                    ],
+                  Text(
+                    "Upload up to 50 photos of max size 10 MB in PNG, JPG, JPEG format.",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontFamily: AppFontFamily.primaryFont,
+                    ),
                   ),
-
-                  const SizedBox(height: 24),
-
-                  // 🔥 Submit Button
+                  ChoiceSelectorWidget(
+                    title: "Property Facing",
+                    options: [
+                      "East",
+                      "West",
+                      "North",
+                      "South",
+                      "North East",
+                      "North West",
+                      "South East",
+                      "South West",
+                    ],
+                    selectedOptions: selectedDirection,
+                    onSelectionChanged: (facing) {
+                      setState(() {
+                        selectedDirection = facing;
+                      });
+                    },
+                    isMultiSelect: false,
+                  ),
+                  const SizedBox(height: 16),
+                  ChoiceSelectorWidget(
+                    title: "Other rooms (Optional)",
+                    options: [
+                      "Pooja Room",
+                      "Study Room",
+                      "Servant Room",
+                      "Others"
+                    ],
+                    selectedOptions: selectedRooms,
+                    onSelectionChanged: (rooms) {
+                      setState(() {
+                        selectedRooms = rooms;
+                      });
+                    },
+                    isMultiSelect: true,
+                  ),
+                  const SizedBox(height: 16),
+                  ChoiceSelectorWidget(
+                    title: "Amenities (Feature of Society)",
+                    options: [
+                      "24 x 7 Security",
+                      "Clubhouse",
+                      "Balcony",
+                      "High Speed Elevators",
+                      "Preschool",
+                      "Medical Facility",
+                      "Day Care Center",
+                      "Pet Area",
+                      "Indoor Games",
+                      "Conference Room",
+                      "Large Green Area",
+                      "Concierge Desk",
+                      "Helipad",
+                      "Golf Course",
+                      "Multiplex",
+                      "Visitor's Parking",
+                      "Serviced Apartments",
+                      "Service Elevators",
+                      "High Street Retail",
+                      "Hypermarket",
+                      "ATM'S",
+                    ],
+                    selectedOptions: selectedAmenities,
+                    onSelectionChanged: (amenities) {
+                      setState(() {
+                        selectedAmenities.clear();
+                        selectedAmenities.addAll(amenities);
+                      });
+                    },
+                    isMultiSelect: true,
+                  ),
+                  const SizedBox(height: 16),
+                  ChoiceSelectorWidget(
+                    title: "Food Court",
+                    options: [
+                      "Food Court",
+                      "Servant Quarter",
+                      "Study Room",
+                      "Private Pool",
+                      "Private Gym",
+                      "Private Jacuzzi",
+                      "View of Water",
+                      "View of Landmark",
+                      "Built in Wardrobes",
+                      "Walk-in Closet",
+                      "Lobby in Building",
+                      "Double Glazed Windows",
+                      "Centrally Air-Conditioned",
+                      "Central Heating",
+                      "Day Care Center",
+                      "Electricity Backup",
+                      "Waste Disposal",
+                      "First Aid Medical Center",
+                      "Tiles",
+                      "Service Elevators",
+                      "Broadband Internet",
+                    ],
+                    selectedOptions: selectedFoodcourt,
+                    onSelectionChanged: (foodcourt) {
+                      setState(() {
+                        selectedFoodcourt = foodcourt;
+                      });
+                    },
+                    isMultiSelect: true,
+                  ),
+                  const SizedBox(height: 16),
+                  ChoiceSelectorWidget(
+                    title: "Furnishing (Optional)",
+                    options: ["Unfurnished", "Semi-Furnished", "Furnished"],
+                    selectedOptions: furnishingOptions,
+                    onSelectionChanged: (furnishing) {
+                      setState(() {
+                        furnishingOptions.clear();
+                        furnishingOptions.addAll(furnishing);
+                      });
+                    },
+                    isMultiSelect: false,
+                  ),
+                  const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -425,15 +344,14 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                       style: ElevatedButton.styleFrom(
                         elevation: 3,
                         shadowColor: Colors.grey,
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        textStyle: TextStyle(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        textStyle: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                         backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                      ), // Make sure to call the saveToFirestore function
-
+                      ),
                       child: Text(
                         "Save Property",
                         style: TextStyle(
@@ -448,21 +366,10 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                 ],
               ),
             ),
-            if (isLoading)
-              const Center(
-                  child:
-                      CircularProgressIndicator()), // 🔥 Show loader while saving
+            if (isLoading) const Center(child: CircularProgressIndicator()),
           ],
         ),
       ),
     );
-  }
-
-  Widget _buildCounterButton(
-      VoidCallback onPressed, IconData icon, bool enabled) {
-    return IconButton(
-        icon: Icon(icon),
-        onPressed: enabled ? onPressed : null,
-        color: enabled ? AppColors.primary : Colors.grey);
   }
 }

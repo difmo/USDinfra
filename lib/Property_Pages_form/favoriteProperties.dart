@@ -248,7 +248,7 @@ class _FavoritePropertiesPageState extends State<FavoritePropertiesPage> {
                 children: [
                   // Property Card (Main Content)
                   PropertyCard(
-                    imageUrl: property['imageUrl'] ?? '',
+                    imageUrl: property['imageUrl'] ?[0]?? '',
                     expectedPrice: property['expectedPrice'] ?? '',
                     plotArea: property['plotArea'] ?? '',
                     propertyType: property['propertyType'] ?? '',

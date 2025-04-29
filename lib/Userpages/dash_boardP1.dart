@@ -6,6 +6,7 @@ import 'package:usdinfra/Bottom/bottom_navigation.dart';
 import 'package:usdinfra/Customs/custom_app_bar.dart';
 import 'package:usdinfra/Property_Pages_form/properties_detail_page.dart';
 import 'package:usdinfra/Userpages/dash_bordP2.dart';
+import 'package:usdinfra/Userpages/dummy_profile.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
@@ -261,7 +262,8 @@ class _HomeDashBoard extends State<HomeDashBoard> {
 
                     return {
                       'id': doc.id,
-                      'imageUrl': data['imageUrl'] ??
+                      // ?[0]
+                      'imageUrl': data['imageUrl']?[0]??
                           'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
                       'expectedPrice': data['expectedPrice'] ?? '₹ 80 Lac',
                       'plotArea': data['plotArea'] ?? '1850 Sqft',
@@ -325,7 +327,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                                 );
                               },
                               child: Container(
-                                width: MediaQuery.of(context).size.width * 0.9,
+                                width: MediaQuery.of(context).size.width * 0.93,
                                 margin: const EdgeInsets.only(right: 8),
                                 child: Stack(
                                   children: [

@@ -72,6 +72,7 @@ class _ApprovedPropertiesPageState extends State<ApprovedPropertiesPage> {
                 child: Text(
               "No properties approved yet.",
               style: TextStyle(
+                fontWeight: FontWeight.bold,
                 fontFamily: AppFontFamily.primaryFont,
               ),
             ));
@@ -89,11 +90,22 @@ class _ApprovedPropertiesPageState extends State<ApprovedPropertiesPage> {
               String expectedPrice = property["expectedPrice"] != null
                   ? "${property["expectedPrice"]}"
                   : "N/A";
-              String imageUrl =
-                  property["imageUrl"] ?? "https://via.placeholder.com/150";
+              dynamic imageData = property["imageUrl"];
+
+              String imageUrl;
+
+              if (imageData is String) {
+                imageUrl = imageData;
+              } else if (imageData is List &&
+                  imageData.isNotEmpty &&
+                  imageData[0] is String) {
+                imageUrl = imageData[0];
+              } else {
+                imageUrl = "https://via.placeholder.com/150";
+              }
 
               return Container(
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black12, width: 0.5),
                   borderRadius: BorderRadius.circular(15),
@@ -109,7 +121,7 @@ class _ApprovedPropertiesPageState extends State<ApprovedPropertiesPage> {
                       ),
                       child: Image.network(
                         imageUrl,
-                        height: 200,
+                        height: 150,
                         width: 150, // Fixed width for a consistent layout
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) =>
@@ -120,10 +132,11 @@ class _ApprovedPropertiesPageState extends State<ApprovedPropertiesPage> {
                     // Property Info Section
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.all(16),
+                        padding: EdgeInsets.symmetric(horizontal: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // SizedBox(height: 10,),
                             Text(
                               "Title: $title",
                               style: TextStyle(
@@ -151,7 +164,7 @@ class _ApprovedPropertiesPageState extends State<ApprovedPropertiesPage> {
                                 fontFamily: AppFontFamily.primaryFont,
                               ),
                             ),
-                            SizedBox(height: 16),
+                            SizedBox(height: 5),
                             ElevatedButton.icon(
                               onPressed: () {
                                 _rejectProperty(docId);

@@ -218,7 +218,7 @@ class _PurchesedPropertiesPageState extends State<PurchesedPropertiesPage> {
               child: Stack(
                 children: [
                   PropertyCard(
-                    imageUrl: propertyData['imageUrl'] ?? '',
+                    imageUrl: propertyData['imageUrl']? [0]?? '',
                     expectedPrice: propertyData['expectedPrice'] ?? '',
                     plotArea: propertyData['plotArea'] ?? '',
                     propertyType: propertyData['propertyType'] ?? '',

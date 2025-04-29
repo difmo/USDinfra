@@ -18,7 +18,7 @@ import '../Admin/admin_dashboard.dart';
 import '../Admin/approved_property.dart';
 import '../Admin/enquaries.dart';
 // import '../Bottom/bottom_navigation.dart';
-import '../Property_Pages_form/Property_Form/Form_Page_2_Components/sell_residential.dart';
+// import '../Property_Pages_form/Property_Form/Form_Page_2_Components/sell_residential.dart';
 import '../Property_Pages_form/Property_Form/form_page_1.dart';
 import '../Property_Pages_form/Property_Form/form_page_2.dart';
 import '../Property_Pages_form/favoriteProperties.dart';
@@ -121,8 +121,8 @@ class AppRouts {
 
       case termconsition:
         return MaterialPageRoute(builder: (_) => TermsAndConditionsScreen());
-      case sellresidential:
-        return MaterialPageRoute(builder: (_) => PropertyDetailsForm());
+      // case sellresidential:
+      //   return MaterialPageRoute(builder: (_) => PropertyDetailsForm());
       case myPropertiesPage:
         return MaterialPageRoute(builder: (_) => MyPropertiesPage());
       case favoritePropertiesPage:

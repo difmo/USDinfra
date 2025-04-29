@@ -6,7 +6,8 @@ class ControllersManager {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmpasswordController = TextEditingController();
+  final TextEditingController confirmpasswordController =
+      TextEditingController();
   final TextEditingController contactController = TextEditingController();
 
 //////////////////// Contact Us Controllers//////////////////////////
@@ -26,7 +27,9 @@ class ControllersManager {
   final TextEditingController plotAreaController = TextEditingController();
   final TextEditingController totalFloorsController = TextEditingController();
   final TextEditingController expectedPriceController = TextEditingController();
+  final TextEditingController reraNumberController = TextEditingController();
+  final TextEditingController totalexpectedPriceController =
+      TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController propertyName = TextEditingController();
-
 }

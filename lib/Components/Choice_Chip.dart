@@ -24,7 +24,7 @@ class ChoiceChipOption extends StatelessWidget {
       onSelected: onSelected,
       selectedColor: AppColors.primary,
       labelStyle: TextStyle(
-        color: isSelected ? Colors.white : Colors.grey[700],
+        color: isSelected ? Colors.white : Colors.black,
       ),
       elevation: 1,
       shadowColor: AppColors.shadow,

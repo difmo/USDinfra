@@ -82,7 +82,7 @@ class _AllPropertiesState extends State<AllProperties> {
                   height: screenHeight * 0.28,
                   margin: const EdgeInsets.only(bottom: 16),
                   child: PropertyCard(
-                    imageUrl: property['imageUrl'] ??
+                    imageUrl: property['imageUrl']?[0] ??
                         'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
                     expectedPrice:
                         property['expectedPrice']?.toString() ?? 'N/A',
