@@ -14,62 +14,30 @@ class PropertyDetailPage extends StatefulWidget {
   State<PropertyDetailPage> createState() => _PropertyDetailPageState();
 }
 
-class _PropertyDetailPageState extends State<PropertyDetailPage>
-    with TickerProviderStateMixin {
+class _PropertyDetailPageState extends State<PropertyDetailPage> {
   Map<String, dynamic>? propertyData;
   bool isLoading = true;
   bool hasError = false;
   int _currentIndex = 0;
-  final GlobalKey _overviewKey = GlobalKey();
-  final GlobalKey _aboutKey = GlobalKey();
-  final GlobalKey _approvalKey = GlobalKey();
-  final GlobalKey _addressKey = GlobalKey();
 
-  late TabController _tabController;
-  final ScrollController _scrollController = ScrollController();
-
-  bool showTabs = false;
+  final Map<String, String> propertyDetails = {
+    'Ownership': 'Freehold',
+    'Super Area': '1000 sq.ft.\n92.9 sq.m.',
+    'Length': '40 ft.\n12.19 m.',
+    'Breadth': '25 ft.\n7.62 m.',
+    'Approved By*': 'Local Authority\n(As provided by dealer)',
+    'Facing': 'East',
+    'Boundary wall': 'Yes',
+    'Property ID': 'Y80700923',
+    'No. of Open Sides': '2',
+  };
+    final String phoneNumber = "9876543210"; // Replace with actual number
+  final String whatsappNumber = "9876543210"; // Include country code if needed
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
-
-    _scrollController.addListener(() {
-      final offset = _scrollController.offset;
-      final shouldShow = offset > 230;
-      if (shouldShow != showTabs) {
-        setState(() {
-          showTabs = shouldShow;
-        });
-      }
-
-      _updateActiveTab();
-    });
-
     fetchPropertyDetails();
-  }
-
-  void _updateActiveTab() {
-    final contextMap = {
-      0: _overviewKey,
-      1: _aboutKey,
-      2: _approvalKey,
-      3: _addressKey,
-    };
-
-    for (int index = 0; index < contextMap.length; index++) {
-      final context = contextMap[index]?.currentContext;
-      if (context != null) {
-        final box = context.findRenderObject() as RenderBox;
-        final position = box.localToGlobal(Offset.zero, ancestor: null).dy;
-        if (position <= kToolbarHeight + 60) {
-          if (_tabController.index != index) {
-            _tabController.animateTo(index);
-          }
-        }
-      }
-    }
   }
 
   Future<void> fetchPropertyDetails() async {
@@ -83,6 +51,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
         setState(() {
           propertyData = snapshot.data() as Map<String, dynamic>;
           isLoading = false;
+          print("Property data: $propertyData");
         });
       } else {
         setState(() {
@@ -98,6 +67,69 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
     }
   }
 
+  String formatPrice(dynamic value) {
+    if (value == null) return "N/A";
+
+    double price = 0.0;
+
+    try {
+      if (value is String) {
+        // Remove commas before parsing
+        value = value.replaceAll(",", "");
+        price = double.parse(value);
+      } else if (value is int || value is double) {
+        price = value.toDouble();
+      } else {
+        return "N/A";
+      }
+    } catch (e) {
+      return "N/A";
+    }
+
+    if (price >= 10000000) {
+      return "₹${(price / 10000000).toStringAsFixed(2)} Cr";
+    } else if (price >= 100000) {
+      return "₹${(price / 100000).toStringAsFixed(2)} Lac";
+    } else {
+      return "₹${price.toStringAsFixed(0)}";
+    }
+  }
+
+  String capitalizeFirstLetter(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1);
+  }
+
+
+void _launchWhatsApp() async {
+    final url = "https://wa.me/$whatsappNumber";
+    // if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    // }
+  }
+
+  void _showNumberPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Contact Number"),
+        content: Text(phoneNumber),
+        actions: [
+          TextButton(
+            child: const Text("Close"),
+            onPressed: () => Navigator.of(context).pop(),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _makePhoneCall() async {
+    final url = "tel:$phoneNumber";
+    // if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    // }
+  }
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -107,251 +139,379 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
       return const Scaffold(body: Center(child: Text("Property not found")));
     }
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            SliverAppBar(
-              pinned: true,
-              expandedHeight: 250.0,
-              elevation: 0,
-              backgroundColor: Colors.white,
-              iconTheme: const IconThemeData(color: Colors.black),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.favorite_border),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.share),
-                  onPressed: () {},
-                ),
-              ],
-              flexibleSpace: LayoutBuilder(
-                builder: (context, constraints) {
-                  final isCollapsed =
-                      constraints.biggest.height <= kToolbarHeight + 20;
-                  return FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
-                    centerTitle: false,
-                    title: isCollapsed
-                        ? Text(
-                            "${propertyData?['plotArea'] ?? 'N/A'} Sq.Ft. Plot in ${propertyData?['city'] ?? 'N/A'}",
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                        : null,
-                    background: _imageSection(),
-                  );
-                },
-              ),
-            ),
-            if (showTabs)
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _TabBarDelegate(
-                  TabBar(
-                    controller: _tabController,
-                    labelColor: Colors.black,
-                    tabs: const [
-                      Tab(text: "Overview"),
-                      Tab(text: "About Project"),
-                      Tab(text: "Approvals"),
-                      Tab(text: "Address"),
-                    ],
-                    onTap: (index) {
-                      final contextList = [
-                        _overviewKey,
-                        _aboutKey,
-                        _approvalKey,
-                        _addressKey,
-                      ][index]
-                          .currentContext;
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: CustomAppBar(title: "Property Detail"),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _imageSection(),
+            const SizedBox(height: 16),
+            // _propertyInfoHeader(),
 
-                      if (contextList != null) {
-                        Scrollable.ensureVisible(
-                          contextList,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                    },
-                  ),
-                ),
-              ),
-            SliverToBoxAdapter(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${propertyData?['plotArea'] ?? 'N/A'} sq.ft. Plot in ${propertyData?['city'] ?? 'N/A'}",
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      Text(
+                        formatPrice(propertyData?['totalPrice']),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontFamily: AppFontFamily.primaryFont,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    capitalizeFirstLetter(
+                        propertyData?['title']?.toString() ?? 'N/A'),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+
+                  Text(
+                    "${propertyData?['locality'] ?? "N/A"}",
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  Text(
+                    "${propertyData?['propertyType'] ?? 'N/A'} ${propertyData?['propertyCategory'] ?? 'N/A'} ${propertyData?['lookingTo'] ?? 'N/A'}",
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        margin: const EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          propertyData?['facing']?.isNotEmpty == true
+                              ? propertyData!['facing'][0]
+                              : 'N/A',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        margin: const EdgeInsets.only(left: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          propertyData?['availabilityStatus'] ?? 'N/A',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  /// there icon for property type and second icon for rupeess
+
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: Row(
+                      children: [
+                        Column(
                           children: [
-                            Text(
-                              "${propertyData?['city'] ?? 'N/A'}",
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.shade50,
+                                shape: BoxShape.circle,
                               ),
+                              child: const Icon(Icons.house,
+                                  color: Colors.blue, size: 20),
                             ),
-                            TextButton.icon(
-                              onPressed: () {
-                                String city = propertyData?['city'] ?? '';
-                                String locality =
-                                    propertyData?['locality'] ?? '';
-                                String subLocality =
-                                    propertyData?['subLocality'] ?? '';
-                                final parts = [subLocality, locality, city]
-                                    .where((part) => part.isNotEmpty)
-                                    .toList();
-                                if (parts.isNotEmpty) {
-                                  final address = parts.join(', ');
-                                  final url = Uri.parse(
-                                      'https://www.google.com/maps/search/?q=$address');
-                                  launchUrl(url);
-                                }
-                              },
-                              icon: const Icon(
-                                Icons.map_outlined,
-                                color: Colors.black,
-                              ),
-                              label: Text(
-                                "View on Map",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  fontFamily: AppFontFamily.primaryFont,
+                            const SizedBox(width: 8),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "${propertyData?['plotArea'] ?? 'N/A'} sqft",
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black,
+                                  ),
                                 ),
+                                const SizedBox(height: 4),
+                                const Text(
+                                  "Super Area",
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(width: 25),
+                        Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.orange.shade50,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.currency_rupee,
+                                  color: Colors.orange, size: 20),
+                            ),
+                            Text(
+                              "${propertyData?['expectedPrice'] ?? 'N/A'} Price",
+                              style: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              "per sq.ft.",
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.black,
                               ),
                             ),
                           ],
                         ),
-                        Text(
-                          "Rs. ${propertyData?['totalPrice'] ?? "N/A"}",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontFamily: AppFontFamily.primaryFont,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Container(key: _overviewKey),
-                        _multiAmenitiesSection(
-                          "Key Highlights",
-                          {
-                            "Highlights": [
-                              ...List<String>.from(
-                                  propertyData?['amenities'] ?? []),
-                              ...List<String>.from(
-                                  propertyData?['foodcourt'] ?? []),
-                            ],
-                          },
-                        ),
-                        _multiAmenitiesSection("Facing and Furnishing", {
-                          "Facing":
-                              List<String>.from(propertyData?['facing'] ?? []),
-                          "Furnishing": List<String>.from(
-                              propertyData?['furnishing'] ?? []),
-                        }),
-                        const SizedBox(height: 16),
-                        const Text("Description",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18)),
-                        const SizedBox(height: 8),
-                        Text(
-                          propertyData?['description'] ??
-                              "No description available.",
-                          style: TextStyle(color: Colors.grey[700]),
-                        ),
-                        const SizedBox(height: 24),
-                        Container(key: _aboutKey),
-                        Text(
-                          "Property Information",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
-                        const SizedBox(height: 10),
-                        _sectionCard("Property Overview", [
-                          _infoRow("Property For",
-                              propertyData?['lookingTo'] ?? 'N/A'),
-                          _infoRow("Property Type",
-                              propertyData?['propertyType'] ?? 'N/A'),
-                          _infoRow("Property Category",
-                              propertyData?['propertyCategory'] ?? 'N/A'),
-                          _infoRow("Status",
-                              propertyData?['availabilityStatus'] ?? 'N/A',
-                              highlight: true),
-                          _infoRow("City", propertyData?['city'] ?? "N/A"),
-                          _infoRow(
-                              "Locality", propertyData?['locality'] ?? "N/A"),
-                          _infoRow("Sub Locality",
-                              propertyData?['subLocality'] ?? "N/A"),
-                        ]),
-                        Text(
-                          "Owner Info",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
-                        const SizedBox(height: 10),
-                        _sectionCard("Owner Info", [
-                          _infoRow("Ownership Type",
-                              propertyData?['ownershipType'] ?? 'N/A'),
-                          _infoRow(
-                              "Owner", propertyData?['ownerName'] ?? 'N/A'),
-                          _infoRow("Contact",
-                              propertyData?['contactDetails'] ?? 'N/A'),
-                        ]),
-                        const SizedBox(height: 8),
-                        Container(key: _approvalKey),
-                        Text(
-                          "Approval Details",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
-                        const SizedBox(height: 10),
-                        _sectionCard("Approval Details", [
-                          _infoRow("Loan Availability",
-                              propertyData?['loanAvailable'] ?? 'N/A'),
-                          _infoRow("Govt. Approval",
-                              propertyData?['propertyApproved'] ?? 'N/A'),
-                          _infoRow(
-                              "Rera", propertyData?['reraApproved'] ?? 'N/A'),
-                          if ((propertyData?['reraApproved'] ?? '')
-                                  .toString()
-                                  .toLowerCase() ==
-                              'yes')
-                            _infoRow("Rera Number",
-                                propertyData?['reraNumber'] ?? 'N/A',
-                                highlight: true),
-                        ]),
-                        Container(key: _addressKey),
-                        _addressSection(),
                       ],
                     ),
                   ),
-                  _bottomPurchaseSection(),
+                  const SizedBox(height: 16),
+
+                  // _sectionCard("", [
+                  //   _infoRow(
+                  //       "Property For", propertyData?['lookingTo'] ?? 'N/A'),
+                  //   _infoRow("Property Type",
+                  //       propertyData?['propertyType'] ?? 'N/A'),
+                  //   _infoRow("Property Category",
+                  //       propertyData?['propertyCategory'] ?? 'N/A'),
+                  //   _infoRow(
+                  //       "Status", propertyData?['availabilityStatus'] ?? 'N/A',
+                  //       highlight: true),
+                  // ]),
+                  // const SizedBox(height: 16),
+
+                  _sectionCard("Approval Details", [
+                    _infoRow("Loan Availability",
+                        propertyData?['loanAvailable'] ?? 'N/A'),
+                    _infoRow("Govt. Approval",
+                        propertyData?['propertyApproved'] ?? 'N/A'),
+                    _infoRow("Rera", propertyData?['reraApproved'] ?? 'N/A'),
+                    if ((propertyData?['reraApproved'] ?? '')
+                            .toString()
+                            .toLowerCase() ==
+                        'yes')
+                      _infoRow(
+                          "Rera Number", propertyData?['reraNumber'] ?? 'N/A',
+                          highlight: true),
+                  ]),
+                  Container(
+                    child: Text(
+                      "Property Details",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        ...propertyDetails.entries.map((entry) => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      entry.key,
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      entry.value,
+                                      textAlign: TextAlign.right,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+
+                  //_addressSection(),
+                  _multiAmenitiesSection("Available Amenities", {
+                    "Amenities":
+                        List<String>.from(propertyData?['amenities'] ?? []),
+                    // "Food Court":
+                    //     List<String>.from(propertyData?['foodcourt'] ?? []),
+                  }),
+
+                  const Text("Description",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  const SizedBox(height: 8),
+                  Text(
+                    propertyData?['description'] ?? "No description available.",
+                    style: TextStyle(color: Colors.grey[700]),
+                  ),
+                  const SizedBox(height: 24),
+                  _sectionCard("Owner Info", [
+                    _infoRow("Ownership Type",
+                        propertyData?['ownershipType'] ?? 'N/A'),
+                    _infoRow("Owner", propertyData?['ownerName'] ?? 'N/A'),
+                    _infoRow(
+                        "Contact", propertyData?['contactDetails'] ?? 'N/A'),
+                  ]),
+                  const SizedBox(height: 8),
                 ],
               ),
             ),
+            SizedBox(height: 8),
+            SizedBox(
+              height: 16,
+            )
+            // _bottomPurchaseSection(),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          children: [
+            Expanded(
+            child: GestureDetector(
+              onTap: _launchWhatsApp,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.primary, width: 1),
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.message, color: Colors.green),
+                    SizedBox(width: 8),
+                    Text("WhatsApp", textAlign: TextAlign.center),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => _showNumberPopup(context),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  border: Border.all(color: AppColors.primary, width: 1),
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                ),
+                child: const Text(
+                  "View Number",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: AppColors.white),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: _makePhoneCall,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                border: Border.all(color: AppColors.primary, width: 1),
+                borderRadius: const BorderRadius.all(Radius.circular(16)),
+              ),
+              child: const Icon(Icons.call, color: AppColors.white, size: 20),
+            ),
+          ),
+          const SizedBox(width: 8),
+
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _propertyInfoHeader() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      color: Colors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            children: [
+              const Icon(Icons.bed),
+              Text("${propertyData?['bedrooms'] ?? 'N/A'} Beds")
+            ],
+          ),
+          Column(
+            children: [
+              const Icon(Icons.bathroom),
+              Text("${propertyData?['bathrooms'] ?? 'N/A'} Baths")
+            ],
+          ),
+          Column(
+            children: [
+              const Icon(Icons.vertical_align_top_rounded),
+              Text("${propertyData?['plotArea'] ?? 'N/A'} sqft")
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -399,6 +559,26 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
               }).toList(),
             ),
             Positioned(
+              top: 10,
+              right: 10,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  "Rs. ${propertyData?['expectedPrice'] ?? "N/A"}",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontFamily: AppFontFamily.primaryFont,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
               bottom: 10,
               right: 10,
               child: Container(
@@ -438,10 +618,43 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
             ),
           ),
           const SizedBox(height: 8),
-          _infoRow1("City", propertyData?['city'] ?? "N/A"),
-          _infoRow1("Locality", propertyData?['locality'] ?? "N/A"),
-          _infoRow1("Sub Locality", propertyData?['subLocality'] ?? "N/A"),
+          _infoRow("City", propertyData?['city'] ?? "N/A"),
+          _infoRow("Locality", propertyData?['locality'] ?? "N/A"),
+          _infoRow("Sub Locality", propertyData?['subLocality'] ?? "N/A"),
           const SizedBox(height: 10),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: ElevatedButton(
+              onPressed: () {
+                String city = propertyData?['city'] ?? '';
+                String locality = propertyData?['locality'] ?? '';
+                String subLocality = propertyData?['subLocality'] ?? '';
+                String address = "$subLocality, $locality, $city";
+                if (address.isNotEmpty) {
+                  final url = 'https://www.google.com/maps/search/?q=$address';
+                  launch(
+                      url); // Make sure to import url_launcher and set it up.
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.secondry,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              child: Text(
+                "View on Map",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontFamily: AppFontFamily.primaryFont,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -481,33 +694,27 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
     );
   }
 
-  Widget _infoRow(String label, String value, {bool highlight = false}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: TextStyle(
-          color: Colors.grey[700],
-          fontSize: 13,
+  Widget _sectionCard(String title, List<Widget> children,
+      {bool isGrid = false}) {
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Text(title,
+            //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            SizedBox(height: 12),
+            isGrid
+                ? Wrap(spacing: 16, runSpacing: 12, children: children)
+                : Column(children: children),
+          ],
         ),
       ),
-      const SizedBox(height: 4),
-      Text(
-        value,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-          color: highlight ? Colors.green : Colors.black,
-        ),
-      ),
-    ],
-  );
-}
+    );
+  }
 
-  Widget _infoRow1(String label, String value, {bool highlight = false}) {
+  Widget _infoRow(String label, String value, {bool highlight = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -523,62 +730,27 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
     );
   }
 
-  Widget _sectionCard(String title, List<Widget> children) {
-    return Card(
-      color: Colors.white,
-      margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Text(
-            //   title,
-            //   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            // ),
-            // const SizedBox(height: 12),
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              crossAxisSpacing: 56,
-              mainAxisSpacing: 12,
-              childAspectRatio: 3,
-              children: children,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _multiAmenitiesSection(
       String title, Map<String, List<String>> groupedAmenities) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-        ),
-        const SizedBox(height: 12),
-        ...groupedAmenities.entries.map((entry) {
+    return Container(
+      width: double.infinity,
+      child: _sectionCard(
+        title,
+        groupedAmenities.entries.map((entry) {
           final amenities = entry.value;
 
           return amenities.length <= 1
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      entry.key,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 16),
-                    ),
+                    // Text(
+                    //   entry.key,
+                    //   style:
+                    //       TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                    // ),
                     Chip(
-                      label: Text(
-                        amenities.isNotEmpty ? amenities.first : 'N/A',
-                      ),
+                      label:
+                          Text(amenities.isNotEmpty ? amenities.first : 'N/A'),
                       backgroundColor: Colors.grey[200],
                     ),
                   ],
@@ -586,15 +758,18 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      entry.key,
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                    ),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 12,
                       runSpacing: 8,
                       children: amenities.map((amenity) {
                         return Chip(
-                          label: Text(
-                            amenity,
-                          ),
+                          label: Text(amenity),
                           backgroundColor: Colors.grey[200],
                         );
                       }).toList(),
@@ -603,29 +778,8 @@ class _PropertyDetailPageState extends State<PropertyDetailPage>
                   ],
                 );
         }).toList(),
-      ],
+        isGrid: false,
+      ),
     );
   }
 }
-
-class _TabBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabBar tabBar;
-  _TabBarDelegate(this.tabBar);
-
-  @override
-  double get minExtent => tabBar.preferredSize.height;
-  @override
-  double get maxExtent => tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(color: Colors.white, child: tabBar);
-  }
-
-  @override
-  bool shouldRebuild(_TabBarDelegate oldDelegate) => false;
-}
-
-
-// hfdjkfhjkdsfhdjkfhjkdfhdk
