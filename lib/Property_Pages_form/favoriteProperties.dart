@@ -248,7 +248,7 @@ class _FavoritePropertiesPageState extends State<FavoritePropertiesPage> {
                 children: [
                   // Property Card (Main Content)
                   PropertyCard(
-                    imageUrl: property['imageUrl'] ?? '',
+                    imageUrl: property['imageUrl'] ?[0]?? '',
                     expectedPrice: property['expectedPrice'] ?? '',
                     plotArea: property['plotArea'] ?? '',
                     propertyType: property['propertyType'] ?? '',
@@ -257,6 +257,7 @@ class _FavoritePropertiesPageState extends State<FavoritePropertiesPage> {
                     title: property['title'] ?? '',
                     propertyStatus: property['availabilityStatus'] ?? '',
                     contactDetails: property['contactDetails'] ?? '',
+                    
                   ),
 
                   // Favorite Button (Positioned on Top Right)

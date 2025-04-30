@@ -138,7 +138,7 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
               String docId = property.id;
 
               // Fetch values safely
-              String imageUrl = property['imageUrl'] ??
+              String imageUrl = property['imageUrl']?[0] ??
                   'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=';
               String city = property['city'] ?? "No City";
               String locality = property['locality'] ?? "Unknown Location";
@@ -153,7 +153,7 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                 statusText = "Approved";
                 statusColor = Colors.green;
               } else if (isApproved == false) {
-                statusText = "Pending Approval";
+                statusText = "Under Review";
                 statusColor = Colors.orange;
               } else {
                 statusText = "Rejected";

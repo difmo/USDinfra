@@ -55,7 +55,7 @@ class _SearchScreen extends State<SearchScreen> {
                   borderSide: BorderSide.none,
                 ),
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                    EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               ),
               onChanged: (query) {
                 saveSearchQuery(query);

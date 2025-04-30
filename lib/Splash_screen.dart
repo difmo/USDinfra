@@ -35,10 +35,10 @@ class _SplashScreenState extends State<SplashScreen> {
           Navigator.pushReplacementNamed(context, AppRouts.dashBoard);
         }
       } else {
-        Navigator.pushReplacementNamed(context, AppRouts.homePage);
+        Navigator.pushReplacementNamed(context, AppRouts.dashBoard);
       }
     } else {
-      Navigator.pushReplacementNamed(context, AppRouts.homePage);
+      Navigator.pushReplacementNamed(context, AppRouts.dashBoard);
     }
   });
 }

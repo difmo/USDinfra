@@ -45,6 +45,10 @@ class _PropertyCardState extends State<PropertyCard> {
     });
   }
 
+  String getShortTitle(String title) {
+    return title.length > 18 ? '${title.substring(0, 18)}...' : title;
+  }
+
   void _callOwner() async {
     String phoneNumber =
         widget.contactDetails.trim(); // Remove spaces from the start and end
@@ -131,9 +135,11 @@ class _PropertyCardState extends State<PropertyCard> {
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           fontFamily: AppFontFamily.primaryFont,
+                          color: Colors.blueAccent
                         ),
                       ),
                       Text(
+                        
                         '${widget.plotArea} - ${widget.propertyType}',
                         style: TextStyle(
                           fontSize: 14,
@@ -143,7 +149,7 @@ class _PropertyCardState extends State<PropertyCard> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        widget.title,
+                        getShortTitle(widget.title),
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

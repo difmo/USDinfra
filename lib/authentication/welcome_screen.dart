@@ -81,6 +81,7 @@ class HomePage extends StatelessWidget {
                       'Start your journey today!',
                       style: TextStyle(
                         color: Colors.white,
+                        fontWeight: FontWeight.bold,
                         fontFamily: GoogleFonts.inter().fontFamily,
                       ),
                     ),

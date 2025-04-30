@@ -43,6 +43,7 @@ class _SoldPropertiesPageState extends State<SoldPropertiesPage> {
                 child: Text(
               "No properties sold yet.",
               style: TextStyle(
+                fontWeight: FontWeight.bold,
                 fontFamily: AppFontFamily.primaryFont,
               ),
             ));
@@ -70,8 +71,19 @@ class _SoldPropertiesPageState extends State<SoldPropertiesPage> {
                 String expectedPrice = property["expectedPrice"] != null
                     ? "${property["expectedPrice"]}"
                     : "N/A";
-                String imageUrl =
-                    property["imageUrl"] ?? "https://via.placeholder.com/150";
+                dynamic imageData = property["imageUrl"];
+
+                String imageUrl;
+
+                if (imageData is String) {
+                  imageUrl = imageData;
+                } else if (imageData is List &&
+                    imageData.isNotEmpty &&
+                    imageData[0] is String) {
+                  imageUrl = imageData[0];
+                } else {
+                  imageUrl = "https://via.placeholder.com/150";
+                }
 
                 return GestureDetector(
                   onTap: () {

@@ -172,6 +172,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                       contactDetails: property[
                           'features'], // Assuming 'features' contains contact info
                       showButtons: true, // Default value
+                      
                     ),
                   );
                 }).toList(),

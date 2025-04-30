@@ -1,12 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:usdinfra/Components/Choice_Chip.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import '../../Controllers/authentication_controller.dart';
 import '../../Customs/form_input_field.dart';
 import '../../configs/app_colors.dart';
+import 'Form_Page_2_Components/Owenership_compo.dart';
+import 'Form_Page_2_Components/adress_compo.dart';
+import 'Form_Page_2_Components/loan_and_approve.dart';
+import 'Form_Page_2_Components/plot_area.dart';
+import 'Form_Page_2_Components/price_detail_compo.dart';
 import 'form_page_3.dart';
+// import 'form_page_3.dart';
 
 class PropertyForm2 extends StatefulWidget {
   final Map<String, dynamic> formData;
@@ -19,6 +24,7 @@ class PropertyForm2 extends StatefulWidget {
 
 class _PropertyForm2State extends State<PropertyForm2> {
   final controllers = ControllersManager();
+
   String? availabilityStatus;
   String? ownershipType;
   bool allInclusivePrice = false;
@@ -26,8 +32,25 @@ class _PropertyForm2State extends State<PropertyForm2> {
   bool isLoading = false;
   bool isDeleted = false;
   bool isPurchesed = false;
+  String _selectedUnit = 'SQFT';
+  final List<String> _units = ['SQFT', 'SQYD', 'SQMD'];
+  final GlobalKey<LoanAndApprovalSectionState> loanSectionKey =
+      GlobalKey<LoanAndApprovalSectionState>();
 
   Future<void> saveToFirestore() async {
+    final loanAvailable = loanSectionKey.currentState?.loanAvailable;
+    final propertyApproved =
+        loanSectionKey.currentState?.propertyApprovedStatus;
+    final reraApproved = loanSectionKey.currentState?.reraApprovedStatus;
+    final reraNumber = loanSectionKey.currentState?.reraNumber;
+    if (propertyApproved == 'Yes' &&
+        reraApproved == 'Yes' &&
+        (reraNumber == null || reraNumber.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter RERA number')),
+      );
+      return;
+    }
     setState(() {
       isLoading = true; // Show loader
     });
@@ -67,27 +90,32 @@ class _PropertyForm2State extends State<PropertyForm2> {
         'lookingTo': widget.formData['lookingTo'],
         'uid': user.uid,
         'isPurchesed': isPurchesed,
-        // 'contactName': name,
+        'contactName': name,
         'isDeleted': isDeleted,
+        'unit': _selectedUnit,
         'propertyType': widget.formData['propertyType'],
         'propertyCategory': widget.formData['propertyCategory'],
         'contactDetails': '+91${widget.formData['contactDetails']}',
         'locality': controllers.localityController.text,
-        'subLocality': controllers.subLocalityController.text,
-        'apartment/Society': controllers.apartmentController.text,
+        // 'subLocality': controllers.subLocalityController.text,
+        // 'apartment/Society': controllers.apartmentController.text,
         'title': controllers.propertyName.text,
         'plotArea': controllers.plotAreaController.text,
-        'totalFloors': controllers.totalFloorsController.text,
+        // 'totalFloors': controllers.totalFloorsController.text,
         'availabilityStatus': availabilityStatus,
         'ownershipType': ownershipType,
-        'expectedPrice': '₹${controllers.expectedPriceController.text}',
-        'allInclusivePrice': allInclusivePrice,
-        'taxExcluded': taxExcluded,
+        'totalPrice': controllers.totalexpectedPriceController.text,
+        'expectedPrice': '₹ ${controllers.expectedPriceController.text}/SQFT',
+        // 'allInclusivePrice': allInclusivePrice,
+        // 'taxExcluded': taxExcluded,
+        'loanAvailable': loanAvailable,
+        'propertyApproved': propertyApproved,
+        'reraApproved': reraApproved,
+        'reraNumber': reraNumber,
         'description': controllers.descriptionController.text,
         'createdAt': FieldValue.serverTimestamp(),
       });
-      String docId = newPropertyRef.id; // Get the generated document ID
-
+      String docId = newPropertyRef.id;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(
@@ -118,14 +146,33 @@ class _PropertyForm2State extends State<PropertyForm2> {
   @override
   void initState() {
     super.initState();
+    controllers.plotAreaController.addListener(updateTotalPrice);
+    controllers.expectedPriceController.addListener(updateTotalPrice);
+
     print(
         "Arguments received in PropertyForm2: ${widget.formData['lookingTo']}");
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  // }
+  void updateTotalPrice() {
+    final plotAreaText = controllers.plotAreaController.text;
+    final expectedPriceText = controllers.expectedPriceController.text;
+
+    double? plotArea = double.tryParse(plotAreaText);
+    double? pricePerUnit = double.tryParse(expectedPriceText);
+
+    if (plotArea != null && pricePerUnit != null) {
+      final total = plotArea * pricePerUnit;
+      controllers.totalexpectedPriceController.text = total.toStringAsFixed(2);
+    }
+  }
+
+  @override
+  void dispose() {
+    controllers.plotAreaController.removeListener(updateTotalPrice);
+    controllers.expectedPriceController.removeListener(updateTotalPrice);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,15 +184,6 @@ class _PropertyForm2State extends State<PropertyForm2> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        // actions: [
-        //   // TextButton(
-        //   //   onPressed: () {},
-        //   //   child: const Text(
-        //   //     'Post Via WhatsApp',
-        //   //     style: TextStyle(color: Colors.green, fontSize: 14),
-        //   //   ),
-        //   // ),
-        // ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -174,284 +212,115 @@ class _PropertyForm2State extends State<PropertyForm2> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Title',
+                  'Property Builder  Name',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.bold,
                     fontFamily: AppFontFamily.primaryFont,
                   ),
                 ),
                 const SizedBox(height: 10),
-                FormTextField(
-                  hint: "Property Title",
-                  controller: controllers.propertyName,
-                  maxLength: 50,
-                  inputType: TextInputType.text,
-                  maxLines: 2,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: FormTextField(
+                    hint: "Property Builder  Name",
+                    controller: controllers.propertyName,
+                    maxLength: 50,
+                    inputType: TextInputType.text,
+                    maxLines: 2,
+                  ),
                 ),
               ],
             ),
+            Column(
+              children: [
+                LabeledFormField(
+                  label: 'City',
+                  hint: 'Enter City Name',
+                  controller: controllers.cityController,
+                ),
+                const SizedBox(height: 8),
+                LabeledFormField(
+                  label: 'Location',
+                  hint: 'Location',
+                  controller: controllers.localityController,
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: PlotAreaInputField(
+                    controller: controllers.plotAreaController,
+                    selectedUnit: _selectedUnit,
+                    units: _units,
+                    onUnitChanged: (value) {
+                      if (value != null) {
+                        setState(() => _selectedUnit = value);
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            OwnershipSelector(
+              title: 'Ownership',
+              options: [
+                'Freehold',
+                'Leasehold',
+                'Co-operative society',
+                'Power of Attorney'
+              ],
+              selectedOption: ownershipType,
+              onOptionSelected: (value) {
+                setState(() {
+                  ownershipType = value;
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+            OwnershipSelector(
+              title: 'Availability Status',
+              options: ['Ready to move', 'Under construction' , 'Immediately'],
+              selectedOption: availabilityStatus ?? '',
+              onOptionSelected: (value) {
+                setState(() {
+                  availabilityStatus = value;
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+            PriceDetailsSection(
+              pricePerSqftController: controllers.expectedPriceController,
+              totalPriceController: controllers.totalexpectedPriceController,
+            ),
+            SizedBox(height: 20),
+            LoanAndApprovalSection(
+              key: loanSectionKey,
+              reraNumberController: controllers.reraNumberController,
+            ),
+            SizedBox(height: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Description',
                     style: TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.bold,
                       fontFamily: AppFontFamily.primaryFont,
                     )),
                 SizedBox(height: 8),
-                FormTextField(
-                  hint: "Description",
-                  controller: controllers.descriptionController,
-                  maxLength: 200,
-                  inputType: TextInputType.text,
-                  maxLines: 5,
-                ),
-              ],
-            ),
-            Text('Where is your property located?',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: AppFontFamily.primaryFont,
-                )),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('City',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: AppFontFamily.primaryFont,
-                      )),
-                  SizedBox(height: 8),
-                  FormTextField(
-                    controller: controllers.cityController,
-                    hint: 'Enter City Name',
-                    borderRadius: 25,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Locality ',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: AppFontFamily.primaryFont,
-                      )),
-                  SizedBox(height: 8),
-                  FormTextField(
-                      controller: controllers.localityController,
-                      hint: 'Locality',
-                      borderRadius: 25),
-                ],
-              ),
-            ),
-            SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Sub Locality',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: AppFontFamily.primaryFont,
-                      )),
-                  SizedBox(height: 8),
-                  FormTextField(
-                      controller: controllers.subLocalityController,
-                      hint: 'Sub Locality',
-                      borderRadius: 25),
-                ],
-              ),
-            ),
-            SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Apartment / Society',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: AppFontFamily.primaryFont,
-                      )),
-                  SizedBox(height: 8),
-                  FormTextField(
-                      controller: controllers.apartmentController,
-                      hint: 'Apartment / Society',
-                      borderRadius: 25),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            Text('Add Area Details',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: AppFontFamily.primaryFont,
-                )),
-            Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 8),
-                        Text('Plot Area',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: AppFontFamily.primaryFont,
-                            )),
-                        SizedBox(height: 8),
-                        FormTextField(
-                            controller: controllers.plotAreaController,
-                            hint: 'Plot Area',
-                            borderRadius: 25),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Floor Details',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: AppFontFamily.primaryFont,
-                      )),
-                  SizedBox(height: 8),
-                  FormTextField(
-                      controller: controllers.totalFloorsController,
-                      hint: 'Total Floors',
-                      borderRadius: 25),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            Text('Availability Status',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: AppFontFamily.primaryFont,
-                )),
-            Wrap(
-              spacing: 10,
-              children: ['Ready to move', 'Under construction']
-                  .map((option) => ChoiceChipOption(
-                        label: option,
-                        isSelected: availabilityStatus == option,
-                        onSelected: (selected) {
-                          setState(() {
-                            availabilityStatus =
-                                selected ? option : availabilityStatus;
-                          });
-                        },
-                      ))
-                  .toList(),
-            ),
-            const SizedBox(height: 20),
-            Text('Ownership',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: AppFontFamily.primaryFont,
-                )),
-            Wrap(
-              spacing: 10,
-              children: [
-                'Freehold',
-                'Leasehold',
-                'Co-operative society',
-                'Power of Attorney'
-              ]
-                  .map((option) => ChoiceChipOption(
-                        label: option,
-                        isSelected: ownershipType == option,
-                        onSelected: (selected) {
-                          setState(() {
-                            ownershipType = selected ? option : ownershipType;
-                          });
-                        },
-                      ))
-                  .toList(),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Price Details',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: AppFontFamily.primaryFont,
-                      )),
-                  SizedBox(height: 8),
-                  FormTextField(
-                    controller: controllers.expectedPriceController,
-                    hint: 'Expected Price',
-                    borderRadius: 25,
-                    inputType: TextInputType.phone,
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              children: [
-                Checkbox(
-                  value: allInclusivePrice,
-                  onChanged: (value) {
-                    setState(() {
-                      allInclusivePrice = value!;
-                    });
-                  },
-                ),
-                Text(
-                  'All inclusive price',
-                  style: TextStyle(
-                    fontFamily: AppFontFamily.primaryFont,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Checkbox(
-                  value: taxExcluded,
-                  onChanged: (value) {
-                    setState(() {
-                      taxExcluded = value!;
-                    });
-                  },
-                ),
-                Text(
-                  'Tax and Govt. charges excluded',
-                  style: TextStyle(
-                    fontFamily: AppFontFamily.primaryFont,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: FormTextField(
+                    hint: "Description",
+                    controller: controllers.descriptionController,
+                    minLength: 5,
+                    maxLength: 200,
+                    inputType: TextInputType.text,
+                    maxLines: 5,
                   ),
                 ),
               ],
