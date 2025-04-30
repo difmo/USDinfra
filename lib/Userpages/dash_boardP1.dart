@@ -192,7 +192,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                      Padding(
                       padding: EdgeInsets.only(left: 9),
                       child: Text(
-                        'Properties',
+                        'Propertiess',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

@@ -20,6 +20,20 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
   bool hasError = false;
   int _currentIndex = 0;
 
+  final Map<String, String> propertyDetails = {
+    'Ownership': 'Freehold',
+    'Super Area': '1000 sq.ft.\n92.9 sq.m.',
+    'Length': '40 ft.\n12.19 m.',
+    'Breadth': '25 ft.\n7.62 m.',
+    'Approved By*': 'Local Authority\n(As provided by dealer)',
+    'Facing': 'East',
+    'Boundary wall': 'Yes',
+    'Property ID': 'Y80700923',
+    'No. of Open Sides': '2',
+  };
+    final String phoneNumber = "9876543210"; // Replace with actual number
+  final String whatsappNumber = "9876543210"; // Include country code if needed
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +67,69 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
     }
   }
 
+  String formatPrice(dynamic value) {
+    if (value == null) return "N/A";
+
+    double price = 0.0;
+
+    try {
+      if (value is String) {
+        // Remove commas before parsing
+        value = value.replaceAll(",", "");
+        price = double.parse(value);
+      } else if (value is int || value is double) {
+        price = value.toDouble();
+      } else {
+        return "N/A";
+      }
+    } catch (e) {
+      return "N/A";
+    }
+
+    if (price >= 10000000) {
+      return "₹${(price / 10000000).toStringAsFixed(2)} Cr";
+    } else if (price >= 100000) {
+      return "₹${(price / 100000).toStringAsFixed(2)} Lac";
+    } else {
+      return "₹${price.toStringAsFixed(0)}";
+    }
+  }
+
+  String capitalizeFirstLetter(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1);
+  }
+
+
+void _launchWhatsApp() async {
+    final url = "https://wa.me/$whatsappNumber";
+    // if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    // }
+  }
+
+  void _showNumberPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Contact Number"),
+        content: Text(phoneNumber),
+        actions: [
+          TextButton(
+            child: const Text("Close"),
+            onPressed: () => Navigator.of(context).pop(),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _makePhoneCall() async {
+    final url = "tel:$phoneNumber";
+    // if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    // }
+  }
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -78,11 +155,44 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "${propertyData?['title'] ?? 'N/A'}",
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      Text(
+                        formatPrice(propertyData?['totalPrice']),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontFamily: AppFontFamily.primaryFont,
+                        ),
+                      ),
+                    ],
                   ),
+
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    capitalizeFirstLetter(
+                        propertyData?['title']?.toString() ?? 'N/A'),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+
+                  Text(
+                    "${propertyData?['locality'] ?? "N/A"}",
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black,
+                    ),
+                  ),
+
                   const SizedBox(height: 16),
 
                   Text(
@@ -135,6 +245,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                   ),
 
                   const SizedBox(height: 16),
+
                   /// there icon for property type and second icon for rupeess
 
                   Container(
@@ -236,12 +347,52 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                           "Rera Number", propertyData?['reraNumber'] ?? 'N/A',
                           highlight: true),
                   ]),
-                  _addressSection(),
+                  Container(
+                    child: Text(
+                      "Property Details",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        ...propertyDetails.entries.map((entry) => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      entry.key,
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      entry.value,
+                                      textAlign: TextAlign.right,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+
+                  //_addressSection(),
                   _multiAmenitiesSection("Available Amenities", {
                     "Amenities":
                         List<String>.from(propertyData?['amenities'] ?? []),
-                    "Food Court":
-                        List<String>.from(propertyData?['foodcourt'] ?? []),
+                    // "Food Court":
+                    //     List<String>.from(propertyData?['foodcourt'] ?? []),
                   }),
 
                   const Text("Description",
@@ -264,7 +415,71 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                 ],
               ),
             ),
-            _bottomPurchaseSection(),
+            SizedBox(height: 8),
+            SizedBox(
+              height: 16,
+            )
+            // _bottomPurchaseSection(),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          children: [
+            Expanded(
+            child: GestureDetector(
+              onTap: _launchWhatsApp,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.primary, width: 1),
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.message, color: Colors.green),
+                    SizedBox(width: 8),
+                    Text("WhatsApp", textAlign: TextAlign.center),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => _showNumberPopup(context),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  border: Border.all(color: AppColors.primary, width: 1),
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                ),
+                child: const Text(
+                  "View Number",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: AppColors.white),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: _makePhoneCall,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                border: Border.all(color: AppColors.primary, width: 1),
+                borderRadius: const BorderRadius.all(Radius.circular(16)),
+              ),
+              child: const Icon(Icons.call, color: AppColors.white, size: 20),
+            ),
+          ),
+          const SizedBox(width: 8),
+
           ],
         ),
       ),
@@ -481,17 +696,14 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
 
   Widget _sectionCard(String title, List<Widget> children,
       {bool isGrid = false}) {
-    return Card(
-      color: Colors.white,
-      margin: EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return Container(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            // Text(title,
+            //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             SizedBox(height: 12),
             isGrid
                 ? Wrap(spacing: 16, runSpacing: 12, children: children)
@@ -531,11 +743,11 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      entry.key,
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                    ),
+                    // Text(
+                    //   entry.key,
+                    //   style:
+                    //       TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                    // ),
                     Chip(
                       label:
                           Text(amenities.isNotEmpty ? amenities.first : 'N/A'),

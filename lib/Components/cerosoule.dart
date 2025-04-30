@@ -36,7 +36,7 @@ class _CarouselExampleState extends State<Carousel> {
           Positioned(
             left: 16,
             right: 16,
-            bottom: 35, // Moves half of the search bar outside the image
+            bottom: 10, // Moves half of the search bar outside the image
             child: GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, AppRouts.Search);
