@@ -135,9 +135,11 @@ class _PropertyCardState extends State<PropertyCard> {
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           fontFamily: AppFontFamily.primaryFont,
+                          color: Colors.blueAccent
                         ),
                       ),
                       Text(
+                        
                         '${widget.plotArea} - ${widget.propertyType}',
                         style: TextStyle(
                           fontSize: 14,

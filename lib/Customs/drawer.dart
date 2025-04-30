@@ -100,7 +100,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               Icons.dashboard, 'Dashboard', AppRouts.dashBoard, context),
           _buildDrawerItem(
               Icons.person_outline, 'Profile', AppRouts.profile, context),
-          _buildDrawerItem(Icons.apartment, 'Published Properties',
+          _buildDrawerItem(Icons.apartment, 'Published Property',
               AppRouts.myPropertiesPage, context),
           _buildDrawerItem(Icons.favorite_border_outlined,
               'Favorite Properties', AppRouts.favoritePropertiesPage, context),
@@ -184,7 +184,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   Widget _buildDefaultHeader(bool _buildShimmerLoading) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       decoration: BoxDecoration(color: Colors.grey[100]),
       child: _buildShimmerLoading
           ? const Center(child: CircularProgressIndicator(color: Colors.white))

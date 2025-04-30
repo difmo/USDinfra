@@ -153,7 +153,7 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                 statusText = "Approved";
                 statusColor = Colors.green;
               } else if (isApproved == false) {
-                statusText = "Pending Approval";
+                statusText = "Under Review";
                 statusColor = Colors.orange;
               } else {
                 statusText = "Rejected";

@@ -151,6 +151,7 @@ class _DetailPageState extends State<DetailPage> {
                     title: property['title']?.toString() ?? 'No Title',
                     propertyStatus: property['availabilityStatus']?.toString() ?? 'Unknown',
                     contactDetails: property['contactDetails'] ?? {},
+                    
                   ),
                 ),
               );

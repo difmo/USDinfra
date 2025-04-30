@@ -257,6 +257,7 @@ class _FavoritePropertiesPageState extends State<FavoritePropertiesPage> {
                     title: property['title'] ?? '',
                     propertyStatus: property['availabilityStatus'] ?? '',
                     contactDetails: property['contactDetails'] ?? '',
+                    
                   ),
 
                   // Favorite Button (Positioned on Top Right)

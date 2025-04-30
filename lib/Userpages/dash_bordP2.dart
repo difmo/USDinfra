@@ -24,8 +24,9 @@ class _RatingSectionState extends State<RatingSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return 
+    Padding(
+      padding: const EdgeInsets.all(10.0),
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -39,7 +40,7 @@ class _RatingSectionState extends State<RatingSection> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
-          padding: EdgeInsets.all(12),
+          padding: EdgeInsets.all(6),
           child: Column(
             children: [
               Row(
@@ -146,7 +147,7 @@ class PostPropertySection extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(6),
               child: Row(
                 children: [
                   Expanded(
@@ -253,7 +254,7 @@ class BossPlanSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.all(10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -228,6 +228,7 @@ class _PurchesedPropertiesPageState extends State<PurchesedPropertiesPage> {
                     propertyStatus: propertyData['availabilityStatus'] ?? '',
                     contactDetails: propertyData['contactDetails'] ?? '',
                     showButtons: false,
+                    
                   ),
                 ],
               )),

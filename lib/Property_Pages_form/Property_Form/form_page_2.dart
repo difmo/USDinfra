@@ -104,8 +104,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
         // 'totalFloors': controllers.totalFloorsController.text,
         'availabilityStatus': availabilityStatus,
         'ownershipType': ownershipType,
-        'totalPrice': '₹ ${controllers.totalexpectedPriceController.text}',
-        // 'totalPrice': controllers.totalexpectedPriceController.text,
+        'totalPrice': controllers.totalexpectedPriceController.text,
         'expectedPrice': '₹ ${controllers.expectedPriceController.text}/SQFT',
         // 'allInclusivePrice': allInclusivePrice,
         // 'taxExcluded': taxExcluded,
@@ -115,6 +114,9 @@ class _PropertyForm2State extends State<PropertyForm2> {
         'reraNumber': reraNumber,
         'description': controllers.descriptionController.text,
         'createdAt': FieldValue.serverTimestamp(),
+        'length': controllers.lengthController.text,
+        'breadth': controllers.widthAreaController.text,
+        'noOfOpenSides': controllers.noOfOpenSidesController
       });
       String docId = newPropertyRef.id;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -265,6 +267,27 @@ class _PropertyForm2State extends State<PropertyForm2> {
                 ),
               ],
             ),
+            Column(
+              children: [
+                LabeledFormField(
+                  label: 'Length',
+                  hint: 'Enter Length',
+                  controller: controllers.lengthController,
+                ),
+                const SizedBox(height: 8),
+                LabeledFormField(
+                  label: 'Breath',
+                  hint: 'Enter Breath',
+                  controller: controllers.widthAreaController,
+                ),
+                const SizedBox(height: 8),
+                LabeledFormField(
+                  label: 'No. of Open Sides ',
+                  hint: 'Enter no. of open sides',
+                  controller: controllers.noOfOpenSidesController,
+                ),
+              ],
+            ),
             const SizedBox(height: 20),
             OwnershipSelector(
               title: 'Ownership',
@@ -284,7 +307,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
             const SizedBox(height: 20),
             OwnershipSelector(
               title: 'Availability Status',
-              options: ['Ready to move', 'Under construction'],
+              options: ['Ready to move', 'Under construction', 'Immediately'],
               selectedOption: availabilityStatus ?? '',
               onOptionSelected: (value) {
                 setState(() {

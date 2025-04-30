@@ -68,7 +68,7 @@ class _ContactDetailsColumnState extends State<ContactDetailsColumn> {
           maxLength: 10,
           inputType: TextInputType.phone,
           validator: widget.validator,
-          isEditable: false,
+          isEditable: true,
         ),
       ],
     );

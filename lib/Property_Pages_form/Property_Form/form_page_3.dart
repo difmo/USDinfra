@@ -238,51 +238,52 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                     isMultiSelect: false,
                   ),
                   const SizedBox(height: 16),
-                  ChoiceSelectorWidget(
-                    title: "Other rooms (Optional)",
-                    options: [
-                      "Pooja Room",
-                      "Study Room",
-                      "Servant Room",
-                      "Others"
-                    ],
-                    selectedOptions: selectedRooms,
-                    onSelectionChanged: (rooms) {
-                      setState(() {
-                        selectedRooms = rooms;
-                      });
-                    },
-                    isMultiSelect: true,
-                  ),
-                  const SizedBox(height: 16),
+                  // ChoiceSelectorWidget(
+                  //   title: "Other rooms (Optional)",
+                  //   options: [
+                  //     "Pooja Room",
+                  //     "Study Room",
+                  //     "Servant Room",
+                  //     "Others"
+                  //   ],
+                  //   selectedOptions: selectedRooms,
+                  //   onSelectionChanged: (rooms) {
+                  //     setState(() {
+                  //       selectedRooms = rooms;
+                  //     });
+                  //   },
+                  //   isMultiSelect: true,
+                  // ),
+                  // const SizedBox(height: 16),
                   ChoiceSelectorWidget(
                     title: "Amenities (Feature of Society)",
                     options: [
                       "24 x 7 Security",
+                      "Road",
+                      "Park",
+                      "Water Supply",
+                      "Electricity",
+                      "Danety",
                       "Clubhouse",
                       "Balcony",
-                      "High Speed Elevators",
-                      "Preschool",
+                      "High Speed Elssevators",
+                      // "Preschool",
                       "Medical Facility",
                       "Day Care Center",
-                      "Pet Area",
-                      "Indoor Games",
+                      // "Pet Area",
+                      // "Indoor Games",
                       "Conference Room",
                       "Large Green Area",
                       "Concierge Desk",
                       "Helipad",
-                      "Golf Course",
+                      // "Golf Course",
                       "Multiplex",
                       "Visitor's Parking",
                       "Serviced Apartments",
                       "Service Elevators",
-                      "High Street Retail",
+                      // "High Street Retail",
                       "Hypermarket",
                       "ATM'S",
-                      "Near Hospital",
-                      "Near School", 
-                      "Near Metro",
-                      "Near Market"
                     ],
                     selectedOptions: selectedAmenities,
                     onSelectionChanged: (amenities) {
@@ -297,27 +298,9 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                   ChoiceSelectorWidget(
                     title: "Food Court",
                     options: [
-                      "Food Court",
-                      "Servant Quarter",
-                      "Study Room",
-                      "Private Pool",
-                      "Private Gym",
-                      "Private Jacuzzi",
-                      "View of Water",
-                      "View of Landmark",
-                      "Built in Wardrobes",
-                      "Walk-in Closet",
-                      "Lobby in Building",
-                      "Double Glazed Windows",
-                      "Centrally Air-Conditioned",
-                      "Central Heating",
-                      "Day Care Center",
-                      "Electricity Backup",
-                      "Waste Disposal",
-                      "First Aid Medical Center",
-                      "Tiles",
-                      "Service Elevators",
-                      "Broadband Internet",
+                      "Electric Backup",
+                      "Fire Alarm",
+                      "Fire Safety",
                     ],
                     selectedOptions: selectedFoodcourt,
                     onSelectionChanged: (foodcourt) {
