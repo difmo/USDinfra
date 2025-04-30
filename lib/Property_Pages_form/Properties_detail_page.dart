@@ -95,7 +95,46 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                   ),
                   const SizedBox(height: 20),
 
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        margin: const EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          propertyData?['facing']?.isNotEmpty == true
+                              ? propertyData!['facing'][0]
+                              : 'N/A',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        margin: const EdgeInsets.only(left: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          propertyData?['availabilityStatus'] ?? 'N/A',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
 
+                  const SizedBox(height: 16),
                   /// there icon for property type and second icon for rupeess
 
                   Container(
@@ -170,7 +209,6 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  
                   // _sectionCard("", [
                   //   _infoRow(
                   //       "Property For", propertyData?['lookingTo'] ?? 'N/A'),
@@ -204,11 +242,6 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                         List<String>.from(propertyData?['amenities'] ?? []),
                     "Food Court":
                         List<String>.from(propertyData?['foodcourt'] ?? []),
-                  }),
-                  _multiAmenitiesSection("Facing and Furnishing", {
-                    "Facing": List<String>.from(propertyData?['facing'] ?? []),
-                    "Furnishing":
-                        List<String>.from(propertyData?['furnishing'] ?? []),
                   }),
 
                   const Text("Description",
