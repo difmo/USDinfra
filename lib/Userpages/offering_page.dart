@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:usdinfra/Components/property_card.dart';
 import 'package:usdinfra/Customs/CustomAppBar.dart';
 import 'package:usdinfra/Property_Pages_form/properties_detail_page.dart';
-import 'package:shimmer/shimmer.dart'; // Import shimmer package
+import 'package:shimmer/shimmer.dart';
 
 class DetailPage extends StatefulWidget {
   final String title;
@@ -49,7 +49,6 @@ class _DetailPageState extends State<DetailPage> {
             .where('isApproved', isEqualTo: true)
             .snapshots()
             .asyncMap((querySnapshot) async {
-          // First query for lookingTo field
           var query1 = await FirebaseFirestore.instance
               .collection('AppProperties')
               .where('isDeleted', isEqualTo: false)
@@ -58,7 +57,6 @@ class _DetailPageState extends State<DetailPage> {
               .where('isApproved', isEqualTo: true)
               .get();
 
-          // Second query for propertyCategory field
           var query2 = await FirebaseFirestore.instance
               .collection('AppProperties')
               .where('isDeleted', isEqualTo: false)
@@ -66,6 +64,7 @@ class _DetailPageState extends State<DetailPage> {
               .where('propertyCategory', isEqualTo: title)
               .where('isApproved', isEqualTo: true)
               .get();
+
           var query3 = await FirebaseFirestore.instance
               .collection('AppProperties')
               .where('isDeleted', isEqualTo: false)
@@ -73,20 +72,18 @@ class _DetailPageState extends State<DetailPage> {
               .where('propertyType', isEqualTo: title)
               .where('isApproved', isEqualTo: true)
               .get();
-          // Combine both query results
+
           var combinedDocs = List<DocumentSnapshot>.from(query1.docs);
           combinedDocs.addAll(query2.docs);
           combinedDocs.addAll(query3.docs);
-          // Remove duplicates using Set (DocumentSnapshot comparison is based on id)
           var uniqueDocs = combinedDocs.toSet().toList();
           return uniqueDocs;
         }),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // Show shimmer effect while waiting for data
             return ListView.builder(
               padding: const EdgeInsets.all(10),
-              itemCount: 5, // Show 5 shimmer placeholders
+              itemCount: 5,
               itemBuilder: (context, index) {
                 return Shimmer.fromColors(
                   baseColor: Colors.grey[300]!,
@@ -139,16 +136,20 @@ class _DetailPageState extends State<DetailPage> {
                   height: screenHeight * 0.28,
                   margin: const EdgeInsets.only(bottom: 16),
                   child: PropertyCard(
-                    imageUrl: property['imageUrl'] ??
-                        'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
+                    imageUrl: (property['imageUrl'] is List && property['imageUrl'].isNotEmpty)
+                        ? property['imageUrl'][0]
+                        : property['imageUrl']?.toString() ??
+                            'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
                     expectedPrice:
                         property['expectedPrice']?.toString() ?? 'N/A',
                     plotArea: property['plotArea']?.toString() ?? 'N/A',
-                    propertyType: property['propertyType'] ?? 'Unknown',
-                    city: property['address'] ?? 'Address not available',
+                    propertyType: property['propertyType']?.toString() ?? 'Unknown',
+                    city: (property['address'] is List)
+                        ? property['address'].join(', ')
+                        : property['address']?.toString() ?? 'Address not available',
                     createdAt: createdAtString,
-                    title: property['title'] ?? 'No Title',
-                    propertyStatus: property['availabilityStatus'] ?? 'Unknown',
+                    title: property['title']?.toString() ?? 'No Title',
+                    propertyStatus: property['availabilityStatus']?.toString() ?? 'Unknown',
                     contactDetails: property['contactDetails'] ?? {},
                   ),
                 ),

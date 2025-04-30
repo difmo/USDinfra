@@ -14,16 +14,62 @@ class PropertyDetailPage extends StatefulWidget {
   State<PropertyDetailPage> createState() => _PropertyDetailPageState();
 }
 
-class _PropertyDetailPageState extends State<PropertyDetailPage> {
+class _PropertyDetailPageState extends State<PropertyDetailPage>
+    with TickerProviderStateMixin {
   Map<String, dynamic>? propertyData;
   bool isLoading = true;
   bool hasError = false;
   int _currentIndex = 0;
+  final GlobalKey _overviewKey = GlobalKey();
+  final GlobalKey _aboutKey = GlobalKey();
+  final GlobalKey _approvalKey = GlobalKey();
+  final GlobalKey _addressKey = GlobalKey();
+
+  late TabController _tabController;
+  final ScrollController _scrollController = ScrollController();
+
+  bool showTabs = false;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+
+    _scrollController.addListener(() {
+      final offset = _scrollController.offset;
+      final shouldShow = offset > 230;
+      if (shouldShow != showTabs) {
+        setState(() {
+          showTabs = shouldShow;
+        });
+      }
+
+      _updateActiveTab();
+    });
+
     fetchPropertyDetails();
+  }
+
+  void _updateActiveTab() {
+    final contextMap = {
+      0: _overviewKey,
+      1: _aboutKey,
+      2: _approvalKey,
+      3: _addressKey,
+    };
+
+    for (int index = 0; index < contextMap.length; index++) {
+      final context = contextMap[index]?.currentContext;
+      if (context != null) {
+        final box = context.findRenderObject() as RenderBox;
+        final position = box.localToGlobal(Offset.zero, ancestor: null).dy;
+        if (position <= kToolbarHeight + 60) {
+          if (_tabController.index != index) {
+            _tabController.animateTo(index);
+          }
+        }
+      }
+    }
   }
 
   Future<void> fetchPropertyDetails() async {
@@ -61,117 +107,251 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
       return const Scaffold(body: Center(child: Text("Property not found")));
     }
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: "Property Detail"),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _imageSection(),
-            _propertyInfoHeader(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverAppBar(
+              pinned: true,
+              expandedHeight: 250.0,
+              elevation: 0,
+              backgroundColor: Colors.white,
+              iconTheme: const IconThemeData(color: Colors.black),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.favorite_border),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.share),
+                  onPressed: () {},
+                ),
+              ],
+              flexibleSpace: LayoutBuilder(
+                builder: (context, constraints) {
+                  final isCollapsed =
+                      constraints.biggest.height <= kToolbarHeight + 20;
+                  return FlexibleSpaceBar(
+                    collapseMode: CollapseMode.parallax,
+                    centerTitle: false,
+                    title: isCollapsed
+                        ? Text(
+                            "${propertyData?['plotArea'] ?? 'N/A'} Sq.Ft. Plot in ${propertyData?['city'] ?? 'N/A'}",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        : null,
+                    background: _imageSection(),
+                  );
+                },
+              ),
+            ),
+            if (showTabs)
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _TabBarDelegate(
+                  TabBar(
+                    controller: _tabController,
+                    labelColor: Colors.black,
+                    tabs: const [
+                      Tab(text: "Overview"),
+                      Tab(text: "About Project"),
+                      Tab(text: "Approvals"),
+                      Tab(text: "Address"),
+                    ],
+                    onTap: (index) {
+                      final contextList = [
+                        _overviewKey,
+                        _aboutKey,
+                        _approvalKey,
+                        _addressKey,
+                      ][index]
+                          .currentContext;
+
+                      if (contextList != null) {
+                        Scrollable.ensureVisible(
+                          contextList,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ),
+            SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "${propertyData?['plotArea'] ?? 'N/A'} sq.ft. Plot in ${propertyData?['city'] ?? 'N/A'}",
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  _sectionCard("Property Overview", [
-                    _infoRow(
-                        "Property For", propertyData?['lookingTo'] ?? 'N/A'),
-                    _infoRow("Property Type",
-                        propertyData?['propertyType'] ?? 'N/A'),
-                    _infoRow("Property Category",
-                        propertyData?['propertyCategory'] ?? 'N/A'),
-                    _infoRow(
-                        "Status", propertyData?['availabilityStatus'] ?? 'N/A',
-                        highlight: true),
-                  ]),
                   const SizedBox(height: 16),
-                  const Text("Description",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                  const SizedBox(height: 8),
-                  Text(
-                    propertyData?['description'] ?? "No description available.",
-                    style: TextStyle(color: Colors.grey[700]),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${propertyData?['plotArea'] ?? 'N/A'} sq.ft. Plot in ${propertyData?['city'] ?? 'N/A'}",
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "${propertyData?['city'] ?? 'N/A'}",
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextButton.icon(
+                              onPressed: () {
+                                String city = propertyData?['city'] ?? '';
+                                String locality =
+                                    propertyData?['locality'] ?? '';
+                                String subLocality =
+                                    propertyData?['subLocality'] ?? '';
+                                final parts = [subLocality, locality, city]
+                                    .where((part) => part.isNotEmpty)
+                                    .toList();
+                                if (parts.isNotEmpty) {
+                                  final address = parts.join(', ');
+                                  final url = Uri.parse(
+                                      'https://www.google.com/maps/search/?q=$address');
+                                  launchUrl(url);
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.map_outlined,
+                                color: Colors.black,
+                              ),
+                              label: Text(
+                                "View on Map",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  fontFamily: AppFontFamily.primaryFont,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          "Rs. ${propertyData?['totalPrice'] ?? "N/A"}",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontFamily: AppFontFamily.primaryFont,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Container(key: _overviewKey),
+                        _multiAmenitiesSection(
+                          "Key Highlights",
+                          {
+                            "Highlights": [
+                              ...List<String>.from(
+                                  propertyData?['amenities'] ?? []),
+                              ...List<String>.from(
+                                  propertyData?['foodcourt'] ?? []),
+                            ],
+                          },
+                        ),
+                        _multiAmenitiesSection("Facing and Furnishing", {
+                          "Facing":
+                              List<String>.from(propertyData?['facing'] ?? []),
+                          "Furnishing": List<String>.from(
+                              propertyData?['furnishing'] ?? []),
+                        }),
+                        const SizedBox(height: 16),
+                        const Text("Description",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18)),
+                        const SizedBox(height: 8),
+                        Text(
+                          propertyData?['description'] ??
+                              "No description available.",
+                          style: TextStyle(color: Colors.grey[700]),
+                        ),
+                        const SizedBox(height: 24),
+                        Container(key: _aboutKey),
+                        Text(
+                          "Property Information",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                        const SizedBox(height: 10),
+                        _sectionCard("Property Overview", [
+                          _infoRow("Property For",
+                              propertyData?['lookingTo'] ?? 'N/A'),
+                          _infoRow("Property Type",
+                              propertyData?['propertyType'] ?? 'N/A'),
+                          _infoRow("Property Category",
+                              propertyData?['propertyCategory'] ?? 'N/A'),
+                          _infoRow("Status",
+                              propertyData?['availabilityStatus'] ?? 'N/A',
+                              highlight: true),
+                          _infoRow("City", propertyData?['city'] ?? "N/A"),
+                          _infoRow(
+                              "Locality", propertyData?['locality'] ?? "N/A"),
+                          _infoRow("Sub Locality",
+                              propertyData?['subLocality'] ?? "N/A"),
+                        ]),
+                        Text(
+                          "Owner Info",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                        const SizedBox(height: 10),
+                        _sectionCard("Owner Info", [
+                          _infoRow("Ownership Type",
+                              propertyData?['ownershipType'] ?? 'N/A'),
+                          _infoRow(
+                              "Owner", propertyData?['ownerName'] ?? 'N/A'),
+                          _infoRow("Contact",
+                              propertyData?['contactDetails'] ?? 'N/A'),
+                        ]),
+                        const SizedBox(height: 8),
+                        Container(key: _approvalKey),
+                        Text(
+                          "Approval Details",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                        const SizedBox(height: 10),
+                        _sectionCard("Approval Details", [
+                          _infoRow("Loan Availability",
+                              propertyData?['loanAvailable'] ?? 'N/A'),
+                          _infoRow("Govt. Approval",
+                              propertyData?['propertyApproved'] ?? 'N/A'),
+                          _infoRow(
+                              "Rera", propertyData?['reraApproved'] ?? 'N/A'),
+                          if ((propertyData?['reraApproved'] ?? '')
+                                  .toString()
+                                  .toLowerCase() ==
+                              'yes')
+                            _infoRow("Rera Number",
+                                propertyData?['reraNumber'] ?? 'N/A',
+                                highlight: true),
+                        ]),
+                        Container(key: _addressKey),
+                        _addressSection(),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 24),
-                  _sectionCard("Owner Info", [
-                    _infoRow("Ownership Type",
-                        propertyData?['ownershipType'] ?? 'N/A'),
-                    _infoRow("Owner", propertyData?['ownerName'] ?? 'N/A'),
-                    _infoRow(
-                        "Contact", propertyData?['contactDetails'] ?? 'N/A'),
-                  ]),
-                  const SizedBox(height: 8),
-                  _sectionCard("Approval Details", [
-                    _infoRow("Loan Availability",
-                        propertyData?['loanAvailable'] ?? 'N/A'),
-                    _infoRow("Govt. Approval",
-                        propertyData?['propertyApproved'] ?? 'N/A'),
-                    _infoRow("Rera", propertyData?['reraApproved'] ?? 'N/A'),
-                    if ((propertyData?['reraApproved'] ?? '')
-                            .toString()
-                            .toLowerCase() ==
-                        'yes')
-                      _infoRow(
-                          "Rera Number", propertyData?['reraNumber'] ?? 'N/A',
-                          highlight: true),
-                  ]),
-                  _addressSection(),
-                  _multiAmenitiesSection("Available Amenities", {
-                    "Amenities":
-                        List<String>.from(propertyData?['amenities'] ?? []),
-                    "Food Court":
-                        List<String>.from(propertyData?['foodcourt'] ?? []),
-                  }),
-                  _multiAmenitiesSection("Facing and Furnishing", {
-                    "Facing": List<String>.from(propertyData?['facing'] ?? []),
-                    "Furnishing":
-                        List<String>.from(propertyData?['furnishing'] ?? []),
-                  }),
+                  _bottomPurchaseSection(),
                 ],
               ),
             ),
-            _bottomPurchaseSection(),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _propertyInfoHeader() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            children: [
-              const Icon(Icons.bed),
-              Text("${propertyData?['bedrooms'] ?? 'N/A'} Beds")
-            ],
-          ),
-          Column(
-            children: [
-              const Icon(Icons.bathroom),
-              Text("${propertyData?['bathrooms'] ?? 'N/A'} Baths")
-            ],
-          ),
-          Column(
-            children: [
-              const Icon(Icons.vertical_align_top_rounded),
-              Text("${propertyData?['plotArea'] ?? 'N/A'} sqft")
-            ],
-          ),
-        ],
       ),
     );
   }
@@ -219,26 +399,6 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
               }).toList(),
             ),
             Positioned(
-              top: 10,
-              right: 10,
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  "Rs. ${propertyData?['expectedPrice'] ?? "N/A"}",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontFamily: AppFontFamily.primaryFont,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
               bottom: 10,
               right: 10,
               child: Container(
@@ -278,43 +438,10 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
             ),
           ),
           const SizedBox(height: 8),
-          _infoRow("City", propertyData?['city'] ?? "N/A"),
-          _infoRow("Locality", propertyData?['locality'] ?? "N/A"),
-          _infoRow("Sub Locality", propertyData?['subLocality'] ?? "N/A"),
+          _infoRow1("City", propertyData?['city'] ?? "N/A"),
+          _infoRow1("Locality", propertyData?['locality'] ?? "N/A"),
+          _infoRow1("Sub Locality", propertyData?['subLocality'] ?? "N/A"),
           const SizedBox(height: 10),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: ElevatedButton(
-              onPressed: () {
-                String city = propertyData?['city'] ?? '';
-                String locality = propertyData?['locality'] ?? '';
-                String subLocality = propertyData?['subLocality'] ?? '';
-                String address = "$subLocality, $locality, $city";
-                if (address.isNotEmpty) {
-                  final url = 'https://www.google.com/maps/search/?q=$address';
-                  launch(
-                      url); // Make sure to import url_launcher and set it up.
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.secondry,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-              child: Text(
-                "View on Map",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontFamily: AppFontFamily.primaryFont,
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -354,30 +481,33 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
     );
   }
 
-  Widget _sectionCard(String title, List<Widget> children,
-      {bool isGrid = false}) {
-    return Card(
-      color: Colors.white,
-      margin: EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            SizedBox(height: 12),
-            isGrid
-                ? Wrap(spacing: 16, runSpacing: 12, children: children)
-                : Column(children: children),
-          ],
+  Widget _infoRow(String label, String value, {bool highlight = false}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: TextStyle(
+          color: Colors.grey[700],
+          fontSize: 13,
         ),
       ),
-    );
-  }
+      const SizedBox(height: 4),
+      Text(
+        value,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+          color: highlight ? Colors.green : Colors.black,
+        ),
+      ),
+    ],
+  );
+}
 
-  Widget _infoRow(String label, String value, {bool highlight = false}) {
+  Widget _infoRow1(String label, String value, {bool highlight = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -393,13 +523,47 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
     );
   }
 
+  Widget _sectionCard(String title, List<Widget> children) {
+    return Card(
+      color: Colors.white,
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Text(
+            //   title,
+            //   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            // ),
+            // const SizedBox(height: 12),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              crossAxisSpacing: 56,
+              mainAxisSpacing: 12,
+              childAspectRatio: 3,
+              children: children,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _multiAmenitiesSection(
       String title, Map<String, List<String>> groupedAmenities) {
-    return Container(
-      width: double.infinity,
-      child: _sectionCard(
-        title,
-        groupedAmenities.entries.map((entry) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+        const SizedBox(height: 12),
+        ...groupedAmenities.entries.map((entry) {
           final amenities = entry.value;
 
           return amenities.length <= 1
@@ -408,12 +572,13 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                   children: [
                     Text(
                       entry.key,
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600, fontSize: 16),
                     ),
                     Chip(
-                      label:
-                          Text(amenities.isNotEmpty ? amenities.first : 'N/A'),
+                      label: Text(
+                        amenities.isNotEmpty ? amenities.first : 'N/A',
+                      ),
                       backgroundColor: Colors.grey[200],
                     ),
                   ],
@@ -421,18 +586,15 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      entry.key,
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                    ),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 12,
                       runSpacing: 8,
                       children: amenities.map((amenity) {
                         return Chip(
-                          label: Text(amenity),
+                          label: Text(
+                            amenity,
+                          ),
                           backgroundColor: Colors.grey[200],
                         );
                       }).toList(),
@@ -441,8 +603,26 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                   ],
                 );
         }).toList(),
-        isGrid: false,
-      ),
+      ],
     );
   }
+}
+
+class _TabBarDelegate extends SliverPersistentHeaderDelegate {
+  final TabBar tabBar;
+  _TabBarDelegate(this.tabBar);
+
+  @override
+  double get minExtent => tabBar.preferredSize.height;
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(color: Colors.white, child: tabBar);
+  }
+
+  @override
+  bool shouldRebuild(_TabBarDelegate oldDelegate) => false;
 }

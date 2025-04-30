@@ -279,6 +279,10 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                       "High Street Retail",
                       "Hypermarket",
                       "ATM'S",
+                      "Near Hospital",
+                      "Near School", 
+                      "Near Metro",
+                      "Near Market"
                     ],
                     selectedOptions: selectedAmenities,
                     onSelectionChanged: (amenities) {
