@@ -5,11 +5,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:usdinfra/Controllers/authentication_controller.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../Customs/custom_textfield.dart';
 
 class ProfilesetupPage extends StatefulWidget {
+  const ProfilesetupPage({super.key});
+
   @override
   _ProfilesetupPageState createState() => _ProfilesetupPageState();
 }
@@ -41,7 +44,12 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
             borderRadius: BorderRadius.circular(12),
           ),
           backgroundColor: Colors.white,
-          title: Text("Choose Image Source"),
+          title: Text(
+            "Choose Image Source",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          ),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -51,7 +59,11 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                   _pickImage(ImageSource.camera);
                 },
                 icon: Icon(Icons.camera_alt, color: Colors.white),
-                label: Text("Camera", style: TextStyle(color: Colors.white)),
+                label: Text("Camera",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    )),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                 ),
@@ -62,7 +74,11 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                   _pickImage(ImageSource.gallery);
                 },
                 icon: Icon(Icons.photo, color: Colors.white),
-                label: Text("Gallery", style: TextStyle(color: Colors.white)),
+                label: Text("Gallery",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont,
+                    )),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                 ),
@@ -82,7 +98,8 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
     try {
       String imageUrl = '';
       if (_selectedImage != null) {
-        final storageRef = _storage.ref().child('profile_images/${DateTime.now().millisecondsSinceEpoch}');
+        final storageRef = _storage.ref().child(
+            'profile_images/${FirebaseAuth.instance.currentUser!.uid}.jpg');
         final uploadTask = storageRef.putFile(_selectedImage!);
         final taskSnapshot = await uploadTask.whenComplete(() {});
         imageUrl = await taskSnapshot.ref.getDownloadURL();
@@ -90,19 +107,23 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
 
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        await _firestore.collection('ProfileSetup').doc(user.uid).set({
+        await _firestore.collection('AppProfileSetup').doc(user.uid).set({
           'addressLine1': controllers.addressLine1Controller.text,
           'addressLine2': controllers.addressLine2Controller.text,
-          'profileImageUrl': imageUrl, // Saving the image URL
-        });
-
-        // Navigate to dashboard or the next screen
+          'profileImageUrl': imageUrl,
+          'timestamp': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
         Navigator.pushNamed(context, AppRouts.dashBoard);
       }
     } catch (e) {
       print('Error saving user data: $e');
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('An error occurred while saving data'),
+        content: Text(
+          'An error occurred while saving data',
+          style: TextStyle(
+            fontFamily: AppFontFamily.primaryFont,
+          ),
+        ),
         backgroundColor: AppColors.primary,
       ));
     } finally {
@@ -122,51 +143,56 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            Center(
-              child: Stack(
-              clipBehavior:
-              Clip.none, // Allowing the button to overlap
-              children: [
-                    GestureDetector(
-                      onTap: () => _showImageSourceDialog(context),
-                      child: ClipOval(
-                      child: _selectedImage != null
-                          ? Image.file(
-                        _selectedImage!,
-                        width: 150,
-                        height: 150,
-                        fit: BoxFit.cover, 
-                      )
-                          : Image.network(
-                        'https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png',
-                        width: 150,
-                        height: 150,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                ),
-                SizedBox(height: 8),
-                  Positioned(
-                    bottom: -10,
-                    child: ElevatedButton(
-                      onPressed: () => _showImageSourceDialog(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        elevation: 2,
-                        shadowColor: AppColors.shadow,
-                      ),
-                      child: Text(
-                        "Upload Image",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
+              Center(
+                child: Stack(
+                    clipBehavior: Clip.none, // Allowing the button to overlap
+                    children: [
+                      GestureDetector(
+                        onTap: () => _showImageSourceDialog(context),
+                        child: ClipOval(
+                          child: _selectedImage != null
+                              ? Image.file(
+                                  _selectedImage!,
+                                  width: 130,
+                                  height: 130,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.network(
+                                  'https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png',
+                                  width: 130,
+                                  height: 130,
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                       ),
-                    ),
-                  ),
-                ]),
-            ),
+                      SizedBox(height: 8),
+                      Positioned(
+                        bottom: -12,
+                        left: 14,
+                        child: ElevatedButton(
+                          onPressed: () => _showImageSourceDialog(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            elevation: 2,
+                            padding: EdgeInsets.symmetric( horizontal: 10),
+                            shadowColor: AppColors.shadow,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            "Upload Image",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                              fontFamily: AppFontFamily.primaryFont,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]),
+              ),
               SizedBox(height: 30),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,13 +202,15 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.primary,
+                      color: Colors.black,
+                      fontFamily: AppFontFamily.primaryFont,
                     ),
                   ),
                   SizedBox(height: 8),
                   CustomInputField(
                     controller: controllers.addressLine1Controller,
                     hintText: "Address Line1",
+                    borderRadius: 25,
                   ),
                 ],
               ),
@@ -195,13 +223,15 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.primary,
+                      color: Colors.black,
+                      fontFamily: AppFontFamily.primaryFont,
                     ),
                   ),
                   SizedBox(height: 8),
                   CustomInputField(
                     controller: controllers.addressLine2Controller,
                     hintText: "Address Line2",
+                    borderRadius: 25,
                   ),
                 ],
               ),
@@ -210,15 +240,6 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _saveUserData,
-                  child: _isLoading
-                      ? CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.primary),
-                  )
-                      : Text(
-                    'Save & Next',
-                    style: TextStyle(color: Colors.white),
-                  ),
                   style: ElevatedButton.styleFrom(
                     elevation: 3,
                     shadowColor: AppColors.shadow,
@@ -232,6 +253,18 @@ class _ProfilesetupPageState extends State<ProfilesetupPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
+                  child: _isLoading
+                      ? CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        )
+                      : Text(
+                          'Save & Next',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: AppFontFamily.primaryFont,
+                          ),
+                        ),
                 ),
               ),
             ],

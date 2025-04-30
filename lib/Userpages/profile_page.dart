@@ -1,446 +1,284 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:usdinfra/Components/logout.dart';
+import 'package:usdinfra/Components/user_not_login.dart';
+import 'package:usdinfra/Customs/CustomAppBar.dart';
+import 'package:usdinfra/Userpages/edit_profie.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
 import '../Customs/custom_textfield.dart';
-import '../authentication/login_screen.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  File? _selectedImage;
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController mobileController = TextEditingController();
-  final TextEditingController addressLine1Controller = TextEditingController();
-  final TextEditingController addressLine2Controller = TextEditingController();
+  final User? user = FirebaseAuth.instance.currentUser;
+  final Map<String, TextEditingController> controllers = {
+    'name': TextEditingController(),
+    'email': TextEditingController(),
+    'mobile': TextEditingController(),
+    'addressLine1': TextEditingController(),
+    'addressLine2': TextEditingController(),
+  };
 
+  final Map<String, IconData> fieldIcons = {
+    'email': Icons.email,
+    'mobile': Icons.phone,
+    'addressLine1': Icons.home,
+    'addressLine2': Icons.location_city,
+  };
   Map<String, dynamic>? userData;
   bool isLoading = true;
-  bool isEditable = false;
 
   @override
   void initState() {
     super.initState();
-    _checkUserLoggedIn();
+    if (user != null) _fetchUserData();
   }
 
-  Future<void> _checkUserLoggedIn() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      await _fetchUserData(user);
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _fetchUserData(User user) async {
+  Future<void> _fetchUserData() async {
     try {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
+      final userDoc = await FirebaseFirestore.instance
+          .collection('AppUsers')
+          .doc(user!.uid)
           .get();
-
-      DocumentSnapshot profileDoc = await FirebaseFirestore.instance
-          .collection('ProfileSetup')
-          .doc(user.uid)
+      final profileDoc = await FirebaseFirestore.instance
+          .collection('AppProfileSetup')
+          .doc(user!.uid)
           .get();
 
       if (userDoc.exists || profileDoc.exists) {
         setState(() {
           userData = {
-            'name': userDoc.exists ? userDoc['name'] : null,
-            'email': userDoc.exists ? userDoc['email'] : null,
-            'mobile': userDoc.exists ? userDoc['mobile'] : null,
-            'addressLine1': profileDoc.exists ? profileDoc['addressLine1'] : null,
-            'addressLine2': profileDoc.exists ? profileDoc['addressLine2'] : null,
+            'name': userDoc.exists ? userDoc['name'] : '',
+            'email': userDoc.exists ? userDoc['email'] : '',
+            'mobile': userDoc.exists ? userDoc['mobile'] : '',
+            'addressLine1': profileDoc.exists ? profileDoc['addressLine1'] : '',
+            'addressLine2': profileDoc.exists ? profileDoc['addressLine2'] : '',
+            'profileImageUrl':
+                profileDoc.exists ? profileDoc['profileImageUrl'] : '',
           };
-
-          // Pre-fill the controllers with available data
-          nameController.text = userDoc.exists ? userDoc['name'] : '';
-          emailController.text = userDoc.exists ? userDoc['email'] : '';
-          mobileController.text = userDoc.exists ? userDoc['mobile'] : '';
-          addressLine1Controller.text = profileDoc.exists ? profileDoc['addressLine1'] : '';
-          addressLine2Controller.text = profileDoc.exists ? profileDoc['addressLine2'] : '';
-
+          controllers.forEach(
+              (key, controller) => controller.text = userData?[key] ?? '');
           isLoading = false;
         });
       } else {
-        setState(() {
-          isLoading = false;
-        });
+        setState(() => isLoading = false);
       }
     } catch (e) {
       print("Error fetching user data: $e");
-      setState(() {
-        isLoading = false;
-      });
+      setState(() => isLoading = false);
     }
   }
 
-  Future<void> _updateUserData() async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null && userData != null) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .update({
-          'name': nameController.text,
-          'email': emailController.text,
-          'mobile': mobileController.text,
-        });
-
-        // Before updating, check if the document exists
-        DocumentReference profileDocRef = FirebaseFirestore.instance
-            .collection('ProfileSetup')
-            .doc(user.uid);
-
-        DocumentSnapshot profileDoc = await profileDocRef.get();
-
-// If the document does not exist, create it
-        if (!profileDoc.exists) {
-          await profileDocRef.set({
-            'addressLine1': addressLine1Controller.text,
-            'addressLine2': addressLine2Controller.text,
-            // other fields as needed
-          });
-        } else {
-          // If document exists, update it
-          await profileDocRef.update({
-            'addressLine1': addressLine1Controller.text,
-            'addressLine2': addressLine2Controller.text,
-            // other fields as needed
-          });
-        }
-
-
-        setState(() {
-          isEditable = false;
-          isLoading = false;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Profile updated successfully")),
-        );
-      }
-    } catch (e) {
-      print("Error updating user data: $e");
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _pickImage(ImageSource source) async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source);
-
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path);
-      });
-    }
-  }
-
-  void _showImageSourceDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          backgroundColor: Colors.white,
-          title: Text("Choose Image Source"),
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.camera);
-                },
-                icon: Icon(Icons.camera_alt, color: Colors.white),
-                label: Text("Camera", style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                ),
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.gallery);
-                },
-                icon: Icon(Icons.photo, color: Colors.white),
-                label: Text("Gallery", style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _logout(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text("Log Out"),
-        content: Text("Are you sure you want to log out?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              FirebaseAuth.instance.signOut();
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-            },
-            child: Text("Log Out"),
-          ),
-        ],
+  Widget _buildShimmerBox(
+      {double width = double.infinity, double height = 16}) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
       ),
     );
+  }
+
+  Widget _buildProfileImage() {
+    if (isLoading) {
+      return Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: CircleAvatar(radius: 50, backgroundColor: Colors.grey.shade300),
+      );
+    }
+
+    String? profileImageUrl = userData?['profileImageUrl'];
+    String nameInitial = (userData?['name'] ?? 'G').isNotEmpty
+        ? userData!['name'][0].toUpperCase()
+        : 'G';
+
+    return GestureDetector(
+        onTap: () {
+          if (userData != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditProfilePage(userData: userData!),
+              ),
+            );
+          }
+        },
+        child: ClipOval(
+          child: profileImageUrl != null && profileImageUrl.isNotEmpty
+              ? Image.network(
+                  profileImageUrl,
+                  width: 130,
+                  height: 130,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) =>
+                      loadingProgress == null
+                          ? child
+                          : const Center(child: CircularProgressIndicator()),
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: 130, // Adjusted size
+                    height: 130,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.grey,
+                    ),
+                  ),
+                )
+              : Container(
+                  width: 130,
+                  height: 130,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    nameInitial,
+                    style: const TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+        ));
+  }
+
+  Widget _buildProfileField(String label, String key) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      isLoading
+          ? _buildShimmerBox(width: 100, height: 16)
+          : Text(label,
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: AppFontFamily.primaryFont)),
+      const SizedBox(height: 8),
+      isLoading
+          ? _buildShimmerBox(height: 50)
+          : CustomInputField(
+              controller: controllers[key]!,
+              prefixIcon: Icon(fieldIcons[key], color: Colors.black),
+              enable: false,
+              prefixIconDisabledColor: Colors.black,
+              borderRadius: 10,
+            ),
+      const SizedBox(height: 20),
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
+    if (user == null) return UserNotLoggedIn();
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
-          'Profile Page',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: AppColors.primary,
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.logout,
-              color: Colors.white,
-            ),
-            onPressed: () => _logout(context),
-          ),
-        ],
-      ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.vertical(
-                        bottom: Radius.circular(30),
+        backgroundColor: Colors.white,
+        appBar: CustomAppBar(title: 'Profile'),
+        body: Column(
+          children: [
+            const SizedBox(height: 20),
+            Stack(clipBehavior: Clip.none, children: [
+              _buildProfileImage(),
+              Positioned(
+                bottom: -18,
+                right: 15,
+                child: isLoading
+                    ? _buildShimmerBox(width: 60, height: 30)
+                    : ElevatedButton.icon(
+                        onPressed: () {
+                          if (userData != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    EditProfilePage(userData: userData!),
+                              ),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          backgroundColor: Colors.white,
+                          shadowColor: Colors.black26,
+                          elevation: 4,
+                          minimumSize: const Size(100, 30),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                        ),
+                        icon: const Icon(Icons.edit,
+                            color: Color(0xFF133763), size: 18),
+                        label: const Text("Edit",
+                            style: TextStyle(
+                                fontSize: 14, color: Color(0xFF133763))),
                       ),
-                    ),
-                    child: Column(
-                      children: [
-                        Stack(
-                          clipBehavior:
-                              Clip.none, // Allowing the button to overlap
-                          children: [
-                            GestureDetector(
-                              onTap: () => _showImageSourceDialog(context),
-                              child: ClipOval(
-                                child: _selectedImage != null
-                                    ? Image.file(
-                                        _selectedImage!,
-                                        width: 150,
-                                        height: 150,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Image.network(
-                                        'https://holmesbuilders.com/wp-content/uploads/2016/12/male-profile-image-placeholder.png',
-                                        width: 150,
-                                        height: 150,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: -10,
-                              left: 10,
-                              right: 10,
-                              child: ElevatedButton(
-                                onPressed: () =>
-                                    _showImageSourceDialog(context),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  elevation: 2,
-                                  shadowColor: AppColors.shadow,
-                                ),
-                                child: Text(
-                                  "Edit Image",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.primary,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          userData?['name'] ?? 'Agni',
-                          // Display name from Firebase or default
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                      ],
-                    ),
+              ),
+            ]),
+            const SizedBox(height: 15),
+            isLoading
+                ? _buildShimmerBox(width: 150, height: 28)
+                : Text(userData?['name'] ?? 'Guest',
+                    style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black)),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildProfileField('Email', 'email'),
+                      _buildProfileField('Mobile', 'mobile'),
+                      _buildProfileField('Address Line 1', 'addressLine1'),
+                      _buildProfileField('Address Line 2', 'addressLine2'),
+                    ]),
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+              child: SizedBox(
+                width: double.infinity, // Makes the button take full width
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return LogoutDialog();
+                      },
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 14), // Better height
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Email :',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            CustomInputField(
-                              controller: emailController,
-                              hintText: 'Email',
-                              enable: isEditable,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Mobile :',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            CustomInputField(
-                              controller: mobileController,
-                              hintText: 'Mobile',
-                              enable: isEditable,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Address Line 1 :',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            CustomInputField(
-                              controller: addressLine1Controller,
-                              hintText: 'Address Line 1',
-                              enable: isEditable,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Address Line 2 :',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            CustomInputField(
-                              controller: addressLine2Controller,
-                              hintText: 'Address Line 2',
-                              enable: isEditable,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        isEditable
-                            ? SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: _updateUserData,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    foregroundColor:
-                                        Colors.white,
-                                  ),
-                                child: isLoading
-                                    ? CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                                )
-                                  :Text("Save Changes"),
-                                ),
-                              )
-                            : SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      isEditable = true;
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    foregroundColor:
-                                        Colors.white,
-                                  ),
-                                  child: Text("Edit Profile"),
-                                ),
-                              ),
-                      ],
-                    ),
+                  icon: const Icon(Icons.logout, color: Colors.white),
+                  label: const Text(
+                    "Logout",
+                    style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
-                ])),
-    );
+                ),
+              ),
+            ),
+          ],
+        ));
   }
 }

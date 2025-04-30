@@ -1,4 +1,4 @@
-package com.example.usdinfra
+package com.difmo.usdunique
 
 import io.flutter.embedding.android.FlutterActivity
 

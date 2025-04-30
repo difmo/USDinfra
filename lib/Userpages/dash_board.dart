@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:usdinfra/conigs/app_colors.dart';
+import 'package:usdinfra/configs/app_colors.dart';
+// import 'package:usdinfra/conigs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../Components/cerosoule.dart';
 import '../Components/property_card.dart';
@@ -158,14 +159,19 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                     // Adding space between cards
                     child: PropertyCard(
                       imageUrl: property['imageUrl'],
-                      price: property['price'],
-                      size: property['size'],
+                      expectedPrice: property['price'],
+                      plotArea:
+                          property['size'], // Renamed from 'size' to 'plotArea'
                       propertyType: property['propertyType'],
-                      address: property['address'],
-                      updateTime: property['updateTime'],
+                      city: property[
+                          'address'], // Renamed from 'address' to 'city'
+                      createdAt: property[
+                          'updateTime'], // Renamed from 'updateTime' to 'createdAt'
                       title: property['title'],
-                      features: property['features'],
                       propertyStatus: property['propertyStatus'],
+                      contactDetails: property[
+                          'features'], // Assuming 'features' contains contact info
+                      showButtons: true, // Default value
                     ),
                   );
                 }).toList(),

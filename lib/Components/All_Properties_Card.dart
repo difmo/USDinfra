@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:usdinfra/configs/font_family.dart';
 
-import '../Property_Pages/Properties_detail_page.dart';
+import '../Property_Pages_form/properties_detail_page.dart';
 // import 'package:usdinfra/conigs/app_colors.dart';
 
 class AllPropertyCard extends StatelessWidget {
@@ -14,20 +15,19 @@ class AllPropertyCard extends StatelessWidget {
   // final String ownership;
 
   const AllPropertyCard({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.price,
     required this.propertyType,
     required this.address,
     required this.title,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return InkWell(
-
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4.0),
         child: Card(
@@ -57,25 +57,37 @@ class AllPropertyCard extends StatelessWidget {
                     children: [
                       Text(
                         price,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          fontFamily: AppFontFamily.primaryFont,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        propertyType,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: AppFontFamily.primaryFont,
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         title,
-                        style: const TextStyle(
-                          fontSize: 16,
+                        style: TextStyle(
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
+                          fontFamily: AppFontFamily.primaryFont,
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         address,
-                        style: const TextStyle(
-                          fontSize: 14,
+                        style: TextStyle(
+                          fontSize: 12,
                           color: Colors.grey,
+                          fontFamily: AppFontFamily.primaryFont,
                         ),
                       ),
                       // Optionally add more information here

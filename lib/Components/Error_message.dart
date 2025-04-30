@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../conigs/app_colors.dart';
+import 'package:usdinfra/configs/font_family.dart';
+import '../configs/app_colors.dart';
 
 class ErrorMessage extends StatelessWidget {
   final String? errorText;
-  const ErrorMessage({Key? key, this.errorText}) : super(key: key);
+  const ErrorMessage({super.key, this.errorText});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,9 @@ class ErrorMessage extends StatelessWidget {
       padding: const EdgeInsets.only(top: 4.0),
       child: Text(
         errorText!,
-        style: TextStyle(color: AppColors.primary, fontSize: 12),
+        style: TextStyle(color: AppColors.primary, fontSize: 12,
+        fontFamily: AppFontFamily.primaryFont,
+),
       ),
     );
   }
