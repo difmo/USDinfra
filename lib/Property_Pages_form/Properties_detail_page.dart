@@ -79,17 +79,28 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${propertyData?['plotArea'] ?? 'N/A'} sq.ft. Plot in ${propertyData?['city'] ?? 'N/A'}",
+                    "${propertyData?['title'] ?? 'N/A'}",
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold),
                   ),
+                  const SizedBox(height: 16),
+
+                  Text(
+                    "${propertyData?['propertyType'] ?? 'N/A'} ${propertyData?['propertyCategory'] ?? 'N/A'} ${propertyData?['lookingTo'] ?? 'N/A'}",
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.grey,
+                    ),
+                  ),
                   const SizedBox(height: 20),
+
 
                   /// there icon for property type and second icon for rupeess
 
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8, horizontal: 16),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     child: Row(
                       children: [
                         Column(
@@ -145,13 +156,13 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                                   fontSize: 12, fontWeight: FontWeight.w500),
                             ),
                             const SizedBox(height: 4),
-                                const Text(
-                                  "per sq.ft.",
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.black,
-                                  ),
-                                ),
+                            const Text(
+                              "per sq.ft.",
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.black,
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -159,20 +170,20 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  _sectionCard("", [
-                    _infoRow(
-                        "Property For", propertyData?['lookingTo'] ?? 'N/A'),
-                    _infoRow("Property Type",
-                        propertyData?['propertyType'] ?? 'N/A'),
-                    _infoRow("Property Category",
-                        propertyData?['propertyCategory'] ?? 'N/A'),
-                    _infoRow(
-                        "Status", propertyData?['availabilityStatus'] ?? 'N/A',
-                        highlight: true),
-                  ]),
-                  const SizedBox(height: 16),
                   
-                
+                  // _sectionCard("", [
+                  //   _infoRow(
+                  //       "Property For", propertyData?['lookingTo'] ?? 'N/A'),
+                  //   _infoRow("Property Type",
+                  //       propertyData?['propertyType'] ?? 'N/A'),
+                  //   _infoRow("Property Category",
+                  //       propertyData?['propertyCategory'] ?? 'N/A'),
+                  //   _infoRow(
+                  //       "Status", propertyData?['availabilityStatus'] ?? 'N/A',
+                  //       highlight: true),
+                  // ]),
+                  // const SizedBox(height: 16),
+
                   _sectionCard("Approval Details", [
                     _infoRow("Loan Availability",
                         propertyData?['loanAvailable'] ?? 'N/A'),
@@ -199,7 +210,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                     "Furnishing":
                         List<String>.from(propertyData?['furnishing'] ?? []),
                   }),
-                  
+
                   const Text("Description",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
@@ -209,7 +220,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                     style: TextStyle(color: Colors.grey[700]),
                   ),
                   const SizedBox(height: 24),
-                    _sectionCard("Owner Info", [
+                  _sectionCard("Owner Info", [
                     _infoRow("Ownership Type",
                         propertyData?['ownershipType'] ?? 'N/A'),
                     _infoRow("Owner", propertyData?['ownerName'] ?? 'N/A'),
