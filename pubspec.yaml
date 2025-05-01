@@ -79,7 +79,9 @@ flutter:
     - assets/icons/
     - assets/icons/share.png
     - assets/icons/lock_icon.svg
+    - assets/icons/logoh1.png
     # - assets/logo.png
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
