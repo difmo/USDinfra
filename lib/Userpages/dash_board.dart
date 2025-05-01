@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:usdinfra/configs/app_colors.dart';
-// import 'package:usdinfra/conigs/app_colors.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../Components/cerosoule.dart';
 import '../Components/property_card.dart';
@@ -17,7 +16,6 @@ class HomeDashBoard extends StatefulWidget {
 class _HomeDashBoard extends State<HomeDashBoard> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  // Define a list of properties
   final List<Map<String, dynamic>> properties = [
     {
       'imageUrl': 'https://cce.guru/wp-content/uploads/2022/12/Hydrangeas.jpg',
@@ -41,45 +39,11 @@ class _HomeDashBoard extends State<HomeDashBoard> {
       'features': ['Lift', 'Parking', 'North Facing'],
       'propertyStatus': 'Ready to move',
     },
-    {
-      'imageUrl': 'https://cce.guru/wp-content/uploads/2022/12/Hydrangeas.jpg',
-      'price': '₹ 90 Lac',
-      'size': '2000 Sqft',
-      'propertyType': '3 BHK Flat',
-      'address': 'Sector 5 Greater Noida West',
-      'updateTime': '10 days',
-      'title': 'DLF Garden City',
-      'features': ['Lift', 'Parking', 'North Facing'],
-      'propertyStatus': 'Ready to move',
-    },
-    {
-      'imageUrl': 'https://cce.guru/wp-content/uploads/2022/12/Hydrangeas.jpg',
-      'price': '₹ 90 Lac',
-      'size': '2000 Sqft',
-      'propertyType': '3 BHK Flat',
-      'address': 'Sector 5 Greater Noida West',
-      'updateTime': '10 days',
-      'title': 'DLF Garden City',
-      'features': ['Lift', 'Parking', 'North Facing'],
-      'propertyStatus': 'Ready to move',
-    },
-    {
-      'imageUrl': 'https://cce.guru/wp-content/uploads/2022/12/Hydrangeas.jpg',
-      'price': '₹ 90 Lac',
-      'size': '2000 Sqft',
-      'propertyType': '3 BHK Flat',
-      'address': 'Sector 5 Greater Noida West',
-      'updateTime': '10 days',
-      'title': 'DLF Garden City',
-      'features': ['Lift', 'Parking', 'North Facing'],
-      'propertyStatus': 'Ready to move',
-    },
-    // Add more properties here as needed
+    // Add more property maps as needed
   ];
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -96,17 +60,13 @@ class _HomeDashBoard extends State<HomeDashBoard> {
           'USD',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        actions: <Widget>[
+        actions: [
           IconButton(
             icon: Icon(Icons.notifications, color: Colors.white),
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(
-              CupertinoIcons.person_circle_fill,
-              color: Colors.white,
-              size: 30,
-            ),
+            icon: Icon(CupertinoIcons.person_circle_fill, color: Colors.white, size: 30),
             onPressed: () {
               Navigator.pushNamed(context, AppRouts.profile);
             },
@@ -115,26 +75,21 @@ class _HomeDashBoard extends State<HomeDashBoard> {
       ),
       drawer: CustomDrawer(),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: screenHeight * 0.28,
-              child: Carousel(),
-            ),
-            Row(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: screenHeight * 0.28,
+            child: Carousel(),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 9.0, vertical: 8),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 9),
-                  child: Text(
-                    'Properties',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                Text(
+                  'Properties',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 TextButton(
                   onPressed: () {
@@ -143,54 +98,47 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                   child: Text(
                     'More...',
                     style: TextStyle(
-                        color: AppColors.primary, fontWeight: FontWeight.bold),
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                )
+                ),
               ],
             ),
-            // Use ListView.builder to create multiple PropertyCards dynamically
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                children: properties.map((property) {
-                  return Container(
-                    height: screenHeight * 0.39,
-                    margin: const EdgeInsets.only(bottom: 6),
-                    // Adding space between cards
-                    child: PropertyCard(
-                      imageUrl: property['imageUrl'],
-                      expectedPrice: property['price'],
-                      plotArea:
-                          property['size'], // Renamed from 'size' to 'plotArea'
-                      propertyType: property['propertyType'],
-                      city: property[
-                          'address'], // Renamed from 'address' to 'city'
-                      createdAt: property[
-                          'updateTime'], // Renamed from 'updateTime' to 'createdAt'
-                      title: property['title'],
-                      propertyStatus: property['propertyStatus'],
-                      contactDetails: property[
-                          'features'], // Assuming 'features' contains contact info
-                      showButtons: true, // Default value
-                      
-                    ),
-                  );
-                }).toList(),
-              ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              itemCount: properties.length,
+              itemBuilder: (context, index) {
+                final property = properties[index];
+                return Container(
+                  height: screenHeight * 0.39,
+                  margin: const EdgeInsets.only(bottom: 6),
+                  child: PropertyCard(
+                    imageUrl: property['imageUrl'],
+                    expectedPrice: property['price'],
+                    plotArea: property['size'],
+                    propertyType: property['propertyType'],
+                    city: property['address'],
+                    createdAt: property['updateTime'],
+                    title: property['title'],
+                    propertyStatus: property['propertyStatus'],
+                    contactDetails: property['features'],
+                    showButtons: true,
+                  ),
+                );
+              },
             ),
-            SizedBox(height: 80),
-          ],
-        ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, AppRouts.propertyform1);
         },
         backgroundColor: AppColors.primary,
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }

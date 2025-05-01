@@ -97,17 +97,12 @@ class _PropertyForm2State extends State<PropertyForm2> {
         'propertyCategory': widget.formData['propertyCategory'],
         'contactDetails': '+91${widget.formData['contactDetails']}',
         'locality': controllers.localityController.text,
-        // 'subLocality': controllers.subLocalityController.text,
-        // 'apartment/Society': controllers.apartmentController.text,
         'title': controllers.propertyName.text,
         'plotArea': controllers.plotAreaController.text,
-        // 'totalFloors': controllers.totalFloorsController.text,
         'availabilityStatus': availabilityStatus,
         'ownershipType': ownershipType,
         'totalPrice': controllers.totalexpectedPriceController.text,
         'expectedPrice': '₹ ${controllers.expectedPriceController.text}/SQFT',
-        // 'allInclusivePrice': allInclusivePrice,
-        // 'taxExcluded': taxExcluded,
         'loanAvailable': loanAvailable,
         'propertyApproved': propertyApproved,
         'reraApproved': reraApproved,
@@ -116,7 +111,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
         'createdAt': FieldValue.serverTimestamp(),
         'length': controllers.lengthController.text,
         'breadth': controllers.widthAreaController.text,
-        'noOfOpenSides': controllers.noOfOpenSidesController
+        'noOfOpenSides': controllers.noOfOpenSidesController.text,
       });
       String docId = newPropertyRef.id;
       ScaffoldMessenger.of(context).showSnackBar(
