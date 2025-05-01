@@ -139,7 +139,6 @@ class _PropertyCardState extends State<PropertyCard> {
                         ),
                       ),
                       Text(
-                        
                         '${widget.plotArea} - ${widget.propertyType}',
                         style: TextStyle(
                           fontSize: 14,
