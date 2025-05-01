@@ -53,6 +53,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   onPressed: () => scaffoldKey.currentState?.openDrawer(),
                 ),
+
+                 IconButton(
+                  icon: Image.asset(
+                    'assets/icons/logoh1.png',
+                    height: screenSize.width * 0.04,
+                  ),
+                  onPressed: () => scaffoldKey.currentState?.openDrawer(),
+                ),
                 Row(
                   children: [
                     if (showListPropertyButton)

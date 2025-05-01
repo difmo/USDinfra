@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "C:/development/flutter_works/USDinfra/linux"
+    "cmake.sourceDirectory": "C:/development/flutter_works/USDinfra/linux",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

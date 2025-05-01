@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:usdinfra/Bottom/bottom_navigation.dart';
+import 'package:usdinfra/Components/home_services_section.dart';
 import 'package:usdinfra/Customs/custom_app_bar.dart';
 import 'package:usdinfra/Property_Pages_form/properties_detail_page.dart';
 import 'package:usdinfra/Userpages/dash_bordP2.dart';
-import 'package:usdinfra/Userpages/dummy_profile.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
@@ -168,18 +168,71 @@ class _HomeDashBoard extends State<HomeDashBoard> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-
+    double cardWidth = MediaQuery.of(context).size.width * 0.6;
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
-        appBar: CustomAppBar(scaffoldKey: _scaffoldKey),
         drawer: CustomDrawer(),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 10,),
+              CustomAppBar(scaffoldKey: _scaffoldKey),
+              Container(
+                padding: EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                      onTap: () =>
+                          {Navigator.pushNamed(context, AppRouts.properties)},
+                      child: Container(
+                        padding: EdgeInsets.only(
+                            left: 32, right: 32, top: 4, bottom: 4),
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: Colors.blue),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(16))),
+                        child: Row(
+                          children: [
+                            Icon(Icons.home, size: 22, color: Colors.blue),
+                            SizedBox(width: 6),
+                            Text("Buy",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => {
+                        Navigator.pushNamed(context, AppRouts.propertyform1)
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(
+                            left: 32, right: 32, top: 4, bottom: 4),
+                        decoration: BoxDecoration(
+                            border:
+                                Border.all(width: 1, color: AppColors.primary),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(16))),
+                        child: Row(
+                          children: [
+                            Icon(Icons.sell, size: 22, color: Colors.red),
+                            SizedBox(width: 6),
+                            Text("Sell",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 10),
               Container(
                 height: screenHeight * 0.28,
                 child: const Carousel(),
@@ -189,10 +242,10 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                     Padding(
+                    Padding(
                       padding: EdgeInsets.only(left: 9),
                       child: Text(
-                        'Propertiess',
+                        'Properties',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -238,7 +291,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                         child: Text('No properties available'),
                       );
                     }
-      
+
                     final List<Future<Map<String, dynamic>>> futureProperties =
                         snapshot.data!.docs.map((doc) async {
                       final data = doc.data() as Map<String, dynamic>? ?? {};
@@ -252,34 +305,35 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                           subCollectionSnapshot.docs.map((subDoc) {
                         return subDoc.data();
                       }).toList();
-      
-                      final createdAtTimestamp = data['createdAt'] as Timestamp?;
+
+                      final createdAtTimestamp =
+                          data['createdAt'] as Timestamp?;
                       final DateTime createdAtDate =
                           createdAtTimestamp?.toDate() ?? DateTime.now();
                       final int daysAgo =
                           DateTime.now().difference(createdAtDate).inDays;
                       final String createdAtString =
                           daysAgo > 0 ? '$daysAgo days' : 'Today';
-      
+
                       return {
                         'id': doc.id,
                         // ?[0]
-                        'imageUrl': data['imageUrl']?[0]??
+                        'imageUrl': data['imageUrl']?[0] ??
                             'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
                         'expectedPrice': data['expectedPrice'] ?? '₹ 80 Lac',
                         'plotArea': data['plotArea'] ?? '1850 Sqft',
                         'propertyType': data['propertyType'] ?? '2 BHK Flat',
-                        'city':
-                            data['city'] ?? 'Sector 10 Greater Noida West',
+                        'city': data['city'] ?? 'Sector 10 Greater Noida West',
                         'createdAt': createdAtString,
                         'title': data['title'] ?? 'Godrej Aristocrat',
                         'propertyStatus':
                             data['availabilityStatus'] ?? 'Ready to move',
-                        'contactDetails': data['contactDetails'] ?? '8875673210',
+                        'contactDetails':
+                            data['contactDetails'] ?? '8875673210',
                         'form1Data': form1DataList,
                       };
                     }).toList();
-      
+
                     return FutureBuilder<List<Map<String, dynamic>>>(
                       future: Future.wait(futureProperties),
                       builder: (context, asyncSnapshot) {
@@ -306,9 +360,9 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                             ),
                           ));
                         }
-      
+
                         final properties = asyncSnapshot.data!;
-      
+
                         return SingleChildScrollView(
                           scrollDirection:
                               Axis.horizontal, // Enable horizontal scrolling
@@ -316,7 +370,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                             children: properties.map((property) {
                               bool isFavorite =
                                   favoriteProperties.contains(property['id']);
-      
+
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.push(
@@ -328,7 +382,8 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                                   );
                                 },
                                 child: Container(
-                                  width: MediaQuery.of(context).size.width * 0.93,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.93,
                                   margin: const EdgeInsets.only(right: 8),
                                   child: Stack(
                                     children: [
@@ -339,7 +394,8 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                                           expectedPrice:
                                               property['expectedPrice'],
                                           plotArea: property['plotArea'],
-                                          propertyType: property['propertyType'],
+                                          propertyType:
+                                              property['propertyType'],
                                           city: property['city'],
                                           createdAt: property['createdAt'],
                                           title: property['title'],
@@ -347,7 +403,6 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                                               property['propertyStatus'],
                                           contactDetails:
                                               property['contactDetails'],
-                                          
                                         ),
                                       ),
                                       Positioned(
@@ -379,6 +434,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                   },
                 ),
               ),
+            HomeServicesSection(),
               // Container(
               //   height: screenHeight * 0.26,
               //   child: RatingSection(),
@@ -414,27 +470,28 @@ class _HomeDashBoard extends State<HomeDashBoard> {
     );
   }
 
-  Widget _shimmerLoading() {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: Column(
-        children: List.generate(5, (index) => _shimmerItem()),
-      ),
-    );
   }
 
-  Widget _shimmerItem() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
-        width: double.infinity,
-        height: 100,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
+Widget _shimmerLoading() {
+  return Shimmer.fromColors(
+    baseColor: Colors.grey[300]!,
+    highlightColor: Colors.grey[100]!,
+    child: Column(
+      children: List.generate(5, (index) => _shimmerItem()),
+    ),
+  );
+}
+
+Widget _shimmerItem() {
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Container(
+      width: double.infinity,
+      height: 100,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
       ),
-    );
-  }
+    ),
+  );
 }
