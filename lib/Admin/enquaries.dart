@@ -5,6 +5,8 @@ import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
 class AdminEnquiriesPage extends StatefulWidget {
+  const AdminEnquiriesPage({super.key});
+
   @override
   _AdminEnquiriesPageState createState() => _AdminEnquiriesPageState();
 }
@@ -50,20 +52,17 @@ class _AdminEnquiriesPageState extends State<AdminEnquiriesPage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-              "Inquiry deleted successfully!",
-              style: TextStyle(
-                fontFamily: AppFontFamily.primaryFont,
-              ),
-            ),
-            backgroundColor: Colors.red),
+        const SnackBar(
+          content: Text("Inquiry deleted successfully!"),
+          backgroundColor: Colors.red,
+        ),
       );
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text("Failed to delete inquiry: $error"),
-            backgroundColor: Colors.red),
+          content: Text("Failed to delete inquiry: $error"),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -80,160 +79,106 @@ class _AdminEnquiriesPageState extends State<AdminEnquiriesPage> {
         },
       ),
       body: isLoading
-          //     ? ListView.builder(
-          //   itemCount: 5, // Show 5 shimmer placeholders
-          //   itemBuilder: (context, index) {
-          //     return Shimmer.fromColors(
-          //       baseColor: Colors.grey[300]!,
-          //       highlightColor: Colors.grey[100]!,
-          //       child: Padding(
-          //         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          //         child: Container(
-          //           // color: Colors.white,
-          //           decoration: BoxDecoration(
-          //             border: Border.all(color: Colors.black12,
-          //                 width: 0.5),
-          //             borderRadius: BorderRadius.circular(10),
-          //           ),
-          //           child: Padding(
-          //             padding: EdgeInsets.all(12),
-          //             child: Column(
-          //               crossAxisAlignment: CrossAxisAlignment.start,
-          //               children: [
-          //                 Container(
-          //                   height: 10,
-          //                   width: 100,
-          //                   color: Colors.white,
-          //                 ),
-          //                 SizedBox(height: 10),
-          //                 Container(
-          //                   height: 12,
-          //                   color: Colors.white,
-          //                 ),
-          //                 SizedBox(height: 8),
-          //                 Container(
-          //                   height: 12,
-          //                   color: Colors.white,
-          //                 ),
-          //                 SizedBox(height: 10),
-          //                 Container(
-          //                   height: 12,
-          //                   color: Colors.white,
-          //                 ),
-          //                 SizedBox(height: 10),
-          //                 Row(
-          //                   mainAxisAlignment: MainAxisAlignment.end,
-          //                   children: [
-          //                     Container(
-          //                       height: 20,
-          //                       width: 50,
-          //                       color: Colors.white,
-          //                     ),
-          //                   ],
-          //                 ),
-          //               ],
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     );
-          //   },
-          // )
-          //     : enquiriesList.isEmpty
-          ? Center(
-              child: Text(
-              "No enquiries available",
-              style: TextStyle(
-                fontFamily: AppFontFamily.primaryFont,
-              ),
-            ))
-          : ListView.builder(
-              itemCount: enquiriesList.length,
-              itemBuilder: (context, index) {
-                var enquiry = enquiriesList[index];
-                String enquiryId = enquiry["id"];
-                String name = enquiry["name"] ?? "Unknown Name";
-                String email = enquiry["email"] ?? "No Email";
-                String mobile = enquiry["mobile"] ?? "No Phone";
-                String message = enquiry["message"] ?? "No Message";
-                Timestamp? createdAtTimestamp =
-                    enquiry["createdAt"] as Timestamp?;
-                DateTime createdAt = createdAtTimestamp != null
-                    ? createdAtTimestamp.toDate()
-                    : DateTime.now();
-                String formattedDate =
-                    "${createdAt.day}/${createdAt.month}/${createdAt.year}";
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : enquiriesList.isEmpty
+              ? const Center(
+                  child: Text("No enquiries available"),
+                )
+              : ListView.builder(
+                  itemCount: enquiriesList.length,
+                  itemBuilder: (context, index) {
+                    var enquiry = enquiriesList[index];
+                    String enquiryId = enquiry["id"];
+                    String name = enquiry["name"] ?? "Unknown Name";
+                    String email = enquiry["email"] ?? "No Email";
+                    String mobile = enquiry["mobile"] ?? "No Phone";
+                    String message = enquiry["message"] ?? "No Message";
+                    String serviceType =
+                        enquiry["serviceName"] ?? "General Inquiry";
+                    Timestamp? createdAtTimestamp =
+                        enquiry["timestamp"] as Timestamp?;
+                    DateTime createdAt = createdAtTimestamp != null
+                        ? createdAtTimestamp.toDate()
+                        : DateTime.now();
+                    String formattedDate =
+                        "${createdAt.day}/${createdAt.month}/${createdAt.year}";
 
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Container(
-                    // color: Colors.white,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black12, width: 0.5),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 2,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Name: $name",
+                              // Header Row with Title and Delete
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      "Service: $serviceType",
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete,
+                                        color: Colors.red),
+                                    onPressed: () => _deleteEnquiry(enquiryId),
+                                  ),
+                                ],
+                              ),
+                              const Divider(),
+                              // User Details
+                              Text("👤 Name: $name",
+                                  style: const TextStyle(fontSize: 14)),
+                              Text("✉️ Email: $email",
+                                  style: const TextStyle(fontSize: 14)),
+                              Text("📞 Phone: $mobile",
+                                  style: const TextStyle(fontSize: 14)),
+                              const SizedBox(height: 10),
+                              // Message Section
+                              const Text(
+                                "📝 Message:",
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  fontFamily: AppFontFamily.primaryFont,
                                 ),
                               ),
-                              IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () => _deleteEnquiry(enquiryId),
+                              Text(
+                                message,
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                              const SizedBox(height: 10),
+                              // Date at the bottom right
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: Text(
+                                  "📅 Date: $formattedDate",
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 5),
-                          Text("Email: $email",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: AppFontFamily.primaryFont,
-                              )),
-                          Text("Phone: $mobile",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: AppFontFamily.primaryFont,
-                              )),
-                          SizedBox(height: 10),
-                          Text("Message:",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: AppFontFamily.primaryFont,
-                              )),
-                          Text(message,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: AppFontFamily.primaryFont,
-                              )),
-                          SizedBox(height: 10),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Text("Date: $formattedDate",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                  fontFamily: AppFontFamily.primaryFont,
-                                )),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
     );
   }
 }

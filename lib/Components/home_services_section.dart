@@ -1,129 +1,116 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'inquiry_form.dart';
 
-class HomeServicesSection extends StatelessWidget {
+class HomeServicesSection extends StatefulWidget {
+  const HomeServicesSection({super.key});
+
+  @override
+  State<HomeServicesSection> createState() => _HomeServicesSectionState();
+}
+
+class _HomeServicesSectionState extends State<HomeServicesSection> {
+  final List<String> sliderImages = [
+    "assets/images/slide1.jpeg",
+    "assets/images/slide2.jpeg",
+    "assets/images/slide3.jpeg",
+  ];
+
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+  late Timer _autoSlideTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _autoSlideTimer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+      if (_currentPage < sliderImages.length - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+      _pageController.animateToPage(
+        _currentPage,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _autoSlideTimer.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    double cardWidth = MediaQuery.of(context).size.width * 0.7;
-
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// Title Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          const Text(
+            "Everything you need at services",
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 24),
+          GridView.count(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            crossAxisCount: 2,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
             children: [
-              Text(
-                "Home Services",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ServiceItem(
+                title: "Home Painting",
+                imagePath: "assets/images/home_painting.jpeg",
+                borderColor: Colors.orange,
               ),
-              Text(
-                "See All",
-                style: TextStyle(
-                    fontSize: 14, color: Colors.green, fontWeight: FontWeight.w600),
-              )
+              ServiceItem(
+                title: "Home Loan",
+                imagePath: "assets/images/home_loan.jpeg",
+                borderColor: Colors.blue,
+              ),
+              ServiceItem(
+                title: "Construction",
+                imagePath: "assets/images/construction.jpeg",
+                borderColor: Colors.orange,
+              ),
+              ServiceItem(
+                title: "Legal",
+                imagePath: "assets/images/legal.jpeg",
+                borderColor: Colors.blue,
+              ),
             ],
           ),
-          SizedBox(height: 16),
-
-          /// Top Horizontal Cards
-          // SizedBox(
-          //   height: 160,
-          //   child: ListView(
-          //     scrollDirection: Axis.horizontal,
-          //     children: [
-          //       TopServiceCard(
-          //         width: cardWidth,
-          //         imageUrl: 'https://via.placeholder.com/300x160',
-          //         title: "Packers & Movers",
-          //         offer: "UPTO 20% OFF",
-          //       ),
-          //       SizedBox(width: 12),
-          //       TopServiceCard(
-          //         width: cardWidth,
-          //         imageUrl: 'https://via.placeholder.com/300x160',
-          //         title: "AC Service & Repair",
-          //         offer: "UPTO 20% OFF",
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          // SizedBox(height: 24),
-
-          /// Grid-style services
-          Wrap(
-            spacing: 16,
-            runSpacing: 16,
-            children: [
-              ServiceItem(title: "Home Cleaning", icon: Icons.cleaning_services),
-              ServiceItem(title: "Home Painting", icon: Icons.format_paint),
-              ServiceItem(title: "Legal Service", icon: Icons.assignment),
-              ServiceItem(title: "Interier Design", icon: Icons.payments),
-            ],
+          const SizedBox(height: 24),
+          const Text(
+            "New Launches",
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 180,
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: sliderImages.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    image: DecorationImage(
+                      image: AssetImage(sliderImages[index]),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class TopServiceCard extends StatelessWidget {
-  final double width;
-  final String imageUrl;
-  final String title;
-  final String offer;
-
-  const TopServiceCard({
-    required this.width,
-    required this.imageUrl,
-    required this.title,
-    required this.offer,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      margin: EdgeInsets.only(right: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        image: DecorationImage(image: NetworkImage(imageUrl), fit: BoxFit.cover),
-      ),
-      child: Container(
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            colors: [Colors.black.withOpacity(0.6), Colors.transparent],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-          ),
-        ),
-        alignment: Alignment.bottomLeft,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600)),
-            SizedBox(height: 6),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                offer,
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -131,32 +118,50 @@ class TopServiceCard extends StatelessWidget {
 
 class ServiceItem extends StatelessWidget {
   final String title;
-  final IconData icon;
+  final String imagePath;
+  final Color borderColor;
 
-  const ServiceItem({required this.title, required this.icon});
+  const ServiceItem({
+    super.key,
+    required this.title,
+    required this.imagePath,
+    required this.borderColor,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 170,
-      height: 120,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(color: Colors.grey.withOpacity(0.2), blurRadius: 6, offset: Offset(0, 3)),
-        ],
-        border: Border.all(color: Colors.grey.shade200),
-      ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => InquiryForm(serviceName: title),
+          ),
+        );
+      },
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 32, color: Colors.deepOrange),
-          SizedBox(height: 10),
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: borderColor, width: 2),
+              image: DecorationImage(
+                image: AssetImage(imagePath),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
           Text(
             title,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.black87,
+            ),
           ),
         ],
       ),

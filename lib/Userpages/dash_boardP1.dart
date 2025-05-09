@@ -238,7 +238,7 @@
 //                         child: Text('No properties available'),
 //                       );
 //                     }
-      
+
 //                     final List<Future<Map<String, dynamic>>> futureProperties =
 //                         snapshot.data!.docs.map((doc) async {
 //                       final data = doc.data() as Map<String, dynamic>? ?? {};
@@ -252,7 +252,7 @@
 //                           subCollectionSnapshot.docs.map((subDoc) {
 //                         return subDoc.data();
 //                       }).toList();
-      
+
 //                       final createdAtTimestamp = data['createdAt'] as Timestamp?;
 //                       final DateTime createdAtDate =
 //                           createdAtTimestamp?.toDate() ?? DateTime.now();
@@ -260,7 +260,7 @@
 //                           DateTime.now().difference(createdAtDate).inDays;
 //                       final String createdAtString =
 //                           daysAgo > 0 ? '$daysAgo days' : 'Today';
-      
+
 //                       return {
 //                         'id': doc.id,
 //                         // ?[0]
@@ -279,7 +279,7 @@
 //                         'form1Data': form1DataList,
 //                       };
 //                     }).toList();
-      
+
 //                     return FutureBuilder<List<Map<String, dynamic>>>(
 //                       future: Future.wait(futureProperties),
 //                       builder: (context, asyncSnapshot) {
@@ -306,9 +306,9 @@
 //                             ),
 //                           ));
 //                         }
-      
+
 //                         final properties = asyncSnapshot.data!;
-      
+
 //                         return SingleChildScrollView(
 //                           scrollDirection:
 //                               Axis.horizontal, // Enable horizontal scrolling
@@ -316,7 +316,7 @@
 //                             children: properties.map((property) {
 //                               bool isFavorite =
 //                                   favoriteProperties.contains(property['id']);
-      
+
 //                               return GestureDetector(
 //                                 onTap: () {
 //                                   Navigator.push(
@@ -347,7 +347,7 @@
 //                                               property['propertyStatus'],
 //                                           contactDetails:
 //                                               property['contactDetails'],
-                                          
+
 //                                         ),
 //                                       ),
 //                                       Positioned(
@@ -439,11 +439,10 @@
 //   }
 // }
 
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:usdinfra/Bottom/bottom_navigation.dart';
 import 'package:usdinfra/Components/home_services_section.dart';
@@ -480,10 +479,14 @@ class _HomeDashBoard extends State<HomeDashBoard> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       userId = user.uid;
-      final doc = await FirebaseFirestore.instance.collection("AppUsers").doc(userId).get();
+      final doc = await FirebaseFirestore.instance
+          .collection("AppUsers")
+          .doc(userId)
+          .get();
       if (doc.exists) {
         setState(() {
-          favoriteProperties = List<String>.from(doc.data()?['favoriteProperties'] ?? []);
+          favoriteProperties =
+              List<String>.from(doc.data()?['favoriteProperties'] ?? []);
         });
       }
     }
@@ -497,7 +500,8 @@ class _HomeDashBoard extends State<HomeDashBoard> {
     }
     if (userId == null) return;
 
-    final docRef = FirebaseFirestore.instance.collection("AppUsers").doc(userId);
+    final docRef =
+        FirebaseFirestore.instance.collection("AppUsers").doc(userId);
     bool isCurrentlyFavorite = favoriteProperties.contains(propertyId);
 
     setState(() {
@@ -528,7 +532,8 @@ class _HomeDashBoard extends State<HomeDashBoard> {
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
         title: const Text('You need to log in!'),
-        content: const Text('Please log in to add properties to your favorites.'),
+        content:
+            const Text('Please log in to add properties to your favorites.'),
         actions: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -537,19 +542,25 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                 onPressed: () => Navigator.of(context).pop(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.secondry,
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22)),
                 ),
-                child: const Text('Cancel', style: TextStyle(fontSize: 16, color: Colors.white)),
+                child: const Text('Cancel',
+                    style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pushNamed(context, AppRouts.login),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(22)),
                 ),
-                child: const Text('Log In', style: TextStyle(fontSize: 16, color: Colors.white)),
+                child: const Text('Log In',
+                    style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
             ],
           ),
@@ -562,7 +573,8 @@ class _HomeDashBoard extends State<HomeDashBoard> {
     setState(() => _selectedIndex = index);
     switch (index) {
       case 1:
-        Navigator.pushNamed(context, AppRouts.chat);
+        Navigator.pushNamed(context, AppRouts.properties);
+
         break;
       case 2:
         Navigator.pushNamed(context, AppRouts.propertyform1);
@@ -590,61 +602,60 @@ class _HomeDashBoard extends State<HomeDashBoard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomAppBar(scaffoldKey: _scaffoldKey),
-              Container(
-                padding: EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () =>
-                          {Navigator.pushNamed(context, AppRouts.properties)},
-                      child: Container(
-                        padding: EdgeInsets.only(
-                            left: 32, right: 32, top: 4, bottom: 4),
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: Colors.blue),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16))),
-                        child: Row(
-                          children: [
-                            Icon(Icons.home, size: 22, color: Colors.blue),
-                            SizedBox(width: 6),
-                            Text("Buy",
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => {
-                        Navigator.pushNamed(context, AppRouts.propertyform1)
-                      },
-                      child: Container(
-                        padding: EdgeInsets.only(
-                            left: 32, right: 32, top: 4, bottom: 4),
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(width: 1, color: AppColors.primary),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16))),
-                        child: Row(
-                          children: [
-                            Icon(Icons.sell, size: 22, color: Colors.red),
-                            SizedBox(width: 6),
-                            Text("Sell",
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Container(
+              //   padding: EdgeInsets.all(16),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //     children: [
+              //       GestureDetector(
+              //         onTap: () =>
+              //             {Navigator.pushNamed(context, AppRouts.properties)},
+              //         child: Container(
+              //           padding: EdgeInsets.only(
+              //               left: 32, right: 32, top: 4, bottom: 4),
+              //           decoration: BoxDecoration(
+              //               border: Border.all(width: 1, color: Colors.blue),
+              //               borderRadius:
+              //                   BorderRadius.all(Radius.circular(16))),
+              //           child: Row(
+              //             children: [
+              //               Icon(Icons.home, size: 22, color: Colors.blue),
+              //               SizedBox(width: 6),
+              //               Text("Buy",
+              //                   style: TextStyle(
+              //                       fontSize: 16, fontWeight: FontWeight.bold)),
+              //             ],
+              //           ),
+              //         ),
+              //       ),
+              //       GestureDetector(
+              //         onTap: () => {
+              //           Navigator.pushNamed(context, AppRouts.propertyform1)
+              //         },
+              //         child: Container(
+              //           padding: EdgeInsets.only(
+              //               left: 32, right: 32, top: 4, bottom: 4),
+              //           decoration: BoxDecoration(
+              //               border:
+              //                   Border.all(width: 1, color: AppColors.primary),
+              //               borderRadius:
+              //                   BorderRadius.all(Radius.circular(16))),
+              //           child: Row(
+              //             children: [
+              //               Icon(Icons.sell, size: 22, color: Colors.red),
+              //               SizedBox(width: 6),
+              //               Text("Sell",
+              //                   style: TextStyle(
+              //                       fontSize: 16, fontWeight: FontWeight.bold)),
+              //             ],
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
 
-              SizedBox(height: 10),
-              Container(
+              SizedBox(
                 height: screenHeight * 0.28,
                 child: const Carousel(),
               ),
@@ -656,7 +667,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                     Padding(
                       padding: EdgeInsets.only(left: 9),
                       child: Text(
-                        'Properties',
+                        'Best Selling Property',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -739,6 +750,10 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                         'title': data['title'] ?? 'Godrej Aristocrat',
                         'propertyStatus':
                             data['availabilityStatus'] ?? 'Ready to move',
+                        'propertyCategory': data['propertyCategory'] ?? 'Plat',
+                        'locality': data['locality'] ?? 'Lucknow',
+                        'totalPrice': data['totalPrice'] ?? '100000',
+
                         'contactDetails':
                             data['contactDetails'] ?? '8875673210',
                         'form1Data': form1DataList,
@@ -794,12 +809,12 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                                 },
                                 child: Container(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.93,
-                                  margin: const EdgeInsets.only(right: 8),
+                                      MediaQuery.of(context).size.width * 0.6,
+                                  margin: const EdgeInsets.only(right: 16),
                                   child: Stack(
                                     children: [
-                                      Container(
-                                        height: screenHeight * 0.28,
+                                      SizedBox(
+                                        height: screenHeight * 0.4,
                                         child: PropertyCard(
                                           imageUrl: property['imageUrl'],
                                           expectedPrice:
@@ -814,6 +829,10 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                                               property['propertyStatus'],
                                           contactDetails:
                                               property['contactDetails'],
+                                          location: property['locality'],
+                                          propertyCategory:
+                                              property['propertyCategory'],
+                                          totalPrice: property['totalPrice'],
                                         ),
                                       ),
                                       Positioned(
@@ -845,30 +864,54 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                   },
                 ),
               ),
-            HomeServicesSection(),
-              // Container(
-              //   height: screenHeight * 0.26,
-              //   child: RatingSection(),
-              // ),
-              Container(
-                height: screenHeight * 0.24,
-                child: PostPropertySection(),
-              ),
-              Container(
-                height: screenHeight * 0.3,
-                child: BossPlanSection(),
-              ),
-              Container(
-                height: screenHeight * 0.6,
-                child: PropertyOfferingsSection(),
-              ),
-              Container(
+              HomeServicesSection(),
+
+              SizedBox(
                 height: screenHeight * 0.24,
                 child: PopularCitiesSection(),
               ),
-              Container(
-                height: screenHeight * 0.27,
-                child: FeedbackSection(),
+              // SizedBox(
+              //   height: screenHeight * 0.27,
+              //   child: FeedbackSection(),
+              // ),
+
+              const SizedBox(height: 24),
+              // ============================
+              // ⭐ Rating System
+              // ============================
+              Center(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      child: const Text(
+                        "Rate this app",
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      child: RatingBar.builder(
+                        initialRating: 4,
+                        minRating: 1,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        itemCount: 5,
+                        itemBuilder: (context, _) => const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                        onRatingUpdate: (rating) {
+                          // Handle rating update here
+                          print("Rating: $rating");
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                  ],
+                ),
               ),
             ],
           ),
@@ -880,8 +923,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
       ),
     );
   }
-
-  }
+}
 
 Widget _shimmerLoading() {
   return Shimmer.fromColors(

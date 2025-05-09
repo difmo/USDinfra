@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final controllers = ControllersManager();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isLoading = false;
-  bool _ispasswordVisible = false;
+  final bool _ispasswordVisible = false;
 
   bool isValidEmail(String email) {
     return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")

@@ -17,6 +17,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(
         top: 8,
+        left: 8,
+        right: 8,
       ), // Added padding
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -51,34 +53,39 @@ class CustomBottomNavigationBar extends StatelessWidget {
             label: 'Home',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Responses',
-          ),
-          BottomNavigationBarItem(
-            icon: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.5),
-                    blurRadius: 8,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: const Icon(Icons.add, color: Colors.white, size: 32),
-            ),
-            label: '',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.workspace_premium),
-            label: 'Upgrade',
+            icon: Icon(Icons.shopping_cart),
+            label: 'Buy',
           ),
           const BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
+          ),
+          // BottomNavigationBarItem(
+          //   icon: Container(
+          //     padding: const EdgeInsets.all(8),
+          //     decoration: BoxDecoration(
+          //       color: AppColors.primary,
+          //       shape: BoxShape.circle,
+          //       boxShadow: [
+          //         BoxShadow(
+          //           color: AppColors.primary.withOpacity(0.5),
+          //           blurRadius: 8,
+          //           spreadRadius: 2,
+          //         ),
+          //       ],
+          //     ),
+          //     child: const Icon(Icons.add, color: Colors.white, size: 32),
+          //   ),
+          //   label: '',
+          // ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.offline_bolt_rounded),
+            label: 'Plan',
+          ),
+
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.favorite_border),
+            label: 'Favorites',
           ),
         ],
       ),

@@ -53,50 +53,80 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   onPressed: () => scaffoldKey.currentState?.openDrawer(),
                 ),
-
-                 IconButton(
-                  icon: Image.asset(
-                    'assets/icons/logoh1.png',
-                    height: screenSize.width * 0.04,
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  onPressed: () => scaffoldKey.currentState?.openDrawer(),
+                  child: Row(
+                    children: [
+                      Text("USD ",
+                          style: TextStyle(
+                            fontSize: screenSize.width * 0.05,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.primary,
+                            fontFamily: AppFontFamily.primaryFont,
+                          )),
+                      Text("Unique",
+                          style: TextStyle(
+                            fontSize: screenSize.width * 0.05,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.black,
+                            fontFamily: AppFontFamily.primaryFont,
+                          )),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 32),
                 Row(
                   children: [
                     if (showListPropertyButton)
                       Padding(
                         padding: EdgeInsets.only(left: screenSize.width * 0.02),
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                    context, AppRouts.propertyform1);
-                              },
-                              child: Text(
-                                'Post Property',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: screenSize.width * 0.04,
-                                  fontFamily: AppFontFamily.primaryFont,
-                                ),
-                              ),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, AppRouts.propertyform1);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: screenSize.width * 0.02,
+                              vertical: screenSize.width * 0.02,
                             ),
-                            if (showFreeBadge)
-                              _buildTextBadge("FREE", screenSize),
-                          ],
+                            decoration: BoxDecoration(
+                              color: AppColors.lightGrey.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Post Property ',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: screenSize.width * 0.03,
+                                    fontFamily: AppFontFamily.primaryFont,
+                                  ),
+                                ),
+                                Text(
+                                  'FREE ',
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: screenSize.width * 0.03,
+                                    fontFamily: AppFontFamily.primaryFont,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                    SizedBox(width: screenSize.width * 0.08),
                     Stack(
                       clipBehavior: Clip.none,
                       children: [
                         IconButton(
                           onPressed: () {
-                            Navigator.pushNamed(
-                                context, AppRouts.notification);
+                            Navigator.pushNamed(context, AppRouts.notification);
                           },
                           icon: Icon(
                             Icons.notifications_none_outlined,

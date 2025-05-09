@@ -7,6 +7,8 @@ import '../routes/app_routes.dart';
 import 'admin_bottom_nav.dart';
 
 class AdminPropertyPage extends StatefulWidget {
+  const AdminPropertyPage({super.key});
+
   @override
   _AdminPropertyPageState createState() => _AdminPropertyPageState();
 }
@@ -126,8 +128,7 @@ class _AdminPropertyPageState extends State<AdminPropertyPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          PropertyDetailPage(docId: docId),
+                      builder: (context) => PropertyDetailPage(docId: docId),
                     ),
                   );
                 },

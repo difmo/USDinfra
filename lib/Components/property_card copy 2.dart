@@ -16,24 +16,20 @@ class PropertyCard extends StatefulWidget {
   final String propertyStatus;
   final String contactDetails;
   final bool showButtons;
-  final String location;
-  final String propertyCategory;
-  final String totalPrice;
-  const PropertyCard(
-      {super.key,
-      required this.imageUrl,
-      required this.expectedPrice,
-      required this.plotArea,
-      required this.propertyType,
-      required this.city,
-      required this.createdAt,
-      required this.title,
-      required this.propertyStatus,
-      required this.contactDetails,
-      this.showButtons = true,
-      this.location = '',
-      this.propertyCategory = "",
-      this.totalPrice = '0.0'});
+
+  const PropertyCard({
+    super.key,
+    required this.imageUrl,
+    required this.expectedPrice,
+    required this.plotArea,
+    required this.propertyType,
+    required this.city,
+    required this.createdAt,
+    required this.title,
+    required this.propertyStatus,
+    required this.contactDetails,
+    this.showButtons = true,
+  });
 
   @override
   _PropertyCardState createState() => _PropertyCardState();
@@ -78,7 +74,11 @@ class _PropertyCardState extends State<PropertyCard> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
-        width: screenWidth * 0.6,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black12, width: 0.5),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -92,8 +92,8 @@ class _PropertyCardState extends State<PropertyCard> {
                       borderRadius: BorderRadius.circular(8),
                       child: Image.network(
                         widget.imageUrl,
-                        height: screenWidth * 0.4,
-                        width: screenWidth * 0.6,
+                        height: screenWidth * 0.3,
+                        width: screenWidth * 0.5,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -132,9 +132,25 @@ class _PropertyCardState extends State<PropertyCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 12),
                       Text(
-                        "${getShortTitle(widget.title)}",
+                        widget.expectedPrice,
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: AppFontFamily.primaryFont,
+                            color: Colors.black),
+                      ),
+                      Text(
+                        '${widget.plotArea} - ${widget.propertyType}',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                          fontFamily: AppFontFamily.primaryFont,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        getShortTitle(widget.title),
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -142,59 +158,82 @@ class _PropertyCardState extends State<PropertyCard> {
                         ),
                       ),
                       Text(
-                        "${widget.propertyCategory} in ${widget.location}",
+                        widget.city,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
                           fontFamily: AppFontFamily.primaryFont,
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                        formatPrice(widget.totalPrice),
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: AppFontFamily.primaryFont,
-                            color: Colors.black),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.check_circle,
+                              color: Colors.green, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            widget.propertyStatus,
+                            style: TextStyle(
+                              fontFamily: AppFontFamily.primaryFont,
+                            ),
+                          ),
+                        ],
                       ),
+                      const SizedBox(height: 12),
                     ],
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
+            // if (widget.showButtons)
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+            //     children: [
+            //       OutlinedButton(
+            //         onPressed: () => {
+            //           showDialog(
+            //             context: context,
+            //             builder: (BuildContext context) {
+            //               return ContactDetailDialog(
+            //                 phoneNumber: widget.contactDetails,
+            //               );
+            //             },
+            //           )
+            //         },
+            //         style: ButtonStyle(
+            //             side: WidgetStateProperty.all(
+            //                 BorderSide(color: AppColors.primary, width: 2)),
+            //             shape: WidgetStateProperty.all(RoundedRectangleBorder(
+            //               borderRadius: BorderRadius.circular(30.0),
+            //             ))),
+            //         child: Text('Get Phone No.',
+            //             style: TextStyle(
+            //               color: AppColors.primary,
+            //               fontFamily: AppFontFamily.primaryFont,
+            //             )),
+            //       ),
+            //       ElevatedButton(
+            //         style: ElevatedButton.styleFrom(
+            //           backgroundColor: AppColors.primary,
+            //           shape: RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.circular(20),
+            //           ),
+            //         ),
+            //         onPressed: _callOwner, // Calls the owner directly
+            //         child: Text(
+            //           'Contact Owner',
+            //           style: TextStyle(
+            //             color: Colors.white,
+            //             fontFamily: AppFontFamily.primaryFont,
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
           ],
         ),
       ),
     );
-  }
-
-  String formatPrice(dynamic value) {
-    if (value == null) return "N/A";
-
-    double price = 0.0;
-
-    try {
-      if (value is String) {
-        // Remove commas before parsing
-        value = value.replaceAll(",", "");
-        price = double.parse(value);
-      } else if (value is int || value is double) {
-        price = value.toDouble();
-      } else {
-        return "N/A";
-      }
-    } catch (e) {
-      return "N/A";
-    }
-
-    if (price >= 10000000) {
-      return "₹${(price / 10000000).toStringAsFixed(2)} Cr";
-    } else if (price >= 100000) {
-      return "₹${(price / 100000).toStringAsFixed(2)} Lac";
-    } else {
-      return "₹${price.toStringAsFixed(0)}";
-    }
   }
 }

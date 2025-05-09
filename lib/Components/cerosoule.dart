@@ -24,8 +24,8 @@ class _CarouselExampleState extends State<Carousel> {
           // Image
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              'https://www.indiafilings.com/learn/wp-content/uploads/2015/10/Real-Estate-Agent-Business-India.jpg',
+            child: Image.asset(
+              'assets/images/first.jpeg', // Replace with your local image path
               fit: BoxFit.cover,
               height: 200,
               width: double.infinity,
@@ -54,7 +54,8 @@ class _CarouselExampleState extends State<Carousel> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 child: Row(
                   children: [
                     Icon(Icons.search, color: Colors.grey),

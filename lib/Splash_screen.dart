@@ -16,32 +16,32 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-  super.initState();
-  Timer(const Duration(seconds: 3), () async {
-    User? user = FirebaseAuth.instance.currentUser;
-    
-    if (user != null) {
-      // Fetch user role from Firestore
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
+    super.initState();
+    Timer(const Duration(seconds: 3), () async {
+      User? user = FirebaseAuth.instance.currentUser;
 
-      if (userDoc.exists) {
-        String role = userDoc['role'];
-        if (role == "isAdmin") {
-          Navigator.pushReplacementNamed(context, AppRouts.adminProperty);
-        } else if (role == "isUser") {
+      if (user != null) {
+        // Fetch user role from Firestore
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists) {
+          String role = userDoc['role'];
+          if (role == "isAdmin") {
+            Navigator.pushReplacementNamed(context, AppRouts.adminProperty);
+          } else if (role == "isUser") {
+            Navigator.pushReplacementNamed(context, AppRouts.dashBoard);
+          }
+        } else {
           Navigator.pushReplacementNamed(context, AppRouts.dashBoard);
         }
       } else {
         Navigator.pushReplacementNamed(context, AppRouts.dashBoard);
       }
-    } else {
-      Navigator.pushReplacementNamed(context, AppRouts.dashBoard);
-    }
-  });
-}
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             const SizedBox(height: 10),
-             Text(
+            Text(
               "Your Gateway to Unique Properties & Builders.",
               style: TextStyle(
                 fontSize: 16,

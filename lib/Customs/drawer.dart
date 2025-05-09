@@ -181,12 +181,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
     );
   }
 
-  Widget _buildDefaultHeader(bool _buildShimmerLoading) {
+  Widget _buildDefaultHeader(bool buildShimmerLoading) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       decoration: BoxDecoration(color: Colors.grey[100]),
-      child: _buildShimmerLoading
+      child: buildShimmerLoading
           ? const Center(child: CircularProgressIndicator(color: Colors.white))
           : Column(
               children: [

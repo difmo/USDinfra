@@ -127,7 +127,7 @@ class ContactUsScreen extends StatelessWidget {
   }
 
   Widget _contactForm(context) {
-    void _sendMessage(
+    void sendMessage(
       BuildContext context,
       String name,
       String email,
@@ -152,6 +152,7 @@ class ContactUsScreen extends StatelessWidget {
       }
       try {
         await FirebaseFirestore.instance.collection("AppContacts").add({
+          'serviceName': "Contact Us",
           'name': name,
           'email': email,
           'mobile': mobile,
@@ -208,7 +209,7 @@ class ContactUsScreen extends StatelessWidget {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              _sendMessage(
+              sendMessage(
                 context,
                 controllers.nameController.text,
                 controllers.emailController.text,

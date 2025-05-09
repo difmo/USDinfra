@@ -13,9 +13,9 @@ class FormTextField extends StatefulWidget {
   final bool isEditable; // ✅ New parameter
 
   const FormTextField({
-    Key? key,
+    super.key,
     required this.hint,
-     this.controller,
+    this.controller,
     this.validator,
     this.minLength,
     this.maxLength,
@@ -23,7 +23,7 @@ class FormTextField extends StatefulWidget {
     this.maxLines = 1,
     this.borderRadius,
     this.isEditable = true, // ✅ Default editable
-  }) : super(key: key);
+  });
 
   @override
   _FormTextFieldState createState() => _FormTextFieldState();
@@ -46,7 +46,9 @@ class _FormTextFieldState extends State<FormTextField> {
         readOnly: !widget.isEditable, // ✅ Make it non-editable if needed
         style: TextStyle(
           fontFamily: AppFontFamily.primaryFont,
-          color: widget.isEditable ? Colors.black : Colors.grey[600], // optional color change
+          color: widget.isEditable
+              ? Colors.black
+              : Colors.grey[600], // optional color change
         ),
         decoration: InputDecoration(
           hintText: widget.hint,
@@ -61,7 +63,8 @@ class _FormTextFieldState extends State<FormTextField> {
           ),
           filled: true,
           fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         ),
         onChanged: (value) {
           if (!widget.isEditable) return; // ✅ Prevent validation if read-only
@@ -70,10 +73,14 @@ class _FormTextFieldState extends State<FormTextField> {
             if (widget.validator != null) {
               errorMessage = widget.validator!(value) ?? '';
             } else {
-              if (widget.minLength != null && value.length < widget.minLength!) {
-                errorMessage = 'Minimum ${widget.minLength} characters required.';
-              } else if (widget.maxLength != null && value.length > widget.maxLength!) {
-                errorMessage = 'Maximum ${widget.maxLength} characters allowed.';
+              if (widget.minLength != null &&
+                  value.length < widget.minLength!) {
+                errorMessage =
+                    'Minimum ${widget.minLength} characters required.';
+              } else if (widget.maxLength != null &&
+                  value.length > widget.maxLength!) {
+                errorMessage =
+                    'Maximum ${widget.maxLength} characters allowed.';
               } else {
                 errorMessage = '';
               }
