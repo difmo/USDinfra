@@ -34,7 +34,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         currentIndex: currentIndex,
         onTap: onTap,
         backgroundColor: Colors.white,
-        selectedItemColor: AppColors.primary,
+        selectedItemColor: const Color.fromARGB(255, 36, 4, 219),
         unselectedItemColor: Colors.black,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
@@ -60,29 +60,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Container(
-          //     padding: const EdgeInsets.all(8),
-          //     decoration: BoxDecoration(
-          //       color: AppColors.primary,
-          //       shape: BoxShape.circle,
-          //       boxShadow: [
-          //         BoxShadow(
-          //           color: AppColors.primary.withOpacity(0.5),
-          //           blurRadius: 8,
-          //           spreadRadius: 2,
-          //         ),
-          //       ],
-          //     ),
-          //     child: const Icon(Icons.add, color: Colors.white, size: 32),
-          //   ),
-          //   label: '',
-          // ),
           const BottomNavigationBarItem(
             icon: Icon(Icons.offline_bolt_rounded),
             label: 'Plan',
           ),
-
           const BottomNavigationBarItem(
             icon: Icon(Icons.favorite_border),
             label: 'Favorites',

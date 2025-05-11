@@ -53,7 +53,7 @@ class _AllPropertiesState extends State<AllProperties> {
         child: Scaffold(
             backgroundColor: Colors.white,
             appBar: CustomAppBar(
-              title: 'All Propertiess',
+              title: 'All Properties',
             ),
             body: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),

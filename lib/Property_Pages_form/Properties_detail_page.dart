@@ -22,17 +22,6 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
   bool hasError = false;
   int _currentIndex = 0;
 
-  final Map<String, String> propertyDetails = {
-    'Ownership': 'Freehold',
-    'Super Area': '1000 sq.ft.\n92.9 sq.m.',
-    'Length': '40 ft.\n12.19 m.',
-    'Breadth': '25 ft.\n7.62 m.',
-    'Approved By*': 'Local Authority\n(As provided by dealer)',
-    'Facing': 'East',
-    'Boundary wall': 'Yes',
-    'Property ID': 'Y80700923',
-    'No. of Open Sides': '2',
-  };
   final String phoneNumber = "9876543210"; // Replace with actual number
   final String whatsappNumber = "9876543210"; // Include country code if needed
 
@@ -402,32 +391,22 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ...propertyDetails.entries.map((entry) => Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 16.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      entry.key,
-                                      style: const TextStyle(fontSize: 12),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      entry.value,
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )),
+                        propertyDetailRow('Ownership',
+                            '${propertyData?['ownershipType'] ?? 'N/A'}'),
+                        propertyDetailRow('Super Area',
+                            '${propertyData?['plotArea'] ?? 'N/A'} sqft'),
+                        propertyDetailRow(
+                            'Length', '${propertyData?['length'] ?? 'N/A'} Ft'),
+                        propertyDetailRow('Breadth',
+                            '${propertyData?['breadth'] ?? 'N/A'} Ft'),
+                        propertyDetailRow('Property Approved',
+                            '${propertyData?['propertyApproved'] ?? 'N/A'}'),
+                        propertyDetailRow(
+                            'facing', '${propertyData?['facing'] ?? 'N/A'}'),
+                        propertyDetailRow('No. of Open Sides',
+                            '${propertyData?['noOfOpenSides'] ?? 'N/A'}'),
                       ],
                     ),
                   ),
@@ -699,6 +678,33 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
               const Icon(Icons.vertical_align_top_rounded),
               Text("${propertyData?['plotArea'] ?? 'N/A'} sqft")
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget propertyDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),

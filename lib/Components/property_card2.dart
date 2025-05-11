@@ -143,13 +143,13 @@ class _PropertyCardState extends State<PropertyCard2> {
                         fontSize: 12,
                       ),
                     ),
-                    IconButton(
-                      onPressed: _toggleFavorite,
-                      icon: Icon(
-                        isFavorited ? Icons.favorite : Icons.favorite_border,
-                        color: isFavorited ? Colors.red : Colors.grey,
-                      ),
-                    )
+                    // IconButton(
+                    //   onPressed: _toggleFavorite,
+                    //   icon: Icon(
+                    //     isFavorited ? Icons.favorite : Icons.favorite_border,
+                    //     color: isFavorited ? Colors.red : Colors.grey,
+                    //   ),
+                    // )
                   ],
                 ),
               ],
