@@ -5,6 +5,8 @@ import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
 class SoldPropertiesPage extends StatefulWidget {
+  const SoldPropertiesPage({super.key});
+
   @override
   _SoldPropertiesPageState createState() => _SoldPropertiesPageState();
 }

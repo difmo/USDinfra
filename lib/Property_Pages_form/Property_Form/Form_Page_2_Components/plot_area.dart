@@ -9,12 +9,12 @@ class PlotAreaInputField extends StatelessWidget {
   final ValueChanged<String?> onUnitChanged;
 
   const PlotAreaInputField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.selectedUnit,
     required this.units,
     required this.onUnitChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -77,8 +77,7 @@ class PlotAreaInputField extends StatelessWidget {
                       decoration:
                           const InputDecoration.collapsed(hintText: 'Unit'),
                       isExpanded: true,
-                      style:
-                          const TextStyle(fontSize: 16, color: Colors.black),
+                      style: const TextStyle(fontSize: 16, color: Colors.black),
                       borderRadius: BorderRadius.circular(25),
                     ),
                   ),

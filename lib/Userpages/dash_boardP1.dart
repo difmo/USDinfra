@@ -656,8 +656,14 @@ class _HomeDashBoard extends State<HomeDashBoard> {
               // ),
 
               SizedBox(
-                height: screenHeight * 0.28,
+                height: 250,
                 child: const Carousel(),
+              ),
+              SizedBox(
+                height:
+                    MediaQuery.of(context).orientation == Orientation.portrait
+                        ? 24 // If the screen is in portrait mode, height is 300
+                        : 25,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -680,7 +686,10 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                         Navigator.pushNamed(context, AppRouts.properties);
                       },
                       child: Text(
-                        'View All',
+                        MediaQuery.of(context).orientation ==
+                                Orientation.portrait
+                            ? 'View All'
+                            : "View All",
                         style: TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.bold,
@@ -814,7 +823,11 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                                   child: Stack(
                                     children: [
                                       SizedBox(
-                                        height: screenHeight * 0.4,
+                                        height: MediaQuery.of(context)
+                                                    .orientation ==
+                                                Orientation.portrait
+                                            ? 300 // If the screen is in portrait mode, height is 300
+                                            : 500,
                                         child: PropertyCard(
                                           imageUrl: property['imageUrl'],
                                           expectedPrice:
@@ -867,7 +880,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
               HomeServicesSection(),
 
               SizedBox(
-                height: screenHeight * 0.24,
+                height: 200,
                 child: PopularCitiesSection(),
               ),
               // SizedBox(

@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
 class Validators {
-
   String? contactValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your contact details';
     }
     if (!RegExp(r'^[0-9]{10}$').hasMatch(value) &&
-        !RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(value)) {
+        !RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+            .hasMatch(value)) {
       return 'Enter a valid phone number or email';
     }
     return null;
@@ -16,8 +15,7 @@ class Validators {
     if (value == null || value.isEmpty) {
       return 'Please enter your email';
     }
-    String emailPattern =
-        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+    String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
     RegExp regExp = RegExp(emailPattern);
     if (!regExp.hasMatch(value)) {
       return 'Please enter a valid email address';
@@ -37,6 +35,4 @@ class Validators {
     }
     return null;
   }
-
-
 }

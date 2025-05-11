@@ -66,22 +66,22 @@ class _HomeServicesSectionState extends State<HomeServicesSection> {
               ServiceItem(
                 title: "Home Painting",
                 imagePath: "assets/images/home_painting.jpeg",
-                borderColor: Colors.orange,
+                borderColor: Color.fromARGB(255, 247, 113, 3),
               ),
               ServiceItem(
                 title: "Home Loan",
                 imagePath: "assets/images/home_loan.jpeg",
-                borderColor: Colors.blue,
+                borderColor: Color.fromARGB(255, 27, 3, 247),
               ),
               ServiceItem(
                 title: "Construction",
                 imagePath: "assets/images/construction.jpeg",
-                borderColor: Colors.orange,
+                borderColor: Color.fromARGB(255, 247, 113, 3),
               ),
               ServiceItem(
                 title: "Legal",
                 imagePath: "assets/images/legal.jpeg",
-                borderColor: Colors.blue,
+                borderColor: Color.fromARGB(255, 27, 3, 247),
               ),
             ],
           ),
@@ -92,7 +92,7 @@ class _HomeServicesSectionState extends State<HomeServicesSection> {
           ),
           const SizedBox(height: 16),
           SizedBox(
-            height: 180,
+            height: 200,
             child: PageView.builder(
               controller: _pageController,
               itemCount: sliderImages.length,

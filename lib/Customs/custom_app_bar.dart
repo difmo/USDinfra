@@ -63,14 +63,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                           style: TextStyle(
                             fontSize: screenSize.width * 0.05,
                             fontWeight: FontWeight.w900,
-                            color: AppColors.primary,
+                            color: Color.fromARGB(255, 247, 113, 3),
                             fontFamily: AppFontFamily.primaryFont,
                           )),
                       Text("Unique",
                           style: TextStyle(
                             fontSize: screenSize.width * 0.05,
                             fontWeight: FontWeight.w900,
-                            color: Colors.black,
+                            color: Color.fromARGB(255, 27, 3, 247),
                             fontFamily: AppFontFamily.primaryFont,
                           )),
                     ],

@@ -53,15 +53,14 @@ import 'package:usdinfra/configs/font_family.dart';
 class MultiImageUploadBox extends StatefulWidget {
   final Function(List<File>) onImagesSelected;
 
-  const MultiImageUploadBox({super.key, 
-  required this.onImagesSelected});
+  const MultiImageUploadBox({super.key, required this.onImagesSelected});
 
   @override
   State<MultiImageUploadBox> createState() => _MultiImageUploadBoxState();
 }
 
 class _MultiImageUploadBoxState extends State<MultiImageUploadBox> {
-  List<File> _photos = [];
+  final List<File> _photos = [];
 
   Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();

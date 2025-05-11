@@ -167,7 +167,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -177,9 +176,10 @@ import '../../Customs/custom_textfield.dart';
 import '../../configs/app_colors.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  final String? email; // Assuming the email is passed when navigating to the ResetPasswordScreen
+  final String?
+      email; // Assuming the email is passed when navigating to the ResetPasswordScreen
 
-  ResetPasswordScreen({this.email});
+  const ResetPasswordScreen({super.key, this.email});
 
   @override
   _ResetPasswordScreenState createState() => _ResetPasswordScreenState();
@@ -216,10 +216,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       if (user != null) {
         await user.updatePassword(password);
         await user.reload();
-        await FirebaseFirestore.instance.collection('AppUsers').doc(user.uid).update({
+        await FirebaseFirestore.instance
+            .collection('AppUsers')
+            .doc(user.uid)
+            .update({
           'lastPasswordChange': FieldValue.serverTimestamp(),
-          'passWord':password,
-          'confirmpassWord':confirmPassword,
+          'passWord': password,
+          'confirmpassWord': confirmPassword,
         });
 
         setState(() {
@@ -263,13 +266,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               style: TextStyle(fontSize: 16, color: Colors.black54),
             ),
             SizedBox(height: 20),
-            buildPasswordTextField("Password", controllers.passwordController, _isPVisible, () {
+            buildPasswordTextField(
+                "Password", controllers.passwordController, _isPVisible, () {
               setState(() {
                 _isPVisible = !_isPVisible;
               });
             }),
             SizedBox(height: 5),
-            buildPasswordTextField("Confirm Password", controllers.confirmpasswordController, _isCPVisible, () {
+            buildPasswordTextField("Confirm Password",
+                controllers.confirmpasswordController, _isCPVisible, () {
               setState(() {
                 _isCPVisible = !_isCPVisible;
               });
@@ -308,14 +313,18 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  Widget buildPasswordTextField(String label, TextEditingController controller, bool isVisible, VoidCallback onToggle) {
+  Widget buildPasswordTextField(String label, TextEditingController controller,
+      bool isVisible, VoidCallback onToggle) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.primary)),
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.primary)),
           SizedBox(height: 8),
           CustomInputField(
             controller: controller,
@@ -323,7 +332,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             hintText: label,
             obscureText: !isVisible,
             suffixIcon: IconButton(
-              icon: Icon(isVisible ? Icons.visibility_off : Icons.visibility, color: AppColors.primary),
+              icon: Icon(isVisible ? Icons.visibility_off : Icons.visibility,
+                  color: AppColors.primary),
               onPressed: onToggle,
             ),
           ),

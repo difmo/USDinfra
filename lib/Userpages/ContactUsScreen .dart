@@ -22,7 +22,6 @@ class ContactUsScreen extends StatelessWidget {
             _headerSection(),
             _contactDetails(),
             _contactForm(context),
-            _mapSection(),
           ],
         ),
       ),
@@ -260,34 +259,6 @@ class ContactUsScreen extends StatelessWidget {
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         ),
-      ),
-    );
-  }
-
-  Widget _mapSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Text(
-            "Our Location",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              fontFamily: AppFontFamily.primaryFont,
-            ),
-          ),
-          const SizedBox(height: 10),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              "https://images.pexels.com/photos/7738879/pexels-photo-7738879.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ],
       ),
     );
   }

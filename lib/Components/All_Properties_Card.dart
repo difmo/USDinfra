@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:usdinfra/configs/font_family.dart';
 
-import '../Property_Pages_form/properties_detail_page.dart';
 // import 'package:usdinfra/conigs/app_colors.dart';
 
 class AllPropertyCard extends StatelessWidget {

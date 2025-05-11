@@ -12,7 +12,7 @@ import 'form_page_3_components/option_chip.dart';
 class AddPhotosDetailsPage extends StatefulWidget {
   final String docId;
 
-  const AddPhotosDetailsPage({Key? key, required this.docId}) : super(key: key);
+  const AddPhotosDetailsPage({super.key, required this.docId});
 
   @override
   _AddPhotosDetailsPageState createState() => _AddPhotosDetailsPageState();
@@ -27,7 +27,7 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
 
   final List<String> selectedAmenities = [];
   List<String> selectedRooms = [];
-  List<String> selectedDirection =[];
+  List<String> selectedDirection = [];
   List<String> selectedFoodcourt = [];
   final List<String> furnishingOptions = [];
   List<File> selectedImages = [];

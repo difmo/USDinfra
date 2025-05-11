@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -93,7 +94,7 @@ class _PropertyCardState extends State<PropertyCard> {
                       child: Image.network(
                         widget.imageUrl,
                         height: screenWidth * 0.3,
-                        width: screenWidth * 0.5,
+                        width: screenWidth * 0.3,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -123,10 +124,6 @@ class _PropertyCardState extends State<PropertyCard> {
                     ),
                   ],
                 ),
-              ],
-            ),
-            Row(
-              children: [
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -186,51 +183,51 @@ class _PropertyCardState extends State<PropertyCard> {
               ],
             ),
             const SizedBox(height: 12),
-            // if (widget.showButtons)
-            //   Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-            //     children: [
-            //       OutlinedButton(
-            //         onPressed: () => {
-            //           showDialog(
-            //             context: context,
-            //             builder: (BuildContext context) {
-            //               return ContactDetailDialog(
-            //                 phoneNumber: widget.contactDetails,
-            //               );
-            //             },
-            //           )
-            //         },
-            //         style: ButtonStyle(
-            //             side: WidgetStateProperty.all(
-            //                 BorderSide(color: AppColors.primary, width: 2)),
-            //             shape: WidgetStateProperty.all(RoundedRectangleBorder(
-            //               borderRadius: BorderRadius.circular(30.0),
-            //             ))),
-            //         child: Text('Get Phone No.',
-            //             style: TextStyle(
-            //               color: AppColors.primary,
-            //               fontFamily: AppFontFamily.primaryFont,
-            //             )),
-            //       ),
-            //       ElevatedButton(
-            //         style: ElevatedButton.styleFrom(
-            //           backgroundColor: AppColors.primary,
-            //           shape: RoundedRectangleBorder(
-            //             borderRadius: BorderRadius.circular(20),
-            //           ),
-            //         ),
-            //         onPressed: _callOwner, // Calls the owner directly
-            //         child: Text(
-            //           'Contact Owner',
-            //           style: TextStyle(
-            //             color: Colors.white,
-            //             fontFamily: AppFontFamily.primaryFont,
-            //           ),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
+            if (widget.showButtons)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  OutlinedButton(
+                    onPressed: () => {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return ContactDetailDialog(
+                            phoneNumber: widget.contactDetails,
+                          );
+                        },
+                      )
+                    },
+                    style: ButtonStyle(
+                        side: WidgetStateProperty.all(
+                            BorderSide(color: AppColors.primary, width: 2)),
+                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ))),
+                    child: Text('Get Phone No.',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontFamily: AppFontFamily.primaryFont,
+                        )),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    onPressed: _callOwner, // Calls the owner directly
+                    child: Text(
+                      'Contact Owner',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: AppFontFamily.primaryFont,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       ),

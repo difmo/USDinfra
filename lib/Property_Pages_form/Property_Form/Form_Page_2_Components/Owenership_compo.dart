@@ -9,12 +9,12 @@ class OwnershipSelector extends StatelessWidget {
   final ValueChanged<String> onOptionSelected;
 
   const OwnershipSelector({
-    Key? key,
+    super.key,
     required this.title,
     required this.options,
     required this.selectedOption,
     required this.onOptionSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,8 @@ import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
 class ApprovedPropertiesPage extends StatefulWidget {
+  const ApprovedPropertiesPage({super.key});
+
   @override
   _ApprovedPropertiesPageState createState() => _ApprovedPropertiesPageState();
 }

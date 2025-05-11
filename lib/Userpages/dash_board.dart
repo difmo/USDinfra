@@ -66,7 +66,8 @@ class _HomeDashBoard extends State<HomeDashBoard> {
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(CupertinoIcons.person_circle_fill, color: Colors.white, size: 30),
+            icon: Icon(CupertinoIcons.person_circle_fill,
+                color: Colors.white, size: 30),
             onPressed: () {
               Navigator.pushNamed(context, AppRouts.profile);
             },
@@ -78,7 +79,7 @@ class _HomeDashBoard extends State<HomeDashBoard> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             height: screenHeight * 0.28,
             child: Carousel(),
           ),

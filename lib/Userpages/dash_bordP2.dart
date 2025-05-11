@@ -506,44 +506,19 @@ class PropertyOfferingsSection extends StatelessWidget {
 class PopularCitiesSection extends StatelessWidget {
   final List<Map<String, String>> cities = [
     {
+      "name": "Lucknow",
+      "image":
+          "https://i.ibb.co/Y7vmP0Gp/Whats-App-Image-2025-05-09-at-7-36-42-PM.jpg"
+    },
+    {
       "name": "Delhi / NCR",
       "image":
           "https://images.pexels.com/photos/14520365/pexels-photo-14520365.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
     },
     {
-      "name": "Mumbai",
+      "name": "Varanasi",
       "image":
-          "https://images.pexels.com/photos/31016952/pexels-photo-31016952/free-photo-of-the-taj-mahal-palace-hotel-in-mumbai-at-twilight.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-    },
-    {
-      "name": "Bangalore",
-      "image":
-          "https://as1.ftcdn.net/jpg/03/41/95/04/1000_F_341950409_Gq1sN2OqYgRZrUTvPohSmgQVubaqzlA5.webp"
-    },
-    {
-      "name": "Hyderabad",
-      "image":
-          "https://as2.ftcdn.net/jpg/00/47/49/01/1000_F_47490128_JLClMTbZyVdxl3OW2m8H4vJHW7hDZ8Jj.webp"
-    },
-    {
-      "name": "Pune",
-      "image":
-          "https://media.istockphoto.com/id/1257407227/photo/isolated-image-of-shree-swaminarayan-temple-ambegaon-pune-maharashtra-india.jpg?s=612x612&w=0&k=20&c=na15RawnI9ALfi63h9Je9li_e5y139jABmkyt5MMhVU="
-    },
-    {
-      "name": "Kolkata",
-      "image":
-          "https://media.istockphoto.com/id/1164386039/photo/howrah-bridge-on-river-ganges-at-kolkata-at-twilight-with-moody-sky.jpg?s=612x612&w=0&k=20&c=CHrNWdInFSDyERdvgd0f8935hZcBQU6lbYCE4LlXqUY="
-    },
-    {
-      "name": "Chennai",
-      "image":
-          "https://media.istockphoto.com/id/1226340114/photo/puratchi-thalaivar-dr-mgr-central-railway-station-chennai-central-railway-station-india.jpg?s=612x612&w=0&k=20&c=lZjBnWBBoLiApWZUUWP1Vl3XAVdKjYMcgGpItXv_L14="
-    },
-    {
-      "name": "Ahmedabad",
-      "image":
-          "https://plus.unsplash.com/premium_photo-1697729749187-ec80a3f41969?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          "https://i.ibb.co/9kkjtYL4/Whats-App-Image-2025-05-09-at-7-36-40-PM.jpg"
     },
   ];
 
@@ -551,43 +526,58 @@ class PopularCitiesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Explore popular cities",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                fontFamily: AppFontFamily.primaryFont,
-              )),
-          SizedBox(height: 8),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: cities.map((city) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 14.0),
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundImage: NetworkImage(city['image']!),
-                      ),
-                      SizedBox(height: 4),
-                      Text(city['name']!,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: AppFontFamily.primaryFont,
-                          )),
-                    ],
-                  ),
-                );
-              }).toList(),
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Explore popular cities",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: AppFontFamily.primaryFont,
+                )),
+            SizedBox(height: 8),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: cities.map((city) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 14.0),
+                    child: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                Color.fromARGB(255, 27, 3, 247),
+                                Color.fromARGB(255, 247, 113, 3),
+                              ],
+                            ),
+                          ),
+                          padding: EdgeInsets.all(3), // Border thickness
+                          child: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 50,
+                            backgroundImage: NetworkImage(city['image']!),
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(city['name']!,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: AppFontFamily.primaryFont,
+                            )),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

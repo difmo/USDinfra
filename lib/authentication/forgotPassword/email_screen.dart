@@ -9,6 +9,8 @@ import '../../Customs/custom_textfield.dart';
 import '../../configs/app_colors.dart';
 
 class ForgotPasswordEmailScreen extends StatefulWidget {
+  const ForgotPasswordEmailScreen({super.key});
+
   @override
   _ForgotPasswordEmailScreenState createState() =>
       _ForgotPasswordEmailScreenState();

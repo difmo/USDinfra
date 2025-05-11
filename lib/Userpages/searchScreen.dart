@@ -4,6 +4,8 @@ import 'package:usdinfra/Customs/CustomAppBar.dart';
 import 'package:usdinfra/Property_Pages_form/Properties_detail_page.dart';
 
 class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
+
   @override
   _SearchScreen createState() => _SearchScreen();
 }
@@ -23,7 +25,7 @@ class _SearchScreen extends State<SearchScreen> {
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
+        final data = doc.data();
         data['id'] = doc.id; // ✅ Add document ID to the data map
         return data;
       }).where((data) {

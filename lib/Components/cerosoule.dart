@@ -6,42 +6,48 @@ class Carousel extends StatefulWidget {
   const Carousel({super.key});
 
   @override
-  State<Carousel> createState() => _CarouselExampleState();
+  State<Carousel> createState() => _CarouselState();
 }
 
-class _CarouselExampleState extends State<Carousel> {
+class _CarouselState extends State<Carousel> {
   final List<String> imageUrls = [
     'https://www.indiafilings.com/learn/wp-content/uploads/2015/10/Real-Estate-Agent-Business-India.jpg',
   ];
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: screenWidth * 0.02,
+        vertical: screenHeight * 0.01,
+      ),
       child: Stack(
-        clipBehavior: Clip.none, // Allows the search bar to overflow the image
+        clipBehavior: Clip.none,
+        alignment: Alignment.bottomCenter,
         children: [
-          // Image
+          // Responsive Image
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Image.asset(
-              'assets/images/first.jpeg', // Replace with your local image path
+              'assets/images/first.jpeg',
               fit: BoxFit.cover,
-              height: 200,
+              height: 400,
               width: double.infinity,
             ),
           ),
 
-          // Search Bar (Positioned at bottom center of the image)
+          // Search Bar (Positioned at bottom center of the image, adaptive to all screens)
           Positioned(
-            left: 16,
-            right: 16,
-            bottom: 10, // Moves half of the search bar outside the image
+            bottom: -screenHeight * 0.03,
             child: GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, AppRouts.Search);
               },
               child: Container(
+                width: screenWidth * 0.92, // Set relative to screen width
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   color: Colors.white,
@@ -54,17 +60,21 @@ class _CarouselExampleState extends State<Carousel> {
                     ),
                   ],
                 ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                padding: EdgeInsets.symmetric(
+                  vertical: screenHeight * 0.015,
+                  horizontal: screenWidth * 0.04,
+                ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(Icons.search, color: Colors.grey),
-                    const SizedBox(width: 10),
+                    Icon(Icons.search,
+                        color: Colors.grey, size: screenWidth * 0.06),
+                    SizedBox(width: screenWidth * 0.02),
                     Text(
                       'Search',
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 16,
+                        fontSize: screenWidth * 0.04,
                         fontFamily: AppFontFamily.primaryFont,
                       ),
                     ),

@@ -9,12 +9,12 @@ class LabeledFormField extends StatelessWidget {
   final double borderRadius;
 
   const LabeledFormField({
-    Key? key,
+    super.key,
     required this.label,
     required this.hint,
     required this.controller,
     this.borderRadius = 25.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

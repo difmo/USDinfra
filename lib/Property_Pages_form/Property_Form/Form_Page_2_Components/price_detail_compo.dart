@@ -7,10 +7,10 @@ class PriceDetailsSection extends StatelessWidget {
   final TextEditingController totalPriceController;
 
   const PriceDetailsSection({
-    Key? key,
+    super.key,
     required this.pricePerSqftController,
     required this.totalPriceController,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -69,12 +69,11 @@ class PriceDetailsSection extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               FormTextField(
-                controller: totalPriceController,
-                hint: 'Expected Total Price in Rs',
-                borderRadius: 25,
-                inputType: TextInputType.phone,
-                isEditable:false
-              ),
+                  controller: totalPriceController,
+                  hint: 'Expected Total Price in Rs',
+                  borderRadius: 25,
+                  inputType: TextInputType.phone,
+                  isEditable: false),
             ],
           ),
         ),

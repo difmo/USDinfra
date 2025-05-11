@@ -7,6 +7,8 @@ import '../Property_Pages_form/edit_property.dart';
 import '../configs/app_colors.dart';
 
 class MyPropertiesPage extends StatefulWidget {
+  const MyPropertiesPage({super.key});
+
   @override
   _MyPropertiesPageState createState() => _MyPropertiesPageState();
 }
@@ -366,10 +368,18 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text("Confirm Delete",
-        style: TextStyle(fontFamily: AppFontFamily.primaryFont,),),
-          content: Text("Are you sure you want to delete this property?",
-          style: TextStyle(fontFamily: AppFontFamily.primaryFont,),),
+          title: Text(
+            "Confirm Delete",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          ),
+          content: Text(
+            "Are you sure you want to delete this property?",
+            style: TextStyle(
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          ),
           actions: [
             ElevatedButton(
               onPressed: () {
@@ -379,8 +389,10 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                   ElevatedButton.styleFrom(backgroundColor: AppColors.secondry),
               child: Text("Cancel",
                   style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold,
-                      fontFamily: AppFontFamily.primaryFont,)),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppFontFamily.primaryFont,
+                  )),
             ),
             ElevatedButton(
               onPressed: () {
@@ -391,8 +403,10 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                   ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
               child: Text("Delete",
                   style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold,
-                      fontFamily: AppFontFamily.primaryFont,)),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppFontFamily.primaryFont,
+                  )),
             ),
           ],
         );
