@@ -243,38 +243,58 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
+                            horizontal: 12, vertical: 2),
                         margin: const EdgeInsets.only(right: 8),
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
+                          color: Colors.orange,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
-                          propertyData?['facing']?.isNotEmpty == true
-                              ? propertyData!['facing'][0]
-                              : 'N/A',
+                          'Facing : ${propertyData?['facing']?.isNotEmpty == true ? propertyData!['facing'][0] : 'N/A'}',
                           style: const TextStyle(
                             fontSize: 10,
+                            color: Colors.black,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
+                            horizontal: 12, vertical: 2),
                         margin: const EdgeInsets.only(left: 8),
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
+                          color: Colors.blue,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
                           propertyData?['availabilityStatus'] ?? 'N/A',
                           style: const TextStyle(
                             fontSize: 10,
+                            color: Colors.black,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
+                      propertyData?['reraApproved']?.toString().toLowerCase() ==
+                              'no'
+                          ? Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 2),
+                              margin: const EdgeInsets.only(left: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                "RERA APPROVED",
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            )
+                          : Container(),
                     ],
                   ),
 
