@@ -1,0 +1,2 @@
+/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/CMakeFiles/rebuild_cache.dir
