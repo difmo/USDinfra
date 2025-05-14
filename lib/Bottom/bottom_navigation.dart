@@ -15,27 +15,23 @@ class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(
-        top: 8,
-        left: 8,
-        right: 8,
-      ), // Added padding
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            offset: Offset(0, -2),
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 0,
+            blurRadius: 5,
+            offset: const Offset(0, 0), // changes position of shadow
           ),
         ],
+        color: Colors.white,
       ),
       child: BottomNavigationBar(
         currentIndex: currentIndex,
         onTap: onTap,
         backgroundColor: Colors.white,
-        selectedItemColor: const Color.fromARGB(255, 36, 4, 219),
-        unselectedItemColor: Colors.black,
+        selectedItemColor: const Color.fromARGB(255, 97, 70, 255),
+        unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
         selectedLabelStyle: TextStyle(
@@ -53,7 +49,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
             label: 'Home',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
+            icon: Icon(
+              Icons.shopping_cart,
+            ),
             label: 'Buy',
           ),
           const BottomNavigationBarItem(

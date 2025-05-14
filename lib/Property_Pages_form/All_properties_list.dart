@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:usdinfra/Components/property_card2.dart';
@@ -170,7 +171,6 @@ class _AllPropertiesState extends State<AllProperties> {
                               child: Stack(
                                 children: [
                                   SizedBox(
-                                    height: screenHeight * 0.4,
                                     child: PropertyCard2(
                                       imageUrl: property['imageUrl'],
                                       expectedPrice: property['expectedPrice'],
@@ -207,90 +207,32 @@ class _AllPropertiesState extends State<AllProperties> {
                                     ),
                                   ),
                                   Positioned(
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    child: Container(
-                                      margin: const EdgeInsets.only(
-                                          bottom: 8, left: 8),
-                                      padding: const EdgeInsets.all(8),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: GestureDetector(
+                                    bottom: 15,
+                                    left: 300,
+                                    right: 10,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: GestureDetector(
                                               onTap: () => _launchWhatsApp(
                                                   "${property['contactDetails']}"),
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.green,
-                                                  border: Border.all(
-                                                      color: Colors.green,
-                                                      width: 1),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(16)),
-                                                ),
-                                                child: const Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(Icons.message,
-                                                        color: Colors.white),
-                                                    SizedBox(width: 8),
-                                                    Text(
-                                                      "WhatsApp",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
+                                              child: SvgPicture.asset(
+                                                "assets/svg/whatsapp.svg",
+                                                width: 30,
+                                              )),
+                                        ),
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap: () => _makePhoneCall(
+                                                "${property['contactDetails']}"),
+                                            child: Icon(
+                                              Icons.phone,
+                                              color: Colors.blue,
                                             ),
                                           ),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: GestureDetector(
-                                              onTap: () => _makePhoneCall(
-                                                  "${property['contactDetails']}"),
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                decoration: BoxDecoration(
-                                                  color: AppColors.primary,
-                                                  border: Border.all(
-                                                      color: AppColors.primary,
-                                                      width: 1),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(16)),
-                                                ),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(Icons.call,
-                                                        color: Colors.white),
-                                                    SizedBox(width: 8),
-                                                    const Text(
-                                                      "Contact",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                          color:
-                                                              AppColors.white),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                        ],
-                                      ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                      ],
                                     ),
                                   ),
                                 ],

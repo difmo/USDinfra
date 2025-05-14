@@ -44,7 +44,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
                   icon: Image.asset(
@@ -53,29 +52,21 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   onPressed: () => scaffoldKey.currentState?.openDrawer(),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      Text("USD ",
-                          style: TextStyle(
-                            fontSize: screenSize.width * 0.05,
-                            fontWeight: FontWeight.w900,
-                            color: Color.fromARGB(255, 247, 113, 3),
-                            fontFamily: AppFontFamily.primaryFont,
-                          )),
-                      Text("Unique",
-                          style: TextStyle(
-                            fontSize: screenSize.width * 0.05,
-                            fontWeight: FontWeight.w900,
-                            color: Color.fromARGB(255, 27, 3, 247),
-                            fontFamily: AppFontFamily.primaryFont,
-                          )),
-                    ],
-                  ),
-                ),
+                Text("USD ",
+                    style: TextStyle(
+                      fontSize: 21,
+                      fontWeight: FontWeight.w900,
+                      color: Color.fromARGB(255, 247, 113, 3),
+                      fontFamily: AppFontFamily.primaryFont,
+                    )),
+                Text("Unique",
+                    style: TextStyle(
+                      fontSize: 21,
+                      fontWeight: FontWeight.w900,
+                      color: Color.fromARGB(255, 27, 3, 247),
+                      fontFamily: AppFontFamily.primaryFont,
+                    )),
+                Spacer(),
                 const SizedBox(width: 32),
                 Row(
                   children: [
@@ -103,7 +94,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: screenSize.width * 0.03,
+                                    fontSize: 12,
                                     fontFamily: AppFontFamily.primaryFont,
                                   ),
                                 ),
@@ -112,7 +103,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                                   style: TextStyle(
                                     color: Colors.green,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: screenSize.width * 0.03,
+                                    fontSize: 12,
                                     fontFamily: AppFontFamily.primaryFont,
                                   ),
                                 ),
@@ -130,7 +121,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                           },
                           icon: Icon(
                             Icons.notifications_none_outlined,
-                            size: screenSize.width * 0.06,
+                            size: 28,
                             color: Colors.black,
                           ),
                         ),
@@ -177,8 +168,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       right: 8,
       top: 5,
       child: Container(
-        width: screenSize.width * 0.05,
-        height: screenSize.width * 0.05,
+        width: 18,
+        height: 18,
         decoration: const BoxDecoration(
           color: Colors.red,
           shape: BoxShape.circle,
@@ -188,7 +179,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           count > 9 ? '9+' : '$count',
           style: TextStyle(
             color: Colors.white,
-            fontSize: screenSize.width * 0.03,
+            fontSize: 12,
             fontWeight: FontWeight.bold,
           ),
           textAlign: TextAlign.center,

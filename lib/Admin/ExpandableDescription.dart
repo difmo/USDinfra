@@ -11,7 +11,7 @@ class ExpandableDescription extends StatefulWidget {
 
 class _ExpandableDescriptionState extends State<ExpandableDescription> {
   bool isExpanded = false;
-  static const int characterLimit = 10;
+  static const int characterLimit = 80;
 
   @override
   Widget build(BuildContext context) {

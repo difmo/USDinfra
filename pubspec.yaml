@@ -50,6 +50,8 @@ dependencies:
   fluttertoast: ^8.2.12
   google_fonts: ^6.2.1
   flutter_rating_bar: ^4.0.1
+  badges: ^3.1.2
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
@@ -89,6 +91,7 @@ flutter:
     - assets/images/slide2.jpeg
     - assets/images/slide3.jpeg
     - assets/images/first.jpeg
+    - assets/svg/whatsapp.svg
 
     # - assets/logo.png
 

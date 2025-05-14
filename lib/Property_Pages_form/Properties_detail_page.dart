@@ -253,7 +253,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                           'Facing : ${propertyData?['facing']?.isNotEmpty == true ? propertyData!['facing'][0] : 'N/A'}',
                           style: const TextStyle(
                             fontSize: 10,
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -270,28 +270,41 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                           propertyData?['availabilityStatus'] ?? 'N/A',
                           style: const TextStyle(
                             fontSize: 10,
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
                       propertyData?['reraApproved']?.toString().toLowerCase() ==
-                              'no'
+                              'yes'
                           ? Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 12, vertical: 2),
                               margin: const EdgeInsets.only(left: 8),
                               decoration: BoxDecoration(
-                                color: Colors.black,
+                                color: Colors.green,
                                 borderRadius: BorderRadius.circular(6),
                               ),
-                              child: Text(
-                                "RERA APPROVED",
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "RERA APPROVED",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                      width:
+                                          6), // Spacing between text and icon
+                                  const Icon(
+                                    Icons.check_circle,
+                                    size: 14,
+                                    color: Colors.white,
+                                  ),
+                                ],
                               ),
                             )
                           : Container(),
@@ -332,7 +345,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                                 ),
                                 const SizedBox(height: 4),
                                 const Text(
-                                  "Super Area",
+                                  "Plot Area",
                                   style: TextStyle(
                                     fontSize: 10,
                                     color: Colors.black,
@@ -355,9 +368,11 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                                   color: Colors.orange, size: 20),
                             ),
                             Text(
-                              "${propertyData?['expectedPrice'] ?? 'N/A'} Price",
+                              "${(propertyData?['expectedPrice'] as String?)?.replaceAll(RegExp(r'\s*SQFT', caseSensitive: false), '') ?? 'N/A'} Price",
                               style: const TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w500),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                             const SizedBox(height: 4),
                             const Text(
@@ -392,7 +407,11 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                         propertyData?['loanAvailable'] ?? 'N/A'),
                     _infoRow("Govt. Approval",
                         propertyData?['propertyApproved'] ?? 'N/A'),
-                    _infoRow("Rera", propertyData?['reraApproved'] ?? 'N/A'),
+                    if ((propertyData?['reraApproved'] ?? '')
+                            .toString()
+                            .toLowerCase() ==
+                        'no')
+                      _infoRow("Rera", propertyData?['reraApproved'] ?? 'N/A'),
                     if ((propertyData?['reraApproved'] ?? '')
                             .toString()
                             .toLowerCase() ==
@@ -415,7 +434,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                       children: [
                         propertyDetailRow('Ownership',
                             '${propertyData?['ownershipType'] ?? 'N/A'}'),
-                        propertyDetailRow('Super Area',
+                        propertyDetailRow('Plot Area',
                             '${propertyData?['plotArea'] ?? 'N/A'} sqft'),
                         propertyDetailRow(
                             'Length', '${propertyData?['length'] ?? 'N/A'} Ft'),
@@ -442,11 +461,20 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                   ExpandableDescription(
                       description: propertyData?['description'] ??
                           "No description available."),
-
                   const SizedBox(height: 24),
+
+                  Container(
+                    child: Text(
+                      propertyData?['dealerType'] == null
+                          ? "Contact N/A"
+                          : "Contact ${propertyData?['dealerType']}",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                   _sectionCard("Owner Info", [
-                    _infoRow("Ownership Type",
-                        propertyData?['ownershipType'] ?? 'N/A'),
+                    // _infoRow("Ownership Type",
+                    //     propertyData?['ownershipType'] ?? 'N/A'),
                     _infoRow("Owner", propertyData?['ownerName'] ?? 'N/A'),
                     _infoRow(
                         "Contact", propertyData?['contactDetails'] ?? 'N/A'),

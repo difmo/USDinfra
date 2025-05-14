@@ -11,7 +11,6 @@ import 'Form_Page_2_Components/loan_and_approve.dart';
 import 'Form_Page_2_Components/plot_area.dart';
 import 'Form_Page_2_Components/price_detail_compo.dart';
 import 'form_page_3.dart';
-// import 'form_page_3.dart';
 
 class PropertyForm2 extends StatefulWidget {
   final Map<String, dynamic> formData;
@@ -24,20 +23,59 @@ class PropertyForm2 extends StatefulWidget {
 
 class _PropertyForm2State extends State<PropertyForm2> {
   final controllers = ControllersManager();
-
   String? availabilityStatus;
   String? ownershipType;
-  bool allInclusivePrice = false;
-  bool taxExcluded = false;
   bool isLoading = false;
-  bool isDeleted = false;
-  bool isPurchesed = false;
   String _selectedUnit = 'SQFT';
   final List<String> _units = ['SQFT', 'SQYD', 'SQMD'];
   final GlobalKey<LoanAndApprovalSectionState> loanSectionKey =
       GlobalKey<LoanAndApprovalSectionState>();
 
+  String? validateForm() {
+    if (controllers.propertyName.text.trim().isEmpty) {
+      return 'Property Builder Name is required';
+    }
+    if (controllers.cityController.text.trim().isEmpty) {
+      return 'City is required';
+    }
+    if (controllers.localityController.text.trim().isEmpty) {
+      return 'Location is required';
+    }
+    if (controllers.plotAreaController.text.trim().isEmpty) {
+      return 'Plot Area is required';
+    }
+    if (ownershipType == null || ownershipType!.isEmpty) {
+      return 'Ownership Type is required';
+    }
+    if (availabilityStatus == null || availabilityStatus!.isEmpty) {
+      return 'Availability Status is required';
+    }
+    if (controllers.expectedPriceController.text.trim().isEmpty) {
+      return 'Expected Price is required';
+    }
+    if (controllers.totalexpectedPriceController.text.trim().isEmpty) {
+      return 'Total Price is required';
+    }
+    if (controllers.descriptionController.text.trim().isEmpty) {
+      return 'Description is required';
+    }
+    return null;
+  }
+
   Future<void> saveToFirestore() async {
+    final validationError = validateForm();
+    if (validationError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            validationError,
+            style: TextStyle(fontFamily: AppFontFamily.primaryFont),
+          ),
+        ),
+      );
+      return;
+    }
+
     final loanAvailable = loanSectionKey.currentState?.loanAvailable;
     final propertyApproved =
         loanSectionKey.currentState?.propertyApprovedStatus;
@@ -51,20 +89,21 @@ class _PropertyForm2State extends State<PropertyForm2> {
       );
       return;
     }
+
     setState(() {
-      isLoading = true; // Show loader
+      isLoading = true;
     });
+
     try {
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text(
-            'User is not logged in.',
-            style: TextStyle(
-              fontFamily: AppFontFamily.primaryFont,
+            content: Text(
+              'User is not logged in.',
+              style: TextStyle(fontFamily: AppFontFamily.primaryFont),
             ),
-          )),
+          ),
         );
         return;
       }
@@ -72,26 +111,27 @@ class _PropertyForm2State extends State<PropertyForm2> {
           .collection('AppUsers')
           .doc(user.uid)
           .get();
-      if (!userDoc.exists) {
-        print("User document not found in AppUsers collection.");
-        return;
-      }
-      if (userDoc['name'] is! String) {
-        print("Error: 'name' field is not a String.");
+      if (!userDoc.exists || userDoc['name'] is! String) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'User data not found.',
+              style: TextStyle(fontFamily: AppFontFamily.primaryFont),
+            ),
+          ),
+        );
         return;
       }
 
       String name = userDoc['name'];
-      print("User Name: $name");
-
       DocumentReference newPropertyRef =
           await FirebaseFirestore.instance.collection('AppProperties').add({
         'city': controllers.cityController.text,
         'lookingTo': widget.formData['lookingTo'],
         'uid': user.uid,
-        'isPurchesed': isPurchesed,
+        'isPurchesed': false,
         'contactName': name,
-        'isDeleted': isDeleted,
+        'isDeleted': false,
         'unit': _selectedUnit,
         'propertyType': widget.formData['propertyType'],
         'propertyCategory': widget.formData['propertyCategory'],
@@ -113,21 +153,20 @@ class _PropertyForm2State extends State<PropertyForm2> {
         'breadth': controllers.widthAreaController.text,
         'noOfOpenSides': controllers.noOfOpenSidesController.text,
       });
-      String docId = newPropertyRef.id;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(
-          'Property saved successfully!',
-          style: TextStyle(
-            fontFamily: AppFontFamily.primaryFont,
+          content: Text(
+            'Property saved successfully!',
+            style: TextStyle(fontFamily: AppFontFamily.primaryFont),
           ),
-        )),
+        ),
       );
 
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AddPhotosDetailsPage(docId: docId),
+          builder: (context) => AddPhotosDetailsPage(docId: newPropertyRef.id),
         ),
       );
     } catch (e) {
@@ -146,18 +185,13 @@ class _PropertyForm2State extends State<PropertyForm2> {
     super.initState();
     controllers.plotAreaController.addListener(updateTotalPrice);
     controllers.expectedPriceController.addListener(updateTotalPrice);
-
-    print(
-        "Arguments received in PropertyForm2: ${widget.formData['lookingTo']}");
   }
 
   void updateTotalPrice() {
     final plotAreaText = controllers.plotAreaController.text;
     final expectedPriceText = controllers.expectedPriceController.text;
-
     double? plotArea = double.tryParse(plotAreaText);
     double? pricePerUnit = double.tryParse(expectedPriceText);
-
     if (plotArea != null && pricePerUnit != null) {
       final total = plotArea * pricePerUnit;
       controllers.totalexpectedPriceController.text = total.toStringAsFixed(2);
@@ -210,7 +244,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Property Builder  Name',
+                  'Property Builder Name',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -221,7 +255,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: FormTextField(
-                    hint: "Property Builder  Name",
+                    hint: "Property Builder Name",
                     controller: controllers.propertyName,
                     maxLength: 50,
                     inputType: TextInputType.text,
@@ -277,7 +311,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                 ),
                 const SizedBox(height: 8),
                 LabeledFormField(
-                  label: 'No. of Open Sides ',
+                  label: 'No. of Open Sides',
                   hint: 'Enter no. of open sides',
                   controller: controllers.noOfOpenSidesController,
                 ),
@@ -324,12 +358,14 @@ class _PropertyForm2State extends State<PropertyForm2> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Description',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: AppFontFamily.primaryFont,
-                    )),
+                Text(
+                  'Description',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: AppFontFamily.primaryFont,
+                  ),
+                ),
                 SizedBox(height: 8),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -359,7 +395,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                ), // Make sure to call the saveToFirestore function
+                ),
                 child: isLoading
                     ? CircularProgressIndicator(
                         valueColor:
@@ -375,7 +411,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                         ),
                       ),
               ),
-            )
+            ),
           ],
         ),
       ),

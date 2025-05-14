@@ -115,6 +115,8 @@ class _PropertyCardState extends State<PropertyCard2> {
                 ),
                 const SizedBox(height: 4),
                 Text(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   "${widget.propertyCategory} in ${widget.location}",
                   style: TextStyle(
                     fontSize: 14,
@@ -143,13 +145,6 @@ class _PropertyCardState extends State<PropertyCard2> {
                         fontSize: 12,
                       ),
                     ),
-                    // IconButton(
-                    //   onPressed: _toggleFavorite,
-                    //   icon: Icon(
-                    //     isFavorited ? Icons.favorite : Icons.favorite_border,
-                    //     color: isFavorited ? Colors.red : Colors.grey,
-                    //   ),
-                    // )
                   ],
                 ),
               ],

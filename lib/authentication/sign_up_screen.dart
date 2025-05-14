@@ -22,7 +22,7 @@ class _SignupPageState extends State<SignupPage> {
   bool _isCPVisible = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  String selectedRole = 'Agent';
   String? nameError;
   String? emailError;
   String? mobileError;
@@ -142,6 +142,7 @@ class _SignupPageState extends State<SignupPage> {
         'mobile': mobile,
         'passWord': password,
         'role': 'isUser',
+        'dealerType': selectedRole.toLowerCase(),
         'confirmpassWord': confirmPassword,
         'favoriteProperties': [],
         'purchesedProperties': [],
@@ -209,6 +210,8 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                 ),
                 SizedBox(height: 20),
+                buildRoleChips(),
+                SizedBox(height: 10),
                 buildInputField('Name', controllers.nameController,
                     Icons.person_2_outlined, TextInputType.text,
                     errorMessage: nameError),
@@ -339,6 +342,31 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
+  Widget buildRoleChips() {
+    final roles = ['Owner / Builder', 'Client', 'Agent'];
+
+    return Wrap(
+      spacing: 10,
+      children: roles.map((role) {
+        final isSelected = selectedRole == role;
+        return ChoiceChip(
+          label: Text(role),
+          selected: isSelected,
+          onSelected: (_) {
+            setState(() {
+              selectedRole = role;
+            });
+          },
+          selectedColor: AppColors.primary,
+          backgroundColor: Colors.grey.shade200,
+          labelStyle: TextStyle(
+              color: isSelected ? Colors.white : Colors.black,
+              fontWeight: FontWeight.bold),
+        );
+      }).toList(),
+    );
+  }
+
   Widget buildSignupButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
@@ -362,8 +390,10 @@ class _SignupPageState extends State<SignupPage> {
           child: _isLoading
               ? CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary))
-              : Text('Signup', style: TextStyle(color: Colors.white,
-              fontFamily: AppFontFamily.primaryFont)),
+              : Text('Signup',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: AppFontFamily.primaryFont)),
         ),
       ),
     );

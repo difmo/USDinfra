@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () async {
+    Timer(const Duration(seconds: 1), () async {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
@@ -30,15 +30,19 @@ class _SplashScreenState extends State<SplashScreen> {
         if (userDoc.exists) {
           String role = userDoc['role'];
           if (role == "isAdmin") {
-            Navigator.pushReplacementNamed(context, AppRouts.adminProperty);
+            Navigator.pushNamedAndRemoveUntil(
+                context, AppRouts.adminProperty, (route) => false);
           } else if (role == "isUser") {
-            Navigator.pushReplacementNamed(context, AppRouts.dashBoard);
+            Navigator.pushNamedAndRemoveUntil(
+                context, AppRouts.dashBoard, (route) => false);
           }
         } else {
-          Navigator.pushReplacementNamed(context, AppRouts.dashBoard);
+          Navigator.pushNamedAndRemoveUntil(
+              context, AppRouts.dashBoard, (route) => false);
         }
       } else {
-        Navigator.pushReplacementNamed(context, AppRouts.dashBoard);
+        Navigator.pushNamedAndRemoveUntil(
+            context, AppRouts.login, (route) => false);
       }
     });
   }

@@ -143,7 +143,9 @@ class _PropertyCardState extends State<PropertyCard> {
                       ),
                       Text(
                         "${widget.propertyCategory} in ${widget.location}",
+                        maxLines: 1,
                         style: TextStyle(
+                          overflow: TextOverflow.ellipsis,
                           fontSize: 14,
                           color: Colors.grey,
                           fontFamily: AppFontFamily.primaryFont,
