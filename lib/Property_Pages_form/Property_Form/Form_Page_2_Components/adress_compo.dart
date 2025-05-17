@@ -7,6 +7,7 @@ class LabeledFormField extends StatelessWidget {
   final String hint;
   final TextEditingController controller;
   final double borderRadius;
+  final ValueChanged<String>? onChanged; // Added callback for formData updates
 
   const LabeledFormField({
     super.key,
@@ -14,6 +15,7 @@ class LabeledFormField extends StatelessWidget {
     required this.hint,
     required this.controller,
     this.borderRadius = 25.0,
+    this.onChanged,
   });
 
   @override
@@ -23,12 +25,14 @@ class LabeledFormField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                fontFamily: AppFontFamily.primaryFont,
-              )),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              fontFamily: AppFontFamily.primaryFont,
+            ),
+          ),
           const SizedBox(height: 8),
           FormTextField(
             controller: controller,

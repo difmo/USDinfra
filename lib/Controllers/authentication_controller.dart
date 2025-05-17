@@ -26,9 +26,9 @@ class ControllersManager {
   final TextEditingController apartmentController = TextEditingController();
   final TextEditingController plotAreaController = TextEditingController();
 
-    final TextEditingController lengthController = TextEditingController();
+  final TextEditingController lengthController = TextEditingController();
   final TextEditingController widthAreaController = TextEditingController();
-    final TextEditingController noOfOpenSidesController = TextEditingController();
+  final TextEditingController noOfOpenSidesController = TextEditingController();
 
   final TextEditingController totalFloorsController = TextEditingController();
   final TextEditingController expectedPriceController = TextEditingController();

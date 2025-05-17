@@ -4,10 +4,10 @@ import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import '../../Controllers/authentication_controller.dart';
 import '../../Customs/CustomAppBar.dart';
-import 'Form_page_1_components/Contact_Details.dart';
-import 'Form_page_1_components/Looking_To_Property.dart';
-import 'Form_page_1_components/Property_Category.dart';
-import 'Form_page_1_components/Property_Type.dart';
+import '../Property_Form/Form_page_1_components/Contact_Details.dart';
+import '../Property_Form/Form_page_1_components/Looking_To_Property.dart';
+import '../Property_Form/Form_page_1_components/Property_Category.dart';
+import '../Property_Form/Form_page_1_components/Property_Type.dart';
 import 'form_page_2.dart';
 
 class PropertyForm1 extends StatefulWidget {

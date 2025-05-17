@@ -9,10 +9,10 @@ import 'package:usdinfra/configs/font_family.dart';
 import '../Controllers/authentication_controller.dart';
 import '../Customs/CustomAppBar.dart';
 import '../Customs/custom_textfield.dart';
-import 'Property_Form/Form_page_1_components/Contact_Details.dart';
-import 'Property_Form/Form_page_1_components/Looking_To_Property.dart';
-import 'Property_Form/Form_page_1_components/Property_Category.dart';
-import 'Property_Form/Form_page_1_components/Property_Type.dart';
+import 'Property_Form/form_page_1_components/Contact_Details.dart';
+import 'Property_Form/form_page_1_components/Looking_To_Property.dart';
+import 'Property_Form/form_page_1_components/Property_Category.dart';
+import 'Property_Form/form_page_1_components/Property_Type.dart';
 
 class EditPropertyPage extends StatefulWidget {
   final String docId; // Pass docId to the constructor

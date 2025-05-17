@@ -1,0 +1,2 @@
+/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/RelWithDebInfo/57i2l3rp/x86/CMakeFiles/edit_cache.dir
+/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/RelWithDebInfo/57i2l3rp/x86/CMakeFiles/rebuild_cache.dir

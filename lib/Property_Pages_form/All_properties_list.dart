@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:usdinfra/Components/property_card2.dart';
+import 'package:usdinfra/components/property_card2.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
-import '../Components/property_card.dart';
+import '../components/property_card.dart';
 import '../Customs/CustomAppBar.dart';
 import 'properties_detail_page.dart';
 
@@ -218,8 +218,11 @@ class _AllPropertiesState extends State<AllProperties> {
                                                   "${property['contactDetails']}"),
                                               child: SvgPicture.asset(
                                                 "assets/svg/whatsapp.svg",
-                                                width: 30,
+                                                width: 50,
                                               )),
+                                        ),
+                                        SizedBox(
+                                          width: 30,
                                         ),
                                         Expanded(
                                           child: GestureDetector(

@@ -78,14 +78,6 @@ class _PropertyCardState extends State<PropertyCard2> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +93,7 @@ class _PropertyCardState extends State<PropertyCard2> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -125,14 +117,18 @@ class _PropertyCardState extends State<PropertyCard2> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  formatPrice(widget.totalPrice),
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: AppFontFamily.primaryFont,
-                    color: Colors.black,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      formatPrice(widget.totalPrice),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: AppFontFamily.primaryFont,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 4),
                 Row(

@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       } else {
         Navigator.pushNamedAndRemoveUntil(
-            context, AppRouts.login, (route) => false);
+            context, AppRouts.dashBoard, (route) => false);
       }
     });
   }

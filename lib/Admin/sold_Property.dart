@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:usdinfra/Admin/adminappbar.dart';
+import 'package:usdinfra/admin/adminappbar.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
@@ -14,10 +14,8 @@ class SoldPropertiesPage extends StatefulWidget {
 class _SoldPropertiesPageState extends State<SoldPropertiesPage> {
   @override
   Widget build(BuildContext context) {
-    double screenHeight =
-        MediaQuery.of(context).size.height; // 🔥 Get screen height
-    double screenWidth =
-        MediaQuery.of(context).size.width; // 🔥 Get screen width
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: Colors.white,

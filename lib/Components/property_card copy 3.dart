@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -42,12 +43,6 @@ class PropertyCard3 extends StatefulWidget {
 
 class _PropertyCard3State extends State<PropertyCard3> {
   bool isFavorited = false;
-
-  void _toggleFavorite() {
-    setState(() {
-      isFavorited = !isFavorited;
-    });
-  }
 
   String getShortTitle(String title) {
     return title.length > 18 ? '${title.substring(0, 18)}...' : title;
@@ -103,19 +98,22 @@ class _PropertyCard3State extends State<PropertyCard3> {
                         items: widget.imageUrl.map((url) {
                           return ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              url,
+                            child: CachedNetworkImage(
+                              imageUrl: url,
                               height: screenWidth * 0.4,
                               width: screenWidth * 0.6,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey[300],
-                                  child: const Center(
-                                    child: Icon(Icons.error, color: Colors.red),
-                                  ),
-                                );
-                              },
+                              placeholder: (context, url) => Container(
+                                color: Colors.grey[200],
+                                child: const Center(
+                                    child: CircularProgressIndicator()),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                color: Colors.grey[300],
+                                child: const Center(
+                                  child: Icon(Icons.error, color: Colors.red),
+                                ),
+                              ),
                             ),
                           );
                         }).toList(),

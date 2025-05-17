@@ -7,6 +7,7 @@ class PlotAreaInputField extends StatelessWidget {
   final String selectedUnit;
   final List<String> units;
   final ValueChanged<String?> onUnitChanged;
+  final Map<String, dynamic> formdata;
 
   const PlotAreaInputField({
     super.key,
@@ -14,6 +15,7 @@ class PlotAreaInputField extends StatelessWidget {
     required this.selectedUnit,
     required this.units,
     required this.onUnitChanged,
+    required this.formdata,
   });
 
   @override
@@ -25,7 +27,9 @@ class PlotAreaInputField extends StatelessWidget {
         children: [
           const SizedBox(height: 8),
           Text(
-            'Plot Area',
+            formdata["propertyCategory"] == "Plot/Land"
+                ? 'Plot Area'
+                : "Add Area Details",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,

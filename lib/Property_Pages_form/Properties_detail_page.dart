@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:usdinfra/Admin/ExpandableDescription.dart';
 import 'package:usdinfra/Components/inquiry_form.dart';
 import 'package:usdinfra/Customs/CustomAppBar.dart';
+import 'package:usdinfra/admin/expandable_description.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
 
@@ -92,7 +92,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
   }
 
   void _launchWhatsApp() async {
-    final url = "https://wa.me/$whatsappNumber";
+    final url = "https://wa.me/${propertyData?["contactDetails"]}";
     // if (await canLaunchUrl(Uri.parse(url))) {
     await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
     // }
@@ -476,8 +476,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                     // _infoRow("Ownership Type",
                     //     propertyData?['ownershipType'] ?? 'N/A'),
                     _infoRow("Owner", propertyData?['ownerName'] ?? 'N/A'),
-                    _infoRow(
-                        "Contact", propertyData?['contactDetails'] ?? 'N/A'),
+                    _infoRow("Contact", propertyData?['dealerType'] ?? 'N/A'),
                   ]),
                   const SizedBox(height: 8),
                 ],

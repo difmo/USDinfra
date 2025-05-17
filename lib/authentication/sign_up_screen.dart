@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
-import '../Controllers/authentication_controller.dart';
+import '../controllers/authentication_controller.dart';
 import '../Customs/custom_textfield.dart';
 import '../routes/app_routes.dart';
 
@@ -140,10 +140,10 @@ class _SignupPageState extends State<SignupPage> {
         'name': name,
         'email': email,
         'mobile': mobile,
-        'passWord': password,
+        // 'passWord': password,
         'role': 'isUser',
         'dealerType': selectedRole.toLowerCase(),
-        'confirmpassWord': confirmPassword,
+        // 'confirmpassWord': confirmPassword,
         'favoriteProperties': [],
         'purchesedProperties': [],
         'createdAt': FieldValue.serverTimestamp(),

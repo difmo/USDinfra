@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:usdinfra/Admin/adminappbar.dart';
+import 'package:usdinfra/admin/adminappbar.dart';
 import 'package:usdinfra/Property_Pages_form/properties_detail_page.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import '../routes/app_routes.dart';

@@ -28,16 +28,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          height: screenSize.height * 0.0055,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [AppColors.primary, AppColors.secondry],
-            ),
-          ),
-        ),
+        // Container(
+        //   height: screenSize.height * 0.0055,
+        //   decoration: const BoxDecoration(
+        //     gradient: LinearGradient(
+        //       begin: Alignment.topLeft,
+        //       end: Alignment.bottomRight,
+        //       colors: [AppColors.primary, AppColors.secondry],
+        //     ),
+        //   ),
+        // ),
         Container(
           height: kToolbarHeight,
           color: Colors.white,

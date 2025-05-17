@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:usdinfra/configs/font_family.dart';
+import 'package:usdinfra/controllers/user_controller.dart';
+import 'package:usdinfra/model/user_modal.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../../configs/app_colors.dart';
 import 'form_page_3_components/image_upload.dart';
@@ -32,6 +34,7 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
   final List<String> furnishingOptions = [];
   List<File> selectedImages = [];
   List<String> uploadedImageUrls = [];
+  UserController _userController = UserController();
 
   Future<List<String>> uploadImagesToFirebase(
       List<File> images, String docId) async {
@@ -59,6 +62,9 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
   }
 
   Future<void> saveToProperties() async {
+    UserModel? userdata = await _userController.fetchCurrentUserData();
+    print("hello");
+    print(userdata?.role);
     setState(() {
       isLoading = true;
     });
@@ -134,13 +140,18 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
         'openParking': openParking,
         'createdBy': userId,
         'ownerName': name,
+        'dealerType': userdata?.dealerType
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Property details updated successfully!")),
       );
 
-      Navigator.pushNamed(context, AppRouts.dashBoard);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRouts.dashBoard,
+        (route) => isApproved,
+      );
     } catch (e) {
       print("Error updating property: $e");
       ScaffoldMessenger.of(context).showSnackBar(
