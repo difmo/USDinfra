@@ -6,10 +6,11 @@ import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:usdinfra/Components/double_tab_toexit.dart';
 import 'package:usdinfra/Components/home_services_section.dart';
-import 'package:usdinfra/Components/property_card%20copy%203.dart';
 import 'package:usdinfra/Customs/custom_app_bar.dart';
 import 'package:usdinfra/Property_Pages_form/properties_detail_page.dart';
 import 'package:usdinfra/bottom_navigation/bottom_navigation.dart';
+import 'package:usdinfra/components/popular_builders.dart';
+import 'package:usdinfra/components/property_card3.dart';
 import 'package:usdinfra/controllers/user_controller.dart';
 import 'package:usdinfra/model/user_modal.dart';
 import 'package:usdinfra/user_pages/dash_bordP2.dart';
@@ -17,7 +18,6 @@ import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 import '../Components/cerosoule.dart';
-import '../Components/property_card.dart';
 import '../Customs/drawer.dart';
 
 class HomeDashBoard extends StatefulWidget {
@@ -379,6 +379,8 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                                             propertyCategory:
                                                 property['propertyCategory'],
                                             totalPrice: property['totalPrice'],
+                                            floorPlan: property['floorPlan'] ??
+                                                "this is",
                                           ),
                                         ),
                                         Positioned(
@@ -432,11 +434,54 @@ class _HomeDashBoard extends State<HomeDashBoard> {
                 //   height: screenHeight * 0.27,
                 //   child: FeedbackSection(),
                 // ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Popular Builders",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: 220,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              _buildPopularBuilderCard(
+                                imageUrl:
+                                    'https://www.axiomlandbase.in/wp-content/uploads/2019/06/signature-global.png',
+                                name: 'Signature Global',
+                                description:
+                                    'Specializes in residential and commercial projects. Trusted by thousands of families',
+                              ),
+                              _buildPopularBuilderCard(
+                                imageUrl:
+                                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9p3r57iOm-M7cvc93nAH-Pqh8DcHyTBy3mA&s',
+                                name: 'Rishita',
+                                description:
+                                    'Expert in luxury apartments and premium homes, delivering quality with elegance',
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
-                const SizedBox(height: 24),
                 // ============================
                 // ⭐ Rating System
                 // ============================
+                SizedBox(
+                  height: 24,
+                ),
                 GestureDetector(
                   onTap: () {
                     _launchUrl();
@@ -527,6 +572,61 @@ Widget _shimmerItem() {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
       ),
+    ),
+  );
+}
+
+Widget _buildPopularBuilderCard({
+  required String imageUrl,
+  required String name,
+  required String description,
+}) {
+  return Container(
+    width: 180,
+    margin: const EdgeInsets.only(right: 16),
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 6,
+          offset: Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.network(
+            imageUrl,
+            height: 100,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          name,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          description,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 3,
+          style: const TextStyle(
+            fontSize: 13,
+            color: Colors.grey,
+          ),
+        ),
+      ],
     ),
   );
 }

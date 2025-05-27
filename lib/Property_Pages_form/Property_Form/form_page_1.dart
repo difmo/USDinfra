@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
+import 'package:usdinfra/utils/constants.dart';
 import '../../Controllers/authentication_controller.dart';
 import '../../Customs/CustomAppBar.dart';
 import '../Property_Form/Form_page_1_components/Contact_Details.dart';
@@ -19,7 +21,7 @@ class PropertyForm1 extends StatefulWidget {
 
 class _PropertyFormState extends State<PropertyForm1> {
   final User? user = FirebaseAuth.instance.currentUser;
-
+  AppConstants constants = new AppConstants();
   String? lookingTo;
   String? propertyType;
   String? propertyCategory;
@@ -222,6 +224,21 @@ class _PropertyFormState extends State<PropertyForm1> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                        onTap: () => constants.launchWhatsApp('+919453412826'),
+                        child: Text("Help on Whatsapp")),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    SvgPicture.asset(
+                      "assets/svg/whatsapp.svg",
+                      width: 20,
+                    ),
+                  ],
+                ),
                 Text(
                   'Add Basic Details',
                   style: TextStyle(

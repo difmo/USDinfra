@@ -14,6 +14,7 @@ class ContactUsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       appBar: CustomAppBar(title: "Contact Us"),
       body: SingleChildScrollView(
         child: Column(
@@ -61,7 +62,7 @@ class ContactUsScreen extends StatelessWidget {
     final List<Map<String, dynamic>> contactItems = [
       {
         "icon": Icons.phone,
-        "title": "+91 800 427 5740",
+        "title": "+91 945 340 2826,+91 945 341 2826",
         "subtitle": "Call us for inquiries",
         "color": Colors.blue,
       },
@@ -73,7 +74,7 @@ class ContactUsScreen extends StatelessWidget {
       },
       {
         "icon": Icons.location_on,
-        "title": "USD Unique, Delhi, India",
+        "title": "ALPHA 1 Greater Noida,Uttar Pradesh",
         "subtitle": "Visit our corporate office",
         "color": Colors.green,
       },
@@ -95,6 +96,7 @@ class ContactUsScreen extends StatelessWidget {
           Column(
             children: contactItems.map((item) {
               return Card(
+                color: AppColors.white,
                 elevation: 4,
                 margin: const EdgeInsets.symmetric(vertical: 8),
                 shape: RoundedRectangleBorder(
@@ -255,7 +257,7 @@ class ContactUsScreen extends StatelessWidget {
             borderSide: const BorderSide(color: Colors.grey),
           ),
           filled: true,
-          fillColor: Colors.grey[100],
+          fillColor: AppColors.white,
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         ),

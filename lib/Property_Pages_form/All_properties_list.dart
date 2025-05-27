@@ -23,6 +23,15 @@ class _AllPropertiesState extends State<AllProperties> {
   int _selectedIndex = 0;
   String? userId;
   List<String> favoriteProperties = [];
+  final intervals = [2000, 3000, 4000, 5000, 6000];
+  late final int interval;
+
+  @override
+  void initState() {
+    super.initState();
+    interval =
+        intervals[_selectedIndex % intervals.length]; // Cycle through intervals
+  }
 
   @override
   void didChangeDependencies() {
@@ -155,6 +164,9 @@ class _AllPropertiesState extends State<AllProperties> {
                           final property = properties[index];
                           bool isFavorite =
                               favoriteProperties.contains(property['id']);
+                          // Cycle through intervals based on index
+                          final int cardInterval =
+                              intervals[index % intervals.length];
 
                           return GestureDetector(
                             onTap: () {
@@ -172,7 +184,10 @@ class _AllPropertiesState extends State<AllProperties> {
                                 children: [
                                   SizedBox(
                                     child: PropertyCard2(
-                                      imageUrl: property['imageUrl'],
+                                      imageUrl: property['imageUrl']
+                                              is List<String>
+                                          ? property['imageUrl']
+                                          : [property['imageUrl'].toString()],
                                       expectedPrice: property['expectedPrice'],
                                       plotArea: property['plotArea'],
                                       propertyType: property['propertyType'],
@@ -187,6 +202,8 @@ class _AllPropertiesState extends State<AllProperties> {
                                       propertyCategory:
                                           property['propertyCategory'],
                                       totalPrice: property['totalPrice'],
+                                      autoPlayInterval:
+                                          cardInterval, // Pass unique interval
                                     ),
                                   ),
                                   Positioned(
@@ -206,38 +223,6 @@ class _AllPropertiesState extends State<AllProperties> {
                                       },
                                     ),
                                   ),
-                                  Positioned(
-                                    bottom: 15,
-                                    left: 300,
-                                    right: 10,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: GestureDetector(
-                                              onTap: () => _launchWhatsApp(
-                                                  "${property['contactDetails']}"),
-                                              child: SvgPicture.asset(
-                                                "assets/svg/whatsapp.svg",
-                                                width: 50,
-                                              )),
-                                        ),
-                                        SizedBox(
-                                          width: 30,
-                                        ),
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () => _makePhoneCall(
-                                                "${property['contactDetails']}"),
-                                            child: Icon(
-                                              Icons.phone,
-                                              color: Colors.blue,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                      ],
-                                    ),
-                                  ),
                                 ],
                               ),
                             ),
@@ -249,20 +234,6 @@ class _AllPropertiesState extends State<AllProperties> {
                 },
               ),
             )));
-  }
-
-  void _launchWhatsApp(String whatsappNumber) async {
-    final url = "https://wa.me/$whatsappNumber";
-    // if (await canLaunchUrl(Uri.parse(url))) {
-    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-    // }
-  }
-
-  void _makePhoneCall(String phoneNumber) async {
-    final url = "tel:$phoneNumber";
-    // if (await canLaunchUrl(Uri.parse(url))) {
-    await launchUrl(Uri.parse(url));
-    // }
   }
 
   void _showLoginDialog() {

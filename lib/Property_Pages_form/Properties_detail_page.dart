@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:usdinfra/Components/inquiry_form.dart';
-import 'package:usdinfra/Customs/CustomAppBar.dart';
+
 import 'package:usdinfra/admin/expandable_description.dart';
-import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/components/contact_bottombar.dart';
+import 'package:usdinfra/components/new_enquiry_form.dart';
 import 'package:usdinfra/configs/font_family.dart';
+import 'package:usdinfra/utils/formatters.dart';
 
 class PropertyDetailPage extends StatefulWidget {
   final String docId;
@@ -21,9 +21,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
   bool isLoading = true;
   bool hasError = false;
   int _currentIndex = 0;
-
-  final String phoneNumber = "9876543210"; // Replace with actual number
-  final String whatsappNumber = "9876543210"; // Include country code if needed
+  Formatters formatters = new Formatters();
 
   @override
   void initState() {
@@ -58,112 +56,10 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
     }
   }
 
-  String formatPrice(dynamic value) {
-    if (value == null) return "N/A";
-
-    double price = 0.0;
-
-    try {
-      if (value is String) {
-        // Remove commas before parsing
-        value = value.replaceAll(",", "");
-        price = double.parse(value);
-      } else if (value is int || value is double) {
-        price = value.toDouble();
-      } else {
-        return "N/A";
-      }
-    } catch (e) {
-      return "N/A";
-    }
-
-    if (price >= 10000000) {
-      return "₹${(price / 10000000).toStringAsFixed(2)} Cr";
-    } else if (price >= 100000) {
-      return "₹${(price / 100000).toStringAsFixed(2)} Lac";
-    } else {
-      return "₹${price.toStringAsFixed(0)}";
-    }
-  }
-
-  String capitalizeFirstLetter(String text) {
-    if (text.isEmpty) return text;
-    return text[0].toUpperCase() + text.substring(1);
-  }
-
-  void _launchWhatsApp() async {
-    final url = "https://wa.me/${propertyData?["contactDetails"]}";
-    // if (await canLaunchUrl(Uri.parse(url))) {
-    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-    // }
-  }
-
-  void _showNumberPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Contact Number"),
-        content: Text(phoneNumber),
-        actions: [
-          TextButton(
-            child: const Text("Close"),
-            onPressed: () => Navigator.of(context).pop(),
-          )
-        ],
-      ),
-    );
-  }
-
-  void _makePhoneCall() async {
-    final url = "tel:$phoneNumber";
-    // if (await canLaunchUrl(Uri.parse(url))) {
-    await launchUrl(Uri.parse(url));
-    // }
-  }
-
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController messageController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  bool _isSubmitting = false;
-
-  Future<void> submitInquiry() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() {
-      _isSubmitting = true;
-    });
-
-    try {
-      await FirebaseFirestore.instance.collection('AppContacts').add({
-        'serviceName': "Property Inquiry",
-        'email': emailController.text,
-        'name': nameController.text,
-        'mobile': phoneController.text,
-        'message': messageController.text,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Inquiry submitted successfully')),
-      );
-
-      nameController.clear();
-      emailController.clear();
-      phoneController.clear();
-      messageController.clear();
-      Navigator.pop(context);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error submitting inquiry')),
-      );
-    } finally {
-      setState(() {
-        _isSubmitting = false;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +88,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                   Row(
                     children: [
                       Text(
-                        formatPrice(propertyData?['totalPrice']),
+                        formatters.formatPrice(propertyData?['totalPrice']),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -207,7 +103,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                     height: 4,
                   ),
                   Text(
-                    capitalizeFirstLetter(
+                    formatters.capitalizeFirstLetter(
                         propertyData?['title']?.toString() ?? 'N/A'),
                     style: const TextStyle(
                       fontSize: 18,
@@ -387,20 +283,8 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-
-                  // _sectionCard("", [
-                  //   _infoRow(
-                  //       "Property For", propertyData?['lookingTo'] ?? 'N/A'),
-                  //   _infoRow("Property Type",
-                  //       propertyData?['propertyType'] ?? 'N/A'),
-                  //   _infoRow("Property Category",
-                  //       propertyData?['propertyCategory'] ?? 'N/A'),
-                  //   _infoRow(
-                  //       "Status", propertyData?['availabilityStatus'] ?? 'N/A',
-                  //       highlight: true),
-                  // ]),
-                  // const SizedBox(height: 16),
+                  if (propertyData?['propertyCategory'] == "Apartment")
+                    _propertyInfoHeader(),
 
                   _sectionCard("Approval Details", [
                     _infoRow("Loan Availability",
@@ -446,11 +330,45 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                             'facing', '${propertyData?['facing'] ?? 'N/A'}'),
                         propertyDetailRow('No. of Open Sides',
                             '${propertyData?['noOfOpenSides'] ?? 'N/A'}'),
+                        if (propertyData?['propertyCategory'] != "Plot/Land")
+                          Divider(),
+
+                        if (propertyData?['propertyCategory'] != "Plot/Land")
+                          Column(
+                            children: [
+                              propertyDetailRow('Covered Parking',
+                                  '${propertyData?['coveredparking'] ?? 'N/A'}'),
+                              propertyDetailRow('Open Parking',
+                                  '${propertyData?['openparking'] ?? 'N/A'}'),
+                              propertyDetailRow('Balconies',
+                                  '${propertyData?['balconies'] ?? 'N/A'}'),
+                              propertyDetailRow('Other Rooms',
+                                  '${propertyData?['otherRooms'] ?? 'N/A'}'),
+                              propertyDetailRow('Furnishing',
+                                  '${propertyData?['furnishing'] ?? 'N/A'}'),
+                            ],
+                          ),
+                        // _addressSection(),
                       ],
                     ),
                   ),
 
                   //_addressSection(),
+                  if (propertyData?['propertyCategory'] != "Plot/Land")
+                    _multiAmenitiesSection("Furnishing Details", {
+                      "Furnishings": propertyData?['furnishingDetails'] != null
+                          ? (propertyData!['furnishingDetails']
+                                  as Map<String, dynamic>)
+                              .entries
+                              .where((e) =>
+                                  e.value is num &&
+                                  (e.value as num) > 0 &&
+                                  e.key != 'type')
+                              .map((e) => "${e.key}: ${e.value}")
+                              .toList()
+                          : [],
+                    }),
+
                   _multiAmenitiesSection("Available Amenities", {
                     "Amenities":
                         List<String>.from(propertyData?['amenities'] ?? []),
@@ -487,217 +405,12 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
               height: 16,
             ),
             // _bottomPurchaseSection(),
-
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    // =======================
-                    // 👤 Name Field
-                    // =======================
-                    TextFormField(
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        labelText: 'Your Name',
-                        prefixIcon:
-                            const Icon(Icons.person, color: Colors.blue),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-
-                    // =======================
-                    // ✉️ Email Field
-                    // =======================
-                    TextFormField(
-                      controller: emailController,
-                      decoration: InputDecoration(
-                        labelText: 'Email Address',
-                        prefixIcon:
-                            const Icon(Icons.email, color: Colors.deepOrange),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        } else if (!RegExp(
-                                r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-                            .hasMatch(value)) {
-                          return 'Enter a valid email address';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-
-                    // =======================
-                    // 📱 Phone Field
-                    // =======================
-                    TextFormField(
-                      controller: phoneController,
-                      decoration: InputDecoration(
-                        labelText: 'Phone Number',
-                        prefixIcon:
-                            const Icon(Icons.phone, color: Colors.green),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      keyboardType: TextInputType.phone,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your phone number';
-                        } else if (!RegExp(r'^\d{10}$').hasMatch(value)) {
-                          return 'Enter a valid 10-digit phone number';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-
-                    // =======================
-                    // 📝 Message Field
-                    // =======================
-                    TextFormField(
-                      controller: messageController,
-                      decoration: InputDecoration(
-                        labelText: 'Message',
-                        prefixIcon:
-                            const Icon(Icons.message, color: Colors.orange),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      maxLines: 3,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your message';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 24),
-
-                    // =======================
-                    // 🚀 Submit Button
-                    // =======================
-                    SizedBox(
-                      width: 200,
-                      height: 32,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        onPressed: _isSubmitting ? null : submitInquiry,
-                        child: _isSubmitting
-                            ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
-                            : const Text(
-                                "Submit Inquiry",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              ),
-            )
+            NewEnquiryForm(),
           ],
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        child: Row(
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: _launchWhatsApp,
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.primary, width: 1),
-                    borderRadius: const BorderRadius.all(Radius.circular(16)),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.message, color: Colors.green),
-                      SizedBox(width: 8),
-                      Text("WhatsApp", textAlign: TextAlign.center),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: GestureDetector(
-                onTap: () => _showNumberPopup(context),
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    border: Border.all(color: AppColors.primary, width: 1),
-                    borderRadius: const BorderRadius.all(Radius.circular(16)),
-                  ),
-                  child: const Text(
-                    "View Number",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: AppColors.white),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: _makePhoneCall,
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  border: Border.all(color: AppColors.primary, width: 1),
-                  borderRadius: const BorderRadius.all(Radius.circular(16)),
-                ),
-                child: const Icon(Icons.call, color: AppColors.white, size: 20),
-              ),
-            ),
-            const SizedBox(width: 8),
-          ],
-        ),
-      ),
+          child: ContactBottombar(num: propertyData?['contactDetails'])),
     );
   }
 
@@ -708,6 +421,12 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Column(
+            children: [
+              const Icon(Icons.home),
+              Text("${propertyData?['floorPlan'] ?? 'N/A'} ")
+            ],
+          ),
           Column(
             children: [
               const Icon(Icons.bed),
@@ -800,26 +519,6 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                 );
               }).toList(),
             ),
-            // Positioned(
-            //   top: 10,
-            //   right: 10,
-            //   child: Container(
-            //     padding: const EdgeInsets.all(12),
-            //     decoration: BoxDecoration(
-            //       color: Colors.black54,
-            //       borderRadius: BorderRadius.circular(8),
-            //     ),
-            //     child: Text(
-            //       "Rs. ${propertyData?['expectedPrice'] ?? "N/A"}",
-            //       style: TextStyle(
-            //         fontSize: 18,
-            //         fontWeight: FontWeight.bold,
-            //         color: Colors.white,
-            //         fontFamily: AppFontFamily.primaryFont,
-            //       ),
-            //     ),
-            //   ),
-            // ),
             Positioned(
               bottom: 10,
               right: 10,
@@ -842,97 +541,6 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
           ],
         );
       },
-    );
-  }
-
-  Widget _addressSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Address",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              fontFamily: AppFontFamily.primaryFont,
-            ),
-          ),
-          const SizedBox(height: 8),
-          _infoRow("City", propertyData?['city'] ?? "N/A"),
-          _infoRow("Locality", propertyData?['locality'] ?? "N/A"),
-          _infoRow("Sub Locality", propertyData?['subLocality'] ?? "N/A"),
-          const SizedBox(height: 10),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: ElevatedButton(
-              onPressed: () {
-                String city = propertyData?['city'] ?? '';
-                String locality = propertyData?['locality'] ?? '';
-                String subLocality = propertyData?['subLocality'] ?? '';
-                String address = "$subLocality, $locality, $city";
-                if (address.isNotEmpty) {
-                  final url = 'https://www.google.com/maps/search/?q=$address';
-                  launch(
-                      url); // Make sure to import url_launcher and set it up.
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.secondry,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-              child: Text(
-                "View on Map",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontFamily: AppFontFamily.primaryFont,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _bottomPurchaseSection() {
-    return Padding(
-      padding: const EdgeInsets.only(
-          left: 16.0, right: 16.0, bottom: 16.0, top: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "Total: Rs/- ${propertyData?['totalPrice'] ?? 'N/A'}",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-            ),
-            child: const Text(
-              "Buy Now",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -985,11 +593,6 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Text(
-                    //   entry.key,
-                    //   style:
-                    //       TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                    // ),
                     Chip(
                       label:
                           Text(amenities.isNotEmpty ? amenities.first : 'N/A'),
@@ -1016,7 +619,7 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                         );
                       }).toList(),
                     ),
-                    const SizedBox(height: 16),
+                    // const SizedBox(height: 16),
                   ],
                 );
         }).toList(),
@@ -1025,8 +628,3 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
     );
   }
 }
-
-
-
-
-// fhdsjkfhsdkjfskdjfdkjheuireuif h

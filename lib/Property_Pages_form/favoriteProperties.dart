@@ -2,11 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:usdinfra/Components/property_card2.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
-import '../Components/property_card.dart';
 import '../Customs/CustomAppBar.dart';
 import 'properties_detail_page.dart';
 
@@ -14,89 +12,116 @@ class FavoritePropertiesPage extends StatefulWidget {
   const FavoritePropertiesPage({super.key});
 
   @override
-  State<FavoritePropertiesPage> createState() => _AllPropertiesState();
+  State<FavoritePropertiesPage> createState() => _FavoritePropertiesPageState();
 }
 
-class _AllPropertiesState extends State<FavoritePropertiesPage> {
-  int _selectedIndex = 0;
+class _FavoritePropertiesPageState extends State<FavoritePropertiesPage> {
   String? userId;
-  List<String> favoriteProperties = [];
   List<String> favoritePropertyIds = [];
   final User? user = FirebaseAuth.instance.currentUser;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _fetchFavoritePropertyIds();
   }
 
   Future<void> _fetchFavoritePropertyIds() async {
     if (user == null) return;
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance
-        .collection('AppUsers')
-        .doc(user!.uid)
-        .get();
-    if (userDoc.exists) {
-      Map<String, dynamic>? data = userDoc.data() as Map<String, dynamic>?;
-
-      setState(() {
-        favoritePropertyIds =
-            List<String>.from(data?['favoriteProperties'] ?? []);
-      });
-    }
-  }
-
-  Future<void> removeFavorite(String propertyId) async {
-    if (user != null) {
-      await FirebaseFirestore.instance
-          .collection('AppUsers')
-          .doc(user!.uid)
-          .update({
-        'favoriteProperties': FieldValue.arrayRemove([propertyId])
-      });
-
-      setState(() {
-        favoritePropertyIds.remove(propertyId);
-      });
-    }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _getCurrentUserFavorites();
-  }
-
-  Future<void> _getCurrentUserFavorites() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      userId = user.uid;
+    try {
       final doc = await FirebaseFirestore.instance
           .collection("AppUsers")
-          .doc(userId)
+          .doc(user!.uid)
           .get();
       if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>? ?? {};
+        final List<dynamic> favoritesRaw = data['favoriteProperties'] ?? [];
+        final List<String> ids = favoritesRaw.map((e) => e.toString()).toList();
+        if (mounted) {
+          setState(() {
+            userId = user!.uid;
+            favoritePropertyIds = ids;
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching favoritePropertyIds: $e');
+    }
+  }
+
+  Future<void> _toggleFavorite(String propertyId) async {
+    if (user == null) {
+      _showLoginDialog();
+      return;
+    }
+
+    final docRef =
+        FirebaseFirestore.instance.collection("AppUsers").doc(userId);
+    final isFavorite = favoritePropertyIds.contains(propertyId);
+
+    try {
+      await docRef.update({
+        "favoriteProperties": isFavorite
+            ? FieldValue.arrayRemove([propertyId])
+            : FieldValue.arrayUnion([propertyId])
+      });
+      if (mounted) {
         setState(() {
-          favoriteProperties =
-              List<String>.from(doc.data()?['favoriteProperties'] ?? []);
+          isFavorite
+              ? favoritePropertyIds.remove(propertyId)
+              : favoritePropertyIds.add(propertyId);
         });
       }
+    } catch (e) {
+      debugPrint("Error updating favorite list: $e");
     }
+  }
+
+  void _showLoginDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('You need to log in'),
+        content: const Text('Log in to add properties to favorites.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, AppRouts.login);
+            },
+            child: const Text('Log In'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _shimmerLoading() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: ListView.builder(
+        itemCount: 5,
+        itemBuilder: (_, __) => Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Container(height: 100, color: Colors.white),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return SafeArea(
-        child: Scaffold(
-            backgroundColor: Colors.white,
-            appBar: CustomAppBar(
-              title: 'Favorite Properties',
-            ),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: StreamBuilder<QuerySnapshot>(
+      child: Scaffold(
+        appBar: CustomAppBar(title: "Favorite Properties"),
+        body: favoritePropertyIds.isEmpty
+            ? const Center(child: Text('No favorite properties'))
+            : StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection("AppProperties")
                     .where('isDeleted', isEqualTo: false)
@@ -106,255 +131,59 @@ class _AllPropertiesState extends State<FavoritePropertiesPage> {
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: _shimmerLoading());
-                  }
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return Align(
-                      alignment: Alignment.center,
-                      child: Text('No properties available'),
-                    );
+                    return _shimmerLoading();
                   }
 
-                  final List<Future<Map<String, dynamic>>> futureProperties =
-                      snapshot.data!.docs.map((doc) async {
-                    final data = doc.data() as Map<String, dynamic>? ?? {};
-                    final subCollectionSnapshot = await FirebaseFirestore
-                        .instance
-                        .collection("AppProperties")
-                        .doc(doc.id)
-                        .collection("form1Data")
-                        .get();
-                    final List<Map<String, dynamic>> form1DataList =
-                        subCollectionSnapshot.docs.map((subDoc) {
-                      return subDoc.data();
-                    }).toList();
+                  if (snapshot.hasError ||
+                      !snapshot.hasData ||
+                      snapshot.data!.docs.isEmpty) {
+                    return const Center(child: Text("No matching properties."));
+                  }
 
-                    final createdAtTimestamp = data['createdAt'] as Timestamp?;
-                    final DateTime createdAtDate =
-                        createdAtTimestamp?.toDate() ?? DateTime.now();
-                    final int daysAgo =
-                        DateTime.now().difference(createdAtDate).inDays;
-                    final String createdAtString =
-                        daysAgo > 0 ? '$daysAgo days' : 'Today';
+                  final properties = snapshot.data!.docs;
 
-                    return {
-                      'id': doc.id,
-                      'imageUrl': data['imageUrl']?[0] ??
-                          'https://media.istockphoto.com/id/1323734125/photo/worker-in-the-construction-site-making-building.jpg?s=612x612&w=0&k=20&c=b_F4vFJetRJu2Dk19ZfVh-nfdMfTpyfm7sln-kpauok=',
-                      'expectedPrice': data['expectedPrice'] ?? '₹ 80 Lac',
-                      'plotArea': data['plotArea'] ?? '1850 Sqft',
-                      'propertyType': data['propertyType'] ?? '2 BHK Flat',
-                      'city': data['city'] ?? 'Sector 10 Greater Noida West',
-                      'createdAt': createdAtString,
-                      'title': data['title'] ?? 'Godrej Aristocrat',
-                      'propertyStatus':
-                          data['availabilityStatus'] ?? 'Ready to move',
-                      'propertyCategory': data['propertyCategory'] ?? 'Plat',
-                      'locality': data['locality'] ?? 'Lucknow',
-                      'totalPrice': data['totalPrice'] ?? '100000',
-                      'contactDetails': data['contactDetails'] ?? '8875673210',
-                      'form1Data': form1DataList,
-                    };
-                  }).toList();
+                  return ListView.builder(
+                    itemCount: properties.length,
+                    itemBuilder: (context, index) {
+                      final doc = properties[index];
+                      final data = doc.data() as Map<String, dynamic>;
+                      final imageUrl = (data['imageUrl'] is List &&
+                              data['imageUrl'].isNotEmpty)
+                          ? data['imageUrl'][0]
+                          : 'https://via.placeholder.com/150';
 
-                  return FutureBuilder<List<Map<String, dynamic>>>(
-                    future: Future.wait(futureProperties),
-                    builder: (context, asyncSnapshot) {
-                      if (asyncSnapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return Center(child: _shimmerLoading());
-                      }
-                      if (asyncSnapshot.hasError) {
-                        return Center(
-                            child: Text(
-                          'Error: ${asyncSnapshot.error}',
-                          style:
-                              TextStyle(fontFamily: AppFontFamily.primaryFont),
-                        ));
-                      }
-                      if (!asyncSnapshot.hasData ||
-                          asyncSnapshot.data!.isEmpty) {
-                        return Center(
-                            child: Text(
-                          'No properties available',
-                          style:
-                              TextStyle(fontFamily: AppFontFamily.primaryFont),
-                        ));
-                      }
+                      final isFavorite = favoritePropertyIds.contains(doc.id);
 
-                      final properties = asyncSnapshot.data!;
-
-                      return ListView.builder(
-                        itemCount: properties.length,
-                        itemBuilder: (context, index) {
-                          final property = properties[index];
-                          bool isFavorite =
-                              favoriteProperties.contains(property['id']);
-
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      PropertyDetailPage(docId: property['id']),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 16),
-                              child: Stack(
-                                children: [
-                                  SizedBox(
-                                    height: screenHeight * 0.4,
-                                    child: PropertyCard2(
-                                      imageUrl: property['imageUrl'],
-                                      expectedPrice: property['expectedPrice'],
-                                      plotArea: property['plotArea'],
-                                      propertyType: property['propertyType'],
-                                      city: property['city'],
-                                      createdAt: property['createdAt'],
-                                      title: property['title'],
-                                      propertyStatus:
-                                          property['propertyStatus'],
-                                      contactDetails:
-                                          property['contactDetails'],
-                                      location: property['locality'],
-                                      propertyCategory:
-                                          property['propertyCategory'],
-                                      totalPrice: property['totalPrice'],
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: 10,
-                                    right: 10,
-                                    child: IconButton(
-                                      icon: Icon(
-                                        isFavorite
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color: isFavorite
-                                            ? Colors.red
-                                            : Colors.grey,
-                                      ),
-                                      onPressed: () {
-                                        _toggleFavorite(property['id']);
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
+                      return Card(
+                        margin: const EdgeInsets.all(10),
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      PropertyDetailPage(docId: doc.id)),
+                            );
+                          },
+                          leading: Image.network(imageUrl,
+                              width: 60, height: 60, fit: BoxFit.cover),
+                          title: Text(data['title'] ?? 'Unnamed'),
+                          subtitle: Text(data['city'] ?? 'Unknown'),
+                          trailing: IconButton(
+                            icon: Icon(
+                              isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: isFavorite ? Colors.red : Colors.grey,
                             ),
-                          );
-                        },
+                            onPressed: () => _toggleFavorite(doc.id),
+                          ),
+                        ),
                       );
                     },
                   );
                 },
               ),
-            )));
-  }
-
-  void _showLoginDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: const Text('You need to log in!'),
-        content:
-            const Text('Please log in to add properties to your favorites.'),
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.secondry,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(22)),
-                ),
-                child: const Text('Cancel',
-                    style: TextStyle(fontSize: 16, color: Colors.white)),
-              ),
-              ElevatedButton(
-                onPressed: () => Navigator.pushNamed(context, AppRouts.login),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(22)),
-                ),
-                child: const Text('Log In',
-                    style: TextStyle(fontSize: 16, color: Colors.white)),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _toggleFavorite(String propertyId) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      _showLoginDialog();
-      return;
-    }
-    if (userId == null) return;
-
-    final docRef =
-        FirebaseFirestore.instance.collection("AppUsers").doc(userId);
-    bool isCurrentlyFavorite = favoriteProperties.contains(propertyId);
-
-    setState(() {
-      if (isCurrentlyFavorite) {
-        favoriteProperties.remove(propertyId);
-      } else {
-        favoriteProperties.add(propertyId);
-      }
-    });
-
-    try {
-      await docRef.update({"favoriteProperties": favoriteProperties});
-    } catch (e) {
-      setState(() {
-        if (isCurrentlyFavorite) {
-          favoriteProperties.add(propertyId);
-        } else {
-          favoriteProperties.remove(propertyId);
-        }
-      });
-      print("Error updating favorites: $e");
-    }
-  }
-
-  Widget _shimmerLoading() {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: Column(
-        children: List.generate(5, (index) => _shimmerItem()),
-      ),
-    );
-  }
-
-  Widget _shimmerItem() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
-        width: double.infinity,
-        height: 100,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
       ),
     );
   }

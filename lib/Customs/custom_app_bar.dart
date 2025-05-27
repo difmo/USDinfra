@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:usdinfra/components/blynk_text.dart';
 import 'package:usdinfra/configs/app_colors.dart';
+import 'package:usdinfra/configs/app_text_style.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
 
@@ -53,18 +55,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   onPressed: () => scaffoldKey.currentState?.openDrawer(),
                 ),
                 Text("USD ",
-                    style: TextStyle(
-                      fontSize: 21,
-                      fontWeight: FontWeight.w900,
-                      color: Color.fromARGB(255, 247, 113, 3),
-                      fontFamily: AppFontFamily.primaryFont,
+                    style: AppTextStyle.Text18700.copyWith(
+                      color: Color.fromARGB(255, 235, 106, 0),
                     )),
                 Text("Unique",
-                    style: TextStyle(
-                      fontSize: 21,
-                      fontWeight: FontWeight.w900,
+                    style: AppTextStyle.Text18700.copyWith(
                       color: Color.fromARGB(255, 27, 3, 247),
-                      fontFamily: AppFontFamily.primaryFont,
                     )),
                 Spacer(),
                 const SizedBox(width: 32),
@@ -98,14 +94,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     fontFamily: AppFontFamily.primaryFont,
                                   ),
                                 ),
-                                Text(
-                                  'FREE ',
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    fontFamily: AppFontFamily.primaryFont,
-                                  ),
+                                BlinkingText(
+                                  color: Colors.green,
+                                  text: "FREE",
                                 ),
                               ],
                             ),

@@ -21,21 +21,24 @@ class PropertyCard3 extends StatefulWidget {
   final String location;
   final String propertyCategory;
   final String totalPrice;
-  const PropertyCard3(
-      {super.key,
-      required this.imageUrl,
-      required this.expectedPrice,
-      required this.plotArea,
-      required this.propertyType,
-      required this.city,
-      required this.createdAt,
-      required this.title,
-      required this.propertyStatus,
-      required this.contactDetails,
-      this.showButtons = true,
-      this.location = '',
-      this.propertyCategory = "",
-      this.totalPrice = '0.0'});
+  final String floorPlan;
+  const PropertyCard3({
+    super.key,
+    required this.imageUrl,
+    required this.expectedPrice,
+    required this.plotArea,
+    required this.propertyType,
+    required this.city,
+    required this.createdAt,
+    required this.title,
+    required this.propertyStatus,
+    required this.contactDetails,
+    this.showButtons = true,
+    this.location = '',
+    this.propertyCategory = "",
+    this.totalPrice = '0.0',
+    required this.floorPlan,
+  });
 
   @override
   _PropertyCard3State createState() => _PropertyCard3State();
@@ -164,7 +167,9 @@ class _PropertyCard3State extends State<PropertyCard3> {
                         ),
                       ),
                       Text(
-                        "${widget.propertyCategory} in ${widget.location}",
+                        widget.propertyCategory != "Plot/Land"
+                            ? "${widget.propertyCategory}  Flat in  ${widget.location}"
+                            : "${widget.propertyCategory}  in ${widget.location}",
                         maxLines: 1,
                         style: TextStyle(
                           overflow: TextOverflow.ellipsis,

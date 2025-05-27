@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:usdinfra/components/blynk_text.dart';
+import 'package:usdinfra/components/popular_builders.dart';
 import 'package:usdinfra/user_pages/offering_page.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
@@ -213,13 +215,22 @@ class PostPropertySection extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     alignment: Alignment.center,
-                    child: Text(
-                      "Post Property for FREE",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: AppFontFamily.primaryFont,
-                      ),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Post Property for ",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: AppFontFamily.primaryFont,
+                          ),
+                        ),
+                        BlinkingText(
+                          color: Colors.green,
+                          text: "FREE",
+                          duration: Duration(milliseconds: 100),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -530,9 +541,12 @@ class PopularCitiesSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(
+              height: 10,
+            ),
             Text("Explore popular cities",
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
                   fontFamily: AppFontFamily.primaryFont,
                 )),

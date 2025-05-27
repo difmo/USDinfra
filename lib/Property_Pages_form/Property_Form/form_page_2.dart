@@ -33,6 +33,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
   String? propertyAge; // New field
   String? facingDirection; // New field
   String? furnishingStatus; // New field
+  String? floorPlan;
   bool isLoading = false;
   String _selectedUnit = 'SQFT';
   final List<String> _units = ['SQFT', 'SQYD', 'SQMD'];
@@ -196,6 +197,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
         'plotArea': controllers.plotAreaController.text,
         'availabilityStatus': availabilityStatus,
         'ownershipType': ownershipType,
+        'floorPlan': floorPlan,
         'totalPrice': controllers.totalexpectedPriceController.text,
         'expectedPrice': '₹ ${controllers.expectedPriceController.text}/SQFT',
         'loanAvailable': loanAvailable,
@@ -336,10 +338,10 @@ class _PropertyForm2State extends State<PropertyForm2> {
               CustomSelector(
                 title: 'Select Your Floor Plan (optional)',
                 options: AppConstants.floorPlanOptions,
-                selectedOption: ownershipType,
+                selectedOption: floorPlan,
                 onOptionSelected: (value) {
                   setState(() {
-                    ownershipType = value;
+                    floorPlan = value;
                   });
                 },
               ),
@@ -445,7 +447,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
                     },
                   ),
                   IncrementDecrement(
-                    lable: "Closed Parking",
+                    lable: "Open Parking",
                     onChanged: (value) {
                       setState(() {
                         widget.formData['openparking'] = value.toString();

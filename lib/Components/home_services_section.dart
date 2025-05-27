@@ -60,8 +60,6 @@ class _HomeServicesSectionState extends State<HomeServicesSection> {
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             crossAxisCount: 2,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
             children: [
               ServiceItem(
                 title: "Home Painting",
@@ -85,7 +83,6 @@ class _HomeServicesSectionState extends State<HomeServicesSection> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
           const Text(
             "New Launches",
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),

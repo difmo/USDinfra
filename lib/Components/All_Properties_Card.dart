@@ -11,6 +11,7 @@ class AllPropertyCard extends StatelessWidget {
   final String title;
 
   // final String ownership;
+  
 
   const AllPropertyCard({
     super.key,

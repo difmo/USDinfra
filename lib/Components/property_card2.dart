@@ -1,11 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:usdinfra/configs/app_text_style.dart';
 import 'package:usdinfra/configs/font_family.dart';
-import '../configs/app_colors.dart';
+import 'package:usdinfra/utils/constants.dart';
+import 'package:usdinfra/utils/formatters.dart';
 
 class PropertyCard2 extends StatefulWidget {
-  final String imageUrl;
+  final List<String> imageUrl;
   final String expectedPrice;
   final String plotArea;
   final String propertyType;
@@ -18,6 +21,7 @@ class PropertyCard2 extends StatefulWidget {
   final String location;
   final String propertyCategory;
   final String totalPrice;
+  final int autoPlayInterval; // New parameter for custom interval
 
   const PropertyCard2({
     super.key,
@@ -34,6 +38,7 @@ class PropertyCard2 extends StatefulWidget {
     this.location = '',
     this.propertyCategory = "",
     this.totalPrice = '0.0',
+    this.autoPlayInterval = 3000, // Default value
   });
 
   @override
@@ -42,30 +47,11 @@ class PropertyCard2 extends StatefulWidget {
 
 class _PropertyCardState extends State<PropertyCard2> {
   bool isFavorited = false;
-
-  void _toggleFavorite() {
-    setState(() {
-      isFavorited = !isFavorited;
-    });
-  }
+  Formatters formatters = new Formatters();
+  AppConstants appConstants = new AppConstants();
 
   String getShortTitle(String title) {
     return title.length > 18 ? '${title.substring(0, 18)}...' : title;
-  }
-
-  void _callOwner() async {
-    String phoneNumber = widget.contactDetails.trim();
-    phoneNumber = phoneNumber.replaceAll(' ', '');
-
-    final Uri phoneUri = Uri.parse("tel:$phoneNumber");
-
-    if (await canLaunchUrlString(phoneUri.toString())) {
-      await launchUrl(phoneUri, mode: LaunchMode.externalApplication);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not launch dialer')),
-      );
-    }
   }
 
   @override
@@ -82,16 +68,48 @@ class _PropertyCardState extends State<PropertyCard2> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-            child: Image.network(
-              widget.imageUrl,
+          CarouselSlider(
+            options: CarouselOptions(
               height: screenWidth * 0.4,
-              width: double.infinity,
-              fit: BoxFit.cover,
+              autoPlay: true, // Auto-scroll for a better UX
+              enlargeCenterPage: true,
+              autoPlayInterval: Duration(
+                  milliseconds: widget.autoPlayInterval), // Use custom interval
+              enableInfiniteScroll: true, // Enables infinite scrolling
+              viewportFraction: 1.0,
             ),
+            items: widget.imageUrl.map((url) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: CachedNetworkImage(
+                  imageUrl: url,
+                  height: screenWidth * 0.4,
+                  width: screenWidth * 0.88,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[200],
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey[300],
+                    child: const Center(
+                      child: Icon(Icons.error, color: Colors.red),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
           ),
+          // ClipRRect(
+          //   borderRadius: const BorderRadius.only(
+          //       topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+          //   child: Image.network(
+          //     widget.imageUrl,
+          //     height: screenWidth * 0.4,
+          //     width: double.infinity,
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
@@ -118,9 +136,10 @@ class _PropertyCardState extends State<PropertyCard2> {
                 ),
                 const SizedBox(height: 8),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      formatPrice(widget.totalPrice),
+                      formatters.formatPrice(widget.totalPrice),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -128,6 +147,9 @@ class _PropertyCardState extends State<PropertyCard2> {
                         color: Colors.black,
                       ),
                     ),
+                    Text(
+                        "${widget.plotArea} SQ FT.  ${widget.propertyCategory}",
+                        style: AppTextStyle.Text14500),
                   ],
                 ),
                 const SizedBox(height: 4),
@@ -143,37 +165,49 @@ class _PropertyCardState extends State<PropertyCard2> {
                     ),
                   ],
                 ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              color: Colors.green),
+                          child: SvgPicture.asset(
+                            "assets/svg/whatsapp.svg",
+                            width: 40,
+                          )),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                          color: Colors.black,
+                        ),
+                        child: Icon(
+                          Icons.call,
+                          size: 40,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
         ],
       ),
     );
-  }
-
-  String formatPrice(dynamic value) {
-    if (value == null) return "N/A";
-    double price = 0.0;
-
-    try {
-      if (value is String) {
-        value = value.replaceAll(",", "");
-        price = double.parse(value);
-      } else if (value is int || value is double) {
-        price = value.toDouble();
-      } else {
-        return "N/A";
-      }
-    } catch (e) {
-      return "N/A";
-    }
-
-    if (price >= 10000000) {
-      return "₹${(price / 10000000).toStringAsFixed(2)} Cr";
-    } else if (price >= 100000) {
-      return "₹${(price / 100000).toStringAsFixed(2)} Lac";
-    } else {
-      return "₹${price.toStringAsFixed(0)}";
-    }
   }
 }
