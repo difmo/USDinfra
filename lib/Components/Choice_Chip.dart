@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import '../../conigs/app_colors.dart';
+import '../configs/app_colors.dart';
 
 class ChoiceChipOption extends StatelessWidget {
   final String label;
   final bool isSelected;
   final ValueChanged<bool> onSelected;
-
+  final TextStyle? labelStyle;
   const ChoiceChipOption({
-    Key? key,
+    super.key,
     required this.label,
     required this.isSelected,
-    required this.onSelected,
-  }) : super(key: key);
+    required this.onSelected, 
+    this. labelStyle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class ChoiceChipOption extends StatelessWidget {
       onSelected: onSelected,
       selectedColor: AppColors.primary,
       labelStyle: TextStyle(
-        color: isSelected ? Colors.white : Colors.grey[700],
+        color: isSelected ? Colors.white : Colors.black,
       ),
       elevation: 1,
       shadowColor: AppColors.shadow,

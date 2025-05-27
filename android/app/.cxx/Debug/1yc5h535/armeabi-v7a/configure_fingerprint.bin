@@ -2,6 +2,7 @@ C/C++ Structured Log}
 {
 y/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/additional_project_files.txtC
 A
+<<<<<<< HEAD
 ?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	çÐÂðì2 âÐÂðì2z
 x
 v/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/android_gradle_build.json	çÐÂðì2‡ ãÐÂðì2
@@ -26,3 +27,29 @@ v
 t/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/symbol_folder_index.txt	çÐÂðì2k æÐÂðì2\
 Z
 X/Users/pritamsharma/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt	çÐÂðì2¤ þó°Ðç2
+=======
+?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	òæ³Âî2 øíäðì2z
+x
+v/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/android_gradle_build.json	òæ³Âî2‡ ùíäðì2
+}
+{/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/android_gradle_build_mini.json	òæ³Âî2‚ ûíäðì2l
+j
+h/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/build.ninja	òæ³Âî2ÄÑ éíäðì2p
+n
+l/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/build.ninja.txt	òæ³Âî2u
+s
+q/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/build_file_index.txt	òæ³Âî2X üíäðì2v
+t
+r/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/compile_commands.json	òæ³Âî2z
+x
+v/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/compile_commands.json.bin	òæ³Âî2	€
+~
+|/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/metadata_generation_command.txt	òæ³Âî2
+‚	 ûíäðì2s
+q
+o/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/prefab_config.json	òæ³Âî2( ûíäðì2x
+v
+t/Users/pritamsharma/Documents/USDUNIQUE/USDinfra/android/app/.cxx/Debug/1yc5h535/armeabi-v7a/symbol_folder_index.txt	òæ³Âî2k ûíäðì2\
+Z
+X/Users/pritamsharma/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt	òæ³Âî2¤ þó°Ðç2
+>>>>>>> aman
