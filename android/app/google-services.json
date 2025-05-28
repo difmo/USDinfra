@@ -1,15 +1,35 @@
 {
   "project_info": {
     "project_number": "654393750018",
+    "firebase_url": "https://usdinfra-a11c2-default-rtdb.firebaseio.com",
     "project_id": "usdinfra-a11c2",
     "storage_bucket": "usdinfra-a11c2.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:654393750018:android:7f3f611aadd3782df7ed1b",
+        "mobilesdk_app_id": "1:654393750018:android:bf433433edfe9b84f7ed1b",
         "android_client_info": {
           "package_name": "com.difmo.usdunique"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSUpmbk_iGfBtfW6has_8Uy7S0zGNiT5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654393750018:android:7f3f611aadd3782df7ed1b",
+        "android_client_info": {
+          "package_name": "com.example.usdinfra"
         }
       },
       "oauth_client": [],
