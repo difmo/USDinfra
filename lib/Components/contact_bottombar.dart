@@ -11,11 +11,8 @@ class ContactBottombar extends StatefulWidget {
 }
 
 class _ContactBottombarState extends State<ContactBottombar> {
-  final String whatsappNumber = "9876543210"; // Include country code if
-  final String phoneNumber = "9876543210"; // Replace with actual number
-
   void _launchWhatsApp() async {
-    final url = "https://wa.me/$num}";
+    final url = "https://wa.me/${widget.num}}";
     // if (await canLaunchUrl(Uri.parse(url))) {
     await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
     // }
@@ -26,7 +23,7 @@ class _ContactBottombarState extends State<ContactBottombar> {
       context: context,
       builder: (_) => AlertDialog(
         title: const Text("Contact Number"),
-        content: Text(phoneNumber),
+        content: Text(widget.num),
         actions: [
           TextButton(
             child: const Text("Close"),
@@ -38,7 +35,7 @@ class _ContactBottombarState extends State<ContactBottombar> {
   }
 
   void _makePhoneCall() async {
-    final url = "tel:$phoneNumber";
+    final url = "tel:${widget.num}";
     // if (await canLaunchUrl(Uri.parse(url))) {
     await launchUrl(Uri.parse(url));
     // }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:usdinfra/Property_Pages_form/Property_Form/form_page_3_components/option_chip.dart';
 import 'package:usdinfra/components/bottom_sheets.dart';
 import 'package:usdinfra/components/flor_form_field.dart';
 import 'package:usdinfra/components/increment_decrement.dart';
@@ -39,6 +40,7 @@ class _PropertyForm2State extends State<PropertyForm2> {
   final List<String> _units = ['SQFT', 'SQYD', 'SQMD'];
   final GlobalKey<LoanAndApprovalSectionState> loanSectionKey =
       GlobalKey<LoanAndApprovalSectionState>();
+  List<String> selectedOtherRooms = [];
 
   @override
   void initState() {
@@ -105,10 +107,10 @@ class _PropertyForm2State extends State<PropertyForm2> {
     //     (furnishingStatus == null || furnishingStatus!.isEmpty)) {
     //   return 'Furnishing Status is required';
     // }
-    if (widget.formData["propertyCategory"] == "Plot/Land" &&
-        (facingDirection == null || facingDirection!.isEmpty)) {
-      return 'Facing Direction is required';
-    }
+    // if (widget.formData["propertyCategory"] == "Plot/Land" &&
+    //     (facingDirection == null || facingDirection!.isEmpty)) {
+    //   return 'Facing Direction is required';
+    // }
     return null;
   }
 
@@ -417,16 +419,38 @@ class _PropertyForm2State extends State<PropertyForm2> {
             if (widget.formData["propertyCategory"] != "Plot/Land") ...[
               Column(
                 children: [
-                  CustomSelector(
+                  ChoiceSelectorWidget(
                     title: 'Other Rooms (optional)',
                     options: AppConstants.otherRoomOptions,
-                    selectedOption: widget.formData['otherRooms'],
-                    onOptionSelected: (value) {
+                    selectedOptions: selectedOtherRooms,
+                    onSelectionChanged: (furnishing) {
                       setState(() {
-                        widget.formData['otherRooms'] = value;
+                        final updatedList = List<String>.from(furnishing);
+
+                        if (updatedList.contains('Other')) {
+                          updatedList
+                            ..clear()
+                            ..add('Other');
+                        } else {
+                          updatedList.remove('Other');
+                        }
+
+                        selectedOtherRooms = updatedList;
+                        widget.formData['otherRooms'] = selectedOtherRooms;
                       });
                     },
+                    isMultiSelect: true,
                   ),
+                  // CustomSelector(
+                  // title: 'Other Rooms (optional)',
+                  //   options: AppConstants.otherRoomOptions,
+                  //   selectedOption: widget.formData['otherRooms'],
+                  //   onOptionSelected: (value) {
+                  //     setState(() {
+                  //       widget.formData['otherRooms'] = value;
+                  //     });
+                  //   },
+                  // ),
                   SizedBox(
                     height: 10,
                   ),
@@ -524,16 +548,16 @@ class _PropertyForm2State extends State<PropertyForm2> {
                     hint: 'Enter no. of open sides',
                     controller: controllers.noOfOpenSidesController,
                   ),
-                  CustomSelector(
-                    title: 'Facing Direction',
-                    options: AppConstants.facingDirectionOptions,
-                    selectedOption: facingDirection,
-                    onOptionSelected: (value) {
-                      setState(() {
-                        facingDirection = value;
-                      });
-                    },
-                  ),
+                  // CustomSelector(
+                  //   title: 'Facing Direction',
+                  //   options: AppConstants.facingDirectionOptions,
+                  //   selectedOption: facingDirection,
+                  //   onOptionSelected: (value) {
+                  //     setState(() {
+                  //       facingDirection = value;
+                  //     });
+                  //   },
+                  // ),
                 ],
               ),
             ],

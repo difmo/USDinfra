@@ -22,26 +22,33 @@ class _UpgradeServiceScreenState extends State<UpgradeServiceScreen> {
       "isPremium": false,
     },
     {
-      "title": "Premium Construction",
-      "description": "High-quality materials & expert workers",
-      "price": "\$199/month",
-      "icon": Icons.workspace_premium,
+      "title": "Other Coming soon",
+      "description": "wait...",
+      "price": "wait...",
+      "icon": Icons.watch,
       "isPremium": true,
     },
-    {
-      "title": "Renovation Service",
-      "description": "Upgrade your property with modern design",
-      "price": "\$299/month",
-      "icon": Icons.home_repair_service,
-      "isPremium": true,
-    },
-    {
-      "title": "Interior Design",
-      "description": "Get a premium modern interior look",
-      "price": "\$149/month",
-      "icon": Icons.design_services,
-      "isPremium": true,
-    },
+    // {
+    //   "title": "Premium Construction",
+    //   "description": "High-quality materials & expert workers",
+    //   "price": "\$199/month",
+    //   "icon": Icons.workspace_premium,
+    //   "isPremium": true,
+    // },
+    // {
+    //   "title": "Renovation Service",
+    //   "description": "Upgrade your property with modern design",
+    //   "price": "\$299/month",
+    //   "icon": Icons.home_repair_service,
+    //   "isPremium": true,
+    // },
+    // {
+    //   "title": "Interior Design",
+    //   "description": "Get a premium modern interior look",
+    //   "price": "\$149/month",
+    //   "icon": Icons.design_services,
+    //   "isPremium": true,
+    // },
   ];
 
   void upgradeAccount() {

@@ -52,6 +52,11 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   badges: ^3.1.2
   cached_network_image: ^3.4.1
+  flutter_material_design_icons: ^1.1.7447
+  connectivity_plus: ^6.1.4
+  get: ^4.7.2
+  flutter_otp_text_field: ^1.5.1+1
+  firebase_app_check: ^0.3.2+6
 
 dev_dependencies:
   flutter_test:

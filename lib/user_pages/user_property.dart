@@ -76,7 +76,11 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/login');
+                    showManualBottomSheet(
+                      context: context,
+                      child: Container(),
+                    );
+                    // Navigator.pushNamed(context, '/login');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
@@ -411,6 +415,25 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
           ],
         );
       },
+    );
+  }
+
+  void showManualBottomSheet({
+    required BuildContext context,
+    required Widget child,
+    BorderRadius? borderRadius,
+    Color? backgroundColor,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: backgroundColor,
+      shape: borderRadius != null
+          ? RoundedRectangleBorder(
+              borderRadius: borderRadius,
+            )
+          : null,
+      builder: (context) => child,
     );
   }
 }

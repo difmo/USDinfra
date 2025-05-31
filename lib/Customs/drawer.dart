@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:usdinfra/authentication/login_with_mob.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/routes/app_routes.dart';
@@ -333,7 +334,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onPressed: () {
               FirebaseAuth.instance.signOut();
               Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginPage()));
+                  MaterialPageRoute(builder: (context) => LoginWithMob()));
             },
             child: Text("Log Out"),
           ),

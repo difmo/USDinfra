@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:usdinfra/admin/sold_property.dart';
 import 'package:usdinfra/Property_Pages_form/purchesedProperties.dart';
+import 'package:usdinfra/authentication/login_with_mob.dart';
 import 'package:usdinfra/user_pages/about_us_screen.dart';
 import 'package:usdinfra/user_pages/chat_detail_screen.dart';
 import 'package:usdinfra/user_pages/chat_screen.dart';
@@ -34,6 +35,7 @@ import '../authentication/sign_up_screen.dart';
 
 class AppRouts {
   static const String splash = '/splash';
+  static const loginWithMob = '/loginWithMob';
   static const homePage = '/homepage';
   static const login = '/login';
   static const signup = '/signup';
@@ -77,6 +79,10 @@ class AppRouts {
       //   return MaterialPageRoute(builder: (_) => AdminBottomNavigationBar());
       case splash:
         return MaterialPageRoute(builder: (_) => SplashScreen());
+      // case loginWithMob:
+      //   return MaterialPageRoute(
+      //     builder: (_) => LoginWithMob(),
+      //   );
       case purchesedProperties:
         return MaterialPageRoute(builder: (_) => PurchesedPropertiesPage());
       case signup:

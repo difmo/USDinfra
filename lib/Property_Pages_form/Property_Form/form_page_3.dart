@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/controllers/user_controller.dart';
 import 'package:usdinfra/model/user_modal.dart';
@@ -32,6 +33,29 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
   List<String> selectedDirection = [];
   List<String> selectedFoodcourt = [];
   List<String> selectedFurnishing = [];
+
+  final Map<String, IconData> furnishingIcons = {
+    "Light": MdiIcons.lightbulb,
+    "Fans": MdiIcons.fan,
+    "AC": MdiIcons.airConditioner,
+    "TV": MdiIcons.television,
+    "Beds": MdiIcons.bed,
+    "Wardrobe": MdiIcons.wardrobe,
+    "Geyser": MdiIcons.water,
+    "Sofa": MdiIcons.sofa,
+    "Washing Machine": MdiIcons.waterAlert,
+    "Stove": MdiIcons.stove,
+    "Fridge": MdiIcons.fridge,
+    "Water Purifier": MdiIcons.waterfall,
+    "Microwave": MdiIcons.microwave,
+    "Modular Kitchen": MdiIcons.kite,
+    "Chimney": MdiIcons.chemicalWeapon,
+    "Dining Table": MdiIcons.tableFurniture,
+    "Curtains": MdiIcons.curtains,
+    "Exhaust Fan": MdiIcons.fan,
+  };
+
+  Set<String> selectedFurnishingItems = {};
   Map<String, int> furnishingQuantities = {
     "Light": 0,
     "Fans": 0,
@@ -148,7 +172,7 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
         'selectedRooms': selectedRooms,
         'amenities': selectedAmenities,
         'furnishing': selectedFurnishing,
-        'furnishingDetails': furnishingQuantities,
+        'furnishingDetails': selectedFurnishingItems.toList(),
         'foodcourt': selectedFoodcourt,
         'coveredParking': coveredParking,
         'openParking': openParking,
@@ -206,9 +230,10 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
             return StatefulBuilder(
               builder: (BuildContext context, StateSetter setModalState) {
                 return Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(34))),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(34)),
+                  ),
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
@@ -231,7 +256,7 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "* Atleast one selection is mandatory",
+                        "* At least one selection is mandatory",
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey,
@@ -243,13 +268,17 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                         child: ListView(
                           controller: scrollController,
                           children: furnishingQuantities.keys.map((item) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                            IconData itemIcon =
+                                furnishingIcons[item] ?? MdiIcons.home;
+                            return CheckboxListTile(
+                              title: Row(
                                 children: [
+                                  Icon(
+                                    itemIcon,
+                                    size: 20,
+                                    color: AppColors.primary,
+                                  ),
+                                  const SizedBox(width: 8),
                                   Text(
                                     item,
                                     style: TextStyle(
@@ -257,40 +286,21 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                                       fontFamily: AppFontFamily.primaryFont,
                                     ),
                                   ),
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          setModalState(() {
-                                            if (furnishingQuantities[item]! >
-                                                0) {
-                                              furnishingQuantities[item] =
-                                                  furnishingQuantities[item]! -
-                                                      1;
-                                            }
-                                          });
-                                          setState(() {});
-                                        },
-                                        icon: const Icon(Icons.remove),
-                                      ),
-                                      Text(
-                                        "${furnishingQuantities[item]}",
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {
-                                          setModalState(() {
-                                            furnishingQuantities[item] =
-                                                furnishingQuantities[item]! + 1;
-                                          });
-                                          setState(() {});
-                                        },
-                                        icon: const Icon(Icons.add),
-                                      ),
-                                    ],
-                                  ),
                                 ],
                               ),
+                              value: selectedFurnishingItems.contains(item),
+                              onChanged: (bool? value) {
+                                setModalState(() {
+                                  if (value == true) {
+                                    selectedFurnishingItems.add(item);
+                                  } else {
+                                    selectedFurnishingItems.remove(item);
+                                  }
+                                });
+                                // Update parent state
+                                setState(() {});
+                              },
+                              activeColor: AppColors.primary,
                             );
                           }).toList(),
                         ),
@@ -301,10 +311,9 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                           TextButton(
                             onPressed: () {
                               setModalState(() {
-                                furnishingQuantities
-                                    .updateAll((key, value) => 0);
+                                selectedFurnishingItems.clear();
                               });
-                              setState(() {});
+                              setState(() {}); // Update parent state
                             },
                             child: Text(
                               "Clear All",
@@ -316,9 +325,7 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              bool hasSelection = furnishingQuantities.values
-                                  .any((quantity) => quantity > 0);
-                              if (!hasSelection) {
+                              if (selectedFurnishingItems.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
@@ -328,8 +335,6 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
                                 return;
                               }
                               Navigator.pop(context);
-                              setState(
-                                  () {}); // Refresh the parent state to show selected items
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
@@ -358,15 +363,9 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
     );
   }
 
-  // Widget to display selected furnishing items with quantities
+// Update _buildSelectedFurnishingItems to display selected items without quantities
   Widget _buildSelectedFurnishingItems() {
-    // Filter items with quantity > 0
-    final selectedItems = furnishingQuantities.entries
-        .where((entry) => entry.value > 0)
-        .map((entry) => "${entry.key}: ${entry.value}")
-        .toList();
-
-    if (selectedItems.isEmpty) {
+    if (selectedFurnishingItems.isEmpty) {
       return const SizedBox
           .shrink(); // Don't show anything if no items are selected
     }
@@ -388,21 +387,25 @@ class _AddPhotosDetailsPageState extends State<AddPhotosDetailsPage> {
           Wrap(
             spacing: 8.0,
             runSpacing: 4.0,
-            children: selectedItems
-                .map(
-                  (item) => Chip(
-                    label: Text(
-                      item,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: AppFontFamily.primaryFont,
-                      ),
-                    ),
-                    backgroundColor: Colors.grey[200],
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            children: selectedFurnishingItems.map((item) {
+              IconData itemIcon = furnishingIcons[item] ?? MdiIcons.home;
+              return Chip(
+                label: Text(
+                  item,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: AppFontFamily.primaryFont,
                   ),
-                )
-                .toList(),
+                ),
+                avatar: Icon(
+                  itemIcon,
+                  size: 18,
+                  color: AppColors.primary,
+                ),
+                backgroundColor: Colors.grey[200],
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              );
+            }).toList(),
           ),
         ],
       ),

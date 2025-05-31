@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get/utils.dart';
+import 'package:usdinfra/authentication/login_with_mob.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/utils/constants.dart';
@@ -32,73 +35,6 @@ class _PropertyFormState extends State<PropertyForm1> {
   String? _propertyTypeError;
   String? _propertyCategoryError;
   final controllers = ControllersManager();
-
-  List<String> getPropertyTypes() {
-    switch (lookingTo) {
-      case 'Sell':
-      case 'Rent / Lease':
-        return ['Residential', 'Commercial'];
-      case 'Paying Guest':
-        return ['Residential'];
-      default:
-        return [];
-    }
-  }
-
-  List<String> getPropertyCategories() {
-    if (lookingTo == 'Sell' && propertyType == 'Commercial') {
-      return [
-        'Office',
-        'Retail',
-        'Storage',
-        'Plot/Land',
-        'Industry',
-        'Hospitality',
-        'Other'
-      ];
-    } else if (lookingTo == 'Sell' && propertyType == 'Residential') {
-      return [
-        'Apartment',
-        'Independent House/Villa',
-        'Independent/Builder Floor',
-        'Plot/Land',
-        '1RK/Studio Apartment',
-        'Serviced Apartment',
-        'Farmhouse',
-        'Other'
-      ];
-    } else if (lookingTo == 'Rent / Lease' && propertyType == 'Residential') {
-      return [
-        'Apartment',
-        'Independent House/Villa',
-        'Independent/Builder Floor',
-        '1RK/Studio Apartment',
-        'Serviced Apartment',
-        'Farmhouse',
-        'Other'
-      ];
-    } else if (lookingTo == 'Rent / Lease' && propertyType == 'Commercial') {
-      return [
-        'Office',
-        'Retail',
-        'Storage',
-        'Plot/Land',
-        'Industry',
-        'Hospitality',
-        'Other'
-      ];
-    } else if (lookingTo == 'Paying Guest' && propertyType == 'Residential') {
-      return [
-        'Apartment',
-        'Independent House/Villa',
-        'Independent/Builder Floor',
-        '1RK/Studio Apartment',
-        'Serviced Apartment'
-      ];
-    } else {
-      return [];
-    }
-  }
 
   String? _validateContactDetails(String? value) {
     if (value == null || value.isEmpty) {
@@ -181,7 +117,10 @@ class _PropertyFormState extends State<PropertyForm1> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/login');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginWithMob()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
@@ -331,5 +270,72 @@ class _PropertyFormState extends State<PropertyForm1> {
         ),
       ),
     );
+  }
+
+  List<String> getPropertyTypes() {
+    switch (lookingTo) {
+      case 'Sell':
+      case 'Rent / Lease':
+        return ['Residential', 'Commercial'];
+      case 'Paying Guest':
+        return ['Residential'];
+      default:
+        return [];
+    }
+  }
+
+  List<String> getPropertyCategories() {
+    if (lookingTo == 'Sell' && propertyType == 'Commercial') {
+      return [
+        'Office',
+        'Retail',
+        'Storage',
+        'Plot/Land',
+        'Industry',
+        'Hospitality',
+        'Other'
+      ];
+    } else if (lookingTo == 'Sell' && propertyType == 'Residential') {
+      return [
+        'Apartment',
+        'Independent House/Villa',
+        'Independent/Builder Floor',
+        'Plot/Land',
+        '1RK/Studio Apartment',
+        'Serviced Apartment',
+        'Farmhouse',
+        'Other'
+      ];
+    } else if (lookingTo == 'Rent / Lease' && propertyType == 'Residential') {
+      return [
+        'Apartment',
+        'Independent House/Villa',
+        'Independent/Builder Floor',
+        '1RK/Studio Apartment',
+        'Serviced Apartment',
+        'Farmhouse',
+        'Other'
+      ];
+    } else if (lookingTo == 'Rent / Lease' && propertyType == 'Commercial') {
+      return [
+        'Office',
+        'Retail',
+        'Storage',
+        'Plot/Land',
+        'Industry',
+        'Hospitality',
+        'Other'
+      ];
+    } else if (lookingTo == 'Paying Guest' && propertyType == 'Residential') {
+      return [
+        'Apartment',
+        'Independent House/Villa',
+        'Independent/Builder Floor',
+        '1RK/Studio Apartment',
+        'Serviced Apartment'
+      ];
+    } else {
+      return [];
+    }
   }
 }

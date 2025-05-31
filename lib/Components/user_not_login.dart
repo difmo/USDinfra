@@ -41,7 +41,8 @@ class UserNotLoggedIn extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(22),
                   ),

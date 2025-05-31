@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/route_manager.dart';
+import 'package:usdinfra/authentication/login_with_mob.dart';
 import 'package:usdinfra/configs/font_family.dart';
 
 class LogoutDialog extends StatelessWidget {
@@ -33,8 +35,7 @@ class LogoutDialog extends StatelessWidget {
         TextButton(
           onPressed: () {
             FirebaseAuth.instance.signOut();
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil('/login', (route) => false);
+            Get.to(LoginWithMob());
           },
           child: Text(
             "Log Out",

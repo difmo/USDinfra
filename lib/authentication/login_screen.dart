@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:usdinfra/Components/double_tab_toexit.dart';
+import 'package:usdinfra/authentication/login_with_mob.dart';
 // import 'package:lottie/lottie.dart';
 import 'package:usdinfra/configs/app_colors.dart';
 import 'package:usdinfra/configs/font_family.dart';
@@ -168,6 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 40),
+                LoginWithMob(),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Column(

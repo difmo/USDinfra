@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 
 import 'package:usdinfra/admin/expandable_description.dart';
 import 'package:usdinfra/components/contact_bottombar.dart';
 import 'package:usdinfra/components/new_enquiry_form.dart';
+import 'package:usdinfra/components/property_gallary.dart';
 import 'package:usdinfra/configs/font_family.dart';
 import 'package:usdinfra/utils/formatters.dart';
 
@@ -28,6 +30,50 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
     super.initState();
     fetchPropertyDetails();
   }
+
+  final Map<String, IconData> furnishingIcons = {
+    "Light": MdiIcons.lightbulb,
+    "Fans": MdiIcons.fan,
+    "AC": MdiIcons.airFilter,
+    "TV": MdiIcons.television,
+    "Beds": MdiIcons.bed,
+    "Wardrobe": MdiIcons.wardrobe,
+    "Geyser": MdiIcons.water,
+    "Sofa": MdiIcons.sofa,
+    "Washing Machine": MdiIcons.waterAlert,
+    "Stove": MdiIcons.stove,
+    "Fridge": MdiIcons.fridge,
+    "Water Purifier": MdiIcons.waterfall,
+    "Microwave": MdiIcons.microwave,
+    "Modular Kitchen": MdiIcons.kite,
+    "Chimney": MdiIcons.chemicalWeapon,
+    "Dining Table": MdiIcons.tableFurniture,
+    "Curtains": MdiIcons.curtains,
+    "Exhaust Fan": MdiIcons.fan,
+  };
+  final Map<String, IconData> amenitiesIcons = {
+    "24 x 7 Security": MdiIcons.shieldAccount,
+    "Road": MdiIcons.roadVariant,
+    "Park": MdiIcons.tree,
+    "Water Supply": MdiIcons.water,
+    "Electricity": MdiIcons.flash,
+    "Danety": MdiIcons.toilet, // Assuming sanitation; adjust if needed
+    "Clubhouse": MdiIcons.accountGroup,
+    "Balcony": MdiIcons.balcony,
+    "High Speed Elssevators": MdiIcons.elevatorPassenger,
+    "Medical Facility": MdiIcons.hospital,
+    "Day Care Center": MdiIcons.babyFaceOutline,
+    "Conference Room": MdiIcons.door,
+    "Large Green Area": MdiIcons.grass,
+    "Concierge Desk": MdiIcons.accountTie,
+    "Helipad": MdiIcons.helicopter,
+    "Multiplex": MdiIcons.theater,
+    "Visitor's Parking": MdiIcons.parking,
+    "Serviced Apartments": MdiIcons.domain,
+    "Service Elevators": MdiIcons.elevator,
+    "Hypermarket": MdiIcons.store,
+    "ATM'S": MdiIcons.cashMultiple,
+  };
 
   Future<void> fetchPropertyDetails() async {
     try {
@@ -352,30 +398,85 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                       ],
                     ),
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
 
                   //_addressSection(),
                   if (propertyData?['propertyCategory'] != "Plot/Land")
-                    _multiAmenitiesSection("Furnishing Details", {
-                      "Furnishings": propertyData?['furnishingDetails'] != null
-                          ? (propertyData!['furnishingDetails']
-                                  as Map<String, dynamic>)
-                              .entries
-                              .where((e) =>
-                                  e.value is num &&
-                                  (e.value as num) > 0 &&
-                                  e.key != 'type')
-                              .map((e) => "${e.key}: ${e.value}")
-                              .toList()
-                          : [],
-                    }),
+                    if (propertyData?['furnishingDetails'] != null &&
+                        propertyData?['furnishingDetails'] is List &&
+                        (propertyData?['furnishingDetails'] as List).isNotEmpty)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Furnishing Details:',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                          SizedBox(
+                            height: 18,
+                          ),
+                          GridView.count(
+                            crossAxisCount: 4, // 2 columns
+                            shrinkWrap:
+                                true, // Prevent GridView from taking infinite height
+                            physics:
+                                const NeverScrollableScrollPhysics(), // Disable scrolling
+                            childAspectRatio: 1, // Adjusted for vertical layout
+                            mainAxisSpacing: 8, // Spacing between rows
+                            crossAxisSpacing: 8, // Spacing between columns
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            children: (propertyData?['furnishingDetails']
+                                    as List)
+                                .map(
+                                  (item) => Column(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .center, // Center items vertically
+                                    children: [
+                                      Icon(
+                                        furnishingIcons[item] ??
+                                            Icons.check_circle,
+                                        color: Colors.red,
+                                        size: 28,
+                                      ),
+                                      const SizedBox(
+                                          height:
+                                              4), // Spacing between icon and text
+                                      Expanded(
+                                        child: Text(
+                                          item,
+                                          style: const TextStyle(fontSize: 16),
+                                          overflow: TextOverflow
+                                              .ellipsis, // Handle long text
+                                          textAlign: TextAlign
+                                              .center, // Center text horizontally
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ],
+                      ),
 
-                  _multiAmenitiesSection("Available Amenities", {
-                    "Amenities":
-                        List<String>.from(propertyData?['amenities'] ?? []),
-                    // "Food Court":
-                    //     List<String>.from(propertyData?['foodcourt'] ?? []),
-                  }),
+                  _multiAmenitiesSection(
+                    "Available Amenities",
+                    {
+                      "Amenities":
+                          List<String>.from(propertyData?['amenities'] ?? []),
+                    },
+                    amenitiesIcons,
+                  ),
 
+                  PropertyGallery(
+                    imageUrls: propertyData?['imageUrl'] ?? [],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   ExpandableDescription(
                       description: propertyData?['description'] ??
                           "No description available."),
@@ -394,7 +495,8 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                     // _infoRow("Ownership Type",
                     //     propertyData?['ownershipType'] ?? 'N/A'),
                     _infoRow("Owner", propertyData?['ownerName'] ?? 'N/A'),
-                    _infoRow("Contact", propertyData?['dealerType'] ?? 'N/A'),
+                    _infoRow(
+                        "Contact", propertyData?['contactDetails'] ?? 'N/A'),
                   ]),
                   const SizedBox(height: 8),
                 ],
@@ -405,7 +507,8 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
               height: 16,
             ),
             // _bottomPurchaseSection(),
-            NewEnquiryForm(),
+            NewEnquiryForm(
+                propertyId: widget.docId, propertyData: propertyData),
           ],
         ),
       ),
@@ -581,7 +684,10 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
   }
 
   Widget _multiAmenitiesSection(
-      String title, Map<String, List<String>> groupedAmenities) {
+    String title,
+    Map<String, List<String>> groupedAmenities,
+    Map<String, IconData> iconsMap,
+  ) {
     return SizedBox(
       width: double.infinity,
       child: _sectionCard(
@@ -614,8 +720,20 @@ class _PropertyDetailPageState extends State<PropertyDetailPage> {
                       runSpacing: 8,
                       children: amenities.map((amenity) {
                         return Chip(
-                          label: Text(amenity),
                           backgroundColor: Colors.grey[200],
+                          label: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                iconsMap[amenity] ??
+                                    Icons.check_circle_outline, // fallback icon
+                                size: 22,
+                                color: const Color.fromARGB(255, 100, 123, 255),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(amenity),
+                            ],
+                          ),
                         );
                       }).toList(),
                     ),

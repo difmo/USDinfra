@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,7 @@ class PropertyCard3 extends StatefulWidget {
   final String propertyCategory;
   final String totalPrice;
   final String floorPlan;
+
   const PropertyCard3({
     super.key,
     required this.imageUrl,
@@ -45,28 +48,87 @@ class PropertyCard3 extends StatefulWidget {
 }
 
 class _PropertyCard3State extends State<PropertyCard3> {
-  bool isFavorited = false;
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
+  Timer? _timer;
+  int _currentIndex = 0;
+  late List<int> _durations;
+
+  @override
+  void initState() {
+    super.initState();
+    _durations = _generateRandomDurations(widget.imageUrl.length);
+    _startAutoPlay();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  List<int> _generateRandomDurations(int length) {
+    final random = Random();
+    return List.generate(
+        length, (_) => 1 + random.nextInt(5)); // 1 to 5 seconds
+  }
+
+  void _startAutoPlay() {
+    _timer?.cancel();
+    _timer = Timer(Duration(seconds: _durations[_currentIndex]), () {
+      if (!mounted) return;
+      setState(() {
+        _currentIndex = (_currentIndex + 1) % widget.imageUrl.length;
+      });
+      _carouselController.animateToPage(
+        _currentIndex,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      _startAutoPlay(); // Recursive loop with the next duration
+    });
+  }
+
+  void _callOwner() async {
+    String phoneNumber = widget.contactDetails.trim().replaceAll(' ', '');
+    final Uri phoneUri = Uri.parse("tel:$phoneNumber");
+
+    if (await canLaunchUrlString(phoneUri.toString())) {
+      await launchUrl(phoneUri, mode: LaunchMode.externalApplication);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not launch dialer')),
+      );
+    }
+  }
 
   String getShortTitle(String title) {
     return title.length > 18 ? '${title.substring(0, 18)}...' : title;
   }
 
-  void _callOwner() async {
-    String phoneNumber =
-        widget.contactDetails.trim(); // Remove spaces from the start and end
-    phoneNumber =
-        phoneNumber.replaceAll(' ', ''); // Remove all spaces inside the number
+  String formatPrice(dynamic value) {
+    if (value == null) return "N/A";
 
-    final Uri phoneUri = Uri.parse("tel:$phoneNumber");
-    print("Attempting to launch: $phoneUri"); // Debugging
+    double price = 0.0;
+    try {
+      if (value is String) {
+        value = value.replaceAll(",", "");
+        price = double.parse(value);
+      } else if (value is int || value is double) {
+        price = value.toDouble();
+      } else {
+        return "N/A";
+      }
+    } catch (e) {
+      return "N/A";
+    }
 
-    if (await canLaunchUrlString(phoneUri.toString())) {
-      await launchUrl(phoneUri, mode: LaunchMode.externalApplication);
+    if (price >= 10000000) {
+      return "₹${(price / 10000000).toStringAsFixed(2)} Cr";
+    } else if (price >= 100000) {
+      return "₹${(price / 100000).toStringAsFixed(2)} Lac";
     } else {
-      print("canLaunchUrlString() returned false."); // Debugging
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not launch dialer')),
-      );
+      return "₹${price.toStringAsFixed(0)}";
     }
   }
 
@@ -90,13 +152,19 @@ class _PropertyCard3State extends State<PropertyCard3> {
                     SizedBox(
                       width: 246,
                       child: CarouselSlider(
+                        carouselController: _carouselController,
                         options: CarouselOptions(
                           height: screenWidth * 0.4,
-                          autoPlay: true, // Auto-scroll for a better UX
+                          autoPlay: false,
                           enlargeCenterPage: true,
-                          enableInfiniteScroll:
-                              true, // Enables infinite scrolling
+                          enableInfiniteScroll: true,
                           viewportFraction: 1.0,
+                          initialPage: 0,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _currentIndex = index;
+                            });
+                          },
                         ),
                         items: widget.imageUrl.map((url) {
                           return ClipRRect(
@@ -130,8 +198,9 @@ class _PropertyCard3State extends State<PropertyCard3> {
                             horizontal: 7, vertical: 4),
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(8),
-                              bottomRight: Radius.circular(8)),
+                            bottomLeft: Radius.circular(8),
+                            bottomRight: Radius.circular(8),
+                          ),
                           color: Colors.black54,
                         ),
                         child: Text(
@@ -159,7 +228,7 @@ class _PropertyCard3State extends State<PropertyCard3> {
                     children: [
                       const SizedBox(height: 12),
                       Text(
-                        "${getShortTitle(widget.title)}",
+                        getShortTitle(widget.title),
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -168,8 +237,8 @@ class _PropertyCard3State extends State<PropertyCard3> {
                       ),
                       Text(
                         widget.propertyCategory != "Plot/Land"
-                            ? "${widget.propertyCategory}  Flat in  ${widget.location}"
-                            : "${widget.propertyCategory}  in ${widget.location}",
+                            ? "${widget.propertyCategory} Flat in ${widget.location}"
+                            : "${widget.propertyCategory} in ${widget.location}",
                         maxLines: 1,
                         style: TextStyle(
                           overflow: TextOverflow.ellipsis,
@@ -182,10 +251,11 @@ class _PropertyCard3State extends State<PropertyCard3> {
                       Text(
                         formatPrice(widget.totalPrice),
                         style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: AppFontFamily.primaryFont,
-                            color: Colors.black),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: AppFontFamily.primaryFont,
+                          color: Colors.black,
+                        ),
                       ),
                     ],
                   ),
@@ -197,33 +267,5 @@ class _PropertyCard3State extends State<PropertyCard3> {
         ),
       ),
     );
-  }
-
-  String formatPrice(dynamic value) {
-    if (value == null) return "N/A";
-
-    double price = 0.0;
-
-    try {
-      if (value is String) {
-        // Remove commas before parsing
-        value = value.replaceAll(",", "");
-        price = double.parse(value);
-      } else if (value is int || value is double) {
-        price = value.toDouble();
-      } else {
-        return "N/A";
-      }
-    } catch (e) {
-      return "N/A";
-    }
-
-    if (price >= 10000000) {
-      return "₹${(price / 10000000).toStringAsFixed(2)} Cr";
-    } else if (price >= 100000) {
-      return "₹${(price / 100000).toStringAsFixed(2)} Lac";
-    } else {
-      return "₹${price.toStringAsFixed(0)}";
-    }
   }
 }

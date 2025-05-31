@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 1), () async {
+    Timer(const Duration(seconds: 2), () async {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
@@ -64,17 +64,18 @@ class _SplashScreenState extends State<SplashScreen> {
               "USD Unique",
               style: TextStyle(
                 fontSize: 24,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w900,
                 color: AppColors.primary,
                 fontFamily: GoogleFonts.inter().fontFamily,
               ),
             ),
             const SizedBox(height: 10),
             Text(
-              "Your Gateway to Unique Properties & Builders.",
+              "Where You Find Your Dream Home.",
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey,
+                fontWeight: FontWeight.w800,
+                color: Colors.indigo,
                 fontStyle: FontStyle.italic,
                 fontFamily: GoogleFonts.inter().fontFamily,
               ),

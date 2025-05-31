@@ -168,63 +168,50 @@ class _AllPropertiesState extends State<AllProperties> {
                           final int cardInterval =
                               intervals[index % intervals.length];
 
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      PropertyDetailPage(docId: property['id']),
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            child: Stack(
+                              children: [
+                                SizedBox(
+                                  child: PropertyCard2(
+                                    docId: property['id'],
+                                    imageUrl:
+                                        property['imageUrl'] is List<String>
+                                            ? property['imageUrl']
+                                            : [property['imageUrl'].toString()],
+                                    expectedPrice: property['expectedPrice'],
+                                    plotArea: property['plotArea'],
+                                    propertyType: property['propertyType'],
+                                    city: property['city'],
+                                    createdAt: property['createdAt'],
+                                    title: property['title'],
+                                    propertyStatus: property['propertyStatus'],
+                                    contactDetails: property['contactDetails'],
+                                    location: property['locality'],
+                                    propertyCategory:
+                                        property['propertyCategory'],
+                                    totalPrice: property['totalPrice'],
+                                    autoPlayInterval:
+                                        cardInterval, // Pass unique interval
+                                  ),
                                 ),
-                              );
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 16),
-                              child: Stack(
-                                children: [
-                                  SizedBox(
-                                    child: PropertyCard2(
-                                      imageUrl: property['imageUrl']
-                                              is List<String>
-                                          ? property['imageUrl']
-                                          : [property['imageUrl'].toString()],
-                                      expectedPrice: property['expectedPrice'],
-                                      plotArea: property['plotArea'],
-                                      propertyType: property['propertyType'],
-                                      city: property['city'],
-                                      createdAt: property['createdAt'],
-                                      title: property['title'],
-                                      propertyStatus:
-                                          property['propertyStatus'],
-                                      contactDetails:
-                                          property['contactDetails'],
-                                      location: property['locality'],
-                                      propertyCategory:
-                                          property['propertyCategory'],
-                                      totalPrice: property['totalPrice'],
-                                      autoPlayInterval:
-                                          cardInterval, // Pass unique interval
+                                Positioned(
+                                  top: 10,
+                                  right: 10,
+                                  child: IconButton(
+                                    icon: Icon(
+                                      isFavorite
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color:
+                                          isFavorite ? Colors.red : Colors.grey,
                                     ),
+                                    onPressed: () {
+                                      _toggleFavorite(property['id']);
+                                    },
                                   ),
-                                  Positioned(
-                                    top: 10,
-                                    right: 10,
-                                    child: IconButton(
-                                      icon: Icon(
-                                        isFavorite
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color: isFavorite
-                                            ? Colors.red
-                                            : Colors.grey,
-                                      ),
-                                      onPressed: () {
-                                        _toggleFavorite(property['id']);
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           );
                         },
